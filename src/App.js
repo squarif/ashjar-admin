@@ -8,16 +8,13 @@ import WorkshopListing from "./pages/Workshops/WorkshopListing/WorkshopListing";
 // import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@chakra-ui/react";
 // import { Input } from "@chakra-ui/react";
 // import Branches from "./pages/branches/Branches";
-
-import { ReactComponent as ChevronRight } from "./assets/ChevronRight.svg";
-
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react";
+import { firebase } from "./auth/firebase/config";
 
 import { ReactComponent as AshjarLogo } from "./assets/AshjarLogo.svg";
 
 import WorkshopRequests from "./pages/WorkshopRequests/workshopRequestsListing/WorkshopRequestsListing";
 
-import { Link, Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
+import { Link, Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from "react-router-dom";
 import WorkshopDetails from "./pages/Workshops/WorkshopDetails/WorkshopDetails";
 import React, { useEffect, useRef } from "react";
 
@@ -34,46 +31,23 @@ import WorkspaceEdit from "./pages/Workspaces/WorkspaceEdit/WorkspaceEdit";
 import WorkspaceNew from "./pages/Workspaces/WorkspaceNew/WorkspaceNew";
 import NavBar from "./components/NavBar/NavBar";
 import Breadcrumbs from "./components/Breadcrumbs";
+import NurseryListing from "./pages/Nurseries/NurseryListing/NurseryListing";
+import NurseryDetails from "./pages/Nurseries/NurseryDetail/NurseryDetail";
+import NurseryNew from "./pages/Nurseries/NurseryNew/NurseryNew";
+import NurseryEdit from "./pages/Nurseries/NurseryEdit/NurseryEdit";
+import Users from "./pages/Users/Users";
+import InformationManagement from "./pages/InformationManagement/InformationManagement";
+import AnnouncementPage from "./pages/AnnouncementPage/AnnouncementPage";
+import Complaints from "./pages/Complaints/Complaints";
+import DashboardPage from "./pages/Dashboard/DashboardPage";
+import SignIn from "./pages/SignIn/SignIn";
+import PrivateRoute from "./auth/components/privateRoute";
+import { useRecoilStateCallback } from "./hooks";
+import { userAtom } from "./recoil/atoms";
 
 function App() {
-    let user = useRef();
-
-    useEffect(() => {
-        // Retrieve the user object from localStorage and parse it as JSON
-        const userData = localStorage.getItem("user");
-
-        // console.log("session data", localStorage);
-        // console.log("user data", userData);
-        const parsedUser = JSON.parse(userData);
-
-        // Assign the parsed user object to the useRef
-        user.current = parsedUser;
-
-        // console.log("getItem user", user.current);
-    }, []); // Empty dependency array for running the effect once on mount
-
-    async function handleSignIn() {
-        // console.log("auth");
-
-        user = await signInWithEmailAndPassword(auth, "aliadnanarif25@gmail.com", "ALOHOMORA!!!")
-            .then((userCredential) => {
-                // Signed in
-                // console.log("userCredential", userCredential);
-
-                user = userCredential.user;
-                localStorage.setItem("user", JSON.stringify(user));
-                // ...
-                return user;
-            })
-            .catch((error) => {
-                console.log("error", error);
-                // const errorCode = error.code;
-                // const errorMessage = error.message;
-                return null;
-            });
-
-        console.log("user", user);
-    }
+    const [userA, setUserAtom] = useRecoilStateCallback(userAtom);
+    const navigator = useNavigate();
 
     return (
         <div className="">
@@ -83,54 +57,269 @@ function App() {
                     <span className="text-[#AF8465] text-[32px] font-Adam leading-none">Ashjar</span>
                 </div>
 
-                {user.current ? (
-                    <div className=" p-3 border rounded-xl bg-primaryLight text-primary">
-                        {user.current.email}
-                    </div>
+                {userA ? (
+                    <button
+                        onClick={() => {
+                            // firebase.auth().signOut();
+                            localStorage.setItem("user", JSON.stringify(null));
+                            localStorage.setItem("token", JSON.stringify(null));
+                            setUserAtom(null);
+                            navigator("/login");
+                        }}
+                        className="p-3 border rounded-xl bg-primaryLight text-primary">
+                        Sign Out
+                    </button>
                 ) : (
                     <button
-                        onClick={() => handleSignIn()}
+                        // onClick={() => handleSignIn()}
                         className="p-3 border rounded-xl bg-primaryLight text-primary">
                         Sign In
                     </button>
                 )}
             </div>
             <div className="app-container grid grid-cols-7  font-Adam">
-                <Router>
-                    <NavBar />
+                {userA ? <NavBar /> : ""}
 
-                    <div className="body col-span-6 p-12">
-                        <Routes>
-                            <Route path="/" element={<MeetingRoomNew />} />
+                <div className="body col-span-6 p-12">
+                    <Routes>
+                        <Route path="/login" element={<SignIn />} />
 
-                            <Route path="/branches" element={<Branches />} />
-                            <Route path="/branches/:id" element={<BranchDetail />} />
-                            <Route path="/branches/new" element={<NewBranch />} />
+                        <Route
+                            path="/branches"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <Branches />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/branches/:id"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <BranchDetail />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/branches/new"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <NewBranch />
+                                </PrivateRoute>
+                            }
+                        />
 
-                            <Route path="/meeting-rooms" element={<MeetingRoomsListing />} />
-                            <Route path="/meeting-rooms/:id" element={<MeetingRoomDetails />} />
-                            <Route path="/meeting-rooms/new" element={<MeetingRoomNew />} />
+                        <Route
+                            path="/meeting-rooms"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <MeetingRoomsListing />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/meeting-rooms/:id"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <MeetingRoomDetails />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/meeting-rooms/new"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <MeetingRoomNew />
+                                </PrivateRoute>
+                            }
+                        />
 
-                            <Route path="/workshops/requests" element={<WorkshopRequests />} />
-                            <Route path="/workshops/requests/create-post" element={<WorkshopCreatePost />} />
+                        <Route
+                            path="/workshops/requests"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <WorkshopRequests />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/workshops/requests/create-post"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <WorkshopCreatePost />
+                                </PrivateRoute>
+                            }
+                        />
 
-                            <Route path="/workshops/all" element={<WorkshopListing />} />
-                            <Route path="/workshops/:id" element={<WorkshopDetails />} />
+                        <Route
+                            path="/workshops/all"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <WorkshopListing />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/workshops/:id"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <WorkshopDetails />
+                                </PrivateRoute>
+                            }
+                        />
 
-                            {/* <Route path="/create-post" element={<CreatePost />} /> */}
+                        {/* <Route path="/create-post" element={<PrivateRoute redirect="/login"><CreatePost />} /></PrivateRoute> */}
 
-                            <Route path="/meeting-rooms" element={<MeetingRoomsListing />} />
-                            <Route path="/meeting-rooms/:id" element={<MeetingRoomDetails />} />
-                            <Route path="/meeting-rooms/:id/edit" element={<MeetingRoomEdit />} />
-                            <Route path="/meeting-rooms/new" element={<MeetingRoomNew />} />
+                        <Route
+                            path="/meeting-rooms"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <MeetingRoomsListing />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/meeting-rooms/:id"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <MeetingRoomDetails />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/meeting-rooms/:id/edit"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <MeetingRoomEdit />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/meeting-rooms/new"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <MeetingRoomNew />
+                                </PrivateRoute>
+                            }
+                        />
 
-                            <Route path="/workspaces" element={<WorkspaceListing />} />
-                            <Route path="/workspaces/:id" element={<WorkspaceDetail />} />
-                            <Route path="/workspaces/:id/edit" element={<WorkspaceEdit />} />
-                            <Route path="/workspaces/new" element={<WorkspaceNew />} />
-                        </Routes>
-                    </div>
-                </Router>
+                        <Route
+                            path="/workspaces"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <WorkspaceListing />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/workspaces/:id"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <WorkspaceDetail />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/workspaces/:id/edit"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <WorkspaceEdit />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/workspaces/new"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <WorkspaceNew />
+                                </PrivateRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/nurseries"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <NurseryListing />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/nurseries/:id"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <NurseryDetails />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/nurseries/new"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <NurseryNew />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/nurseries/:id/edit"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <NurseryEdit />
+                                </PrivateRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/users"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <Users />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/info-management"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <InformationManagement />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/announcement"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <AnnouncementPage />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/complaints"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <Complaints />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <DashboardPage />
+                                </PrivateRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <DashboardPage />
+                                </PrivateRoute>
+                            }
+                        />
+                    </Routes>
+                </div>
             </div>
         </div>
     );

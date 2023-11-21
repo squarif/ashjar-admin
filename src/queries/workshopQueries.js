@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 const GET_WORKSHOP_REQUESTS = gql`
-    query WorkSpaces {
+    query Query {
         workshopRequests {
             _id
             name
@@ -9,6 +9,11 @@ const GET_WORKSHOP_REQUESTS = gql`
                 date
                 startTime
                 endTime
+            }
+            branch {
+                _id
+                name
+                location
             }
             nursery {
                 _id
@@ -23,11 +28,6 @@ const GET_WORKSHOP_REQUESTS = gql`
             approvalStatus
             draft
             rejectionReason
-            branch {
-                name
-                location
-                _id
-            }
         }
     }
 `;

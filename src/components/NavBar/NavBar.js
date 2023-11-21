@@ -10,10 +10,8 @@ function NavBar() {
 
     function selected(route) {
         if (route === location.pathname) {
-            console.log("");
             return true;
         } else {
-            console.log();
             return false;
         }
     }
@@ -23,6 +21,7 @@ function NavBar() {
             <Link className={selected("/branches") ? "navButtonSelected" : "navButton"} to="/branches">
                 Branches
             </Link>
+
             <div>
                 <div
                     className={
@@ -37,6 +36,7 @@ function NavBar() {
                     <Link className="navButton" to="/workshops/requests">
                         Requests
                     </Link>
+
                     <Link className="navButton" to="/workshops/all">
                         All
                     </Link>
@@ -48,29 +48,36 @@ function NavBar() {
                 to="/meeting-rooms">
                 Rooms
             </Link>
+
             <Link className={selected("/workspaces") ? "navButtonSelected" : "navButton"} to="/workspaces">
                 Workspaces
             </Link>
 
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/about">
+            <Link className={selected("/nurseries") ? "navButtonSelected" : "navButton"} to="/nurseries">
                 Nurseries
             </Link>
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/about">
+
+            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/users">
                 Users
             </Link>
+
             <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/about">
                 Coupons
             </Link>
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/about">
+
+            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/announcement">
                 Announcement
             </Link>
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/about">
+
+            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/info-management">
                 Information
             </Link>
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/about">
+
+            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/dashboard">
                 Dashboard
             </Link>
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/about">
+
+            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/complaints">
                 Complaints
             </Link>
         </nav>

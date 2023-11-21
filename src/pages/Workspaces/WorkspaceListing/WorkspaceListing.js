@@ -214,7 +214,7 @@ function WorkspaceListing() {
                                               <div className="relative h-[134px] overflow-hidden ">
                                                   <img
                                                       className="object-contain"
-                                                      src="https://images.inc.com/uploaded_files/image/1920x1080/getty_517610514_353435.jpg"
+                                                      src={workspace.pictures[0]}
                                                       alt="workspace"
                                                   />
 

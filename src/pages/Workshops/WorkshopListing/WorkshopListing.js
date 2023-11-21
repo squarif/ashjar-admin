@@ -11,6 +11,7 @@ import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from "@chakra-ui/reac
 import { Link } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_WORKSHOP_REQUESTS } from "../../../queries/workshopQueries";
+import Breadcrumbs from "../../../components/Breadcrumbs";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
@@ -466,7 +467,7 @@ function WorkshopListing() {
 
     return (
         <div className="flex flex-col gap-8">
-            <span>All Workshops</span>
+            <Breadcrumbs />
 
             <div className="flex gap-6 max-h-12">
                 <div className="Search rounded-xl border overflow-hidden px-4 shadow-md ">

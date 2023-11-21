@@ -1,0 +1,14 @@
+{
+    "projects": {
+        "production": "ashjarbooking"
+    },
+    "targets": {
+        "ashjarbooking": {
+            "hosting": {
+                "production": [
+                    "ashjarbooking"
+                ]
+            }
+        }
+    }
+}

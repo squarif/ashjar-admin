@@ -18,7 +18,6 @@ function WorkshopCreatePost() {
 
     return (
         <div className="flex flex-col gap-8">
-            asdasddas
             <div className="title border rounded-2xl border-light px-8 py-12 flex flex-col gap-8">
                 <div className="title mb-6 rounded-xl border overflow-hidden px-4">
                     <Input

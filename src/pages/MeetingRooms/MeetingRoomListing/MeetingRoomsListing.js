@@ -156,8 +156,8 @@ function MeetingRoomListing() {
                                               <div className="relative h-[134px] overflow-hidden ">
                                                   <img
                                                       className="object-contain"
-                                                      src="https://images.inc.com/uploaded_files/image/1920x1080/getty_517610514_353435.jpg"
-                                                      alt="workspace"
+                                                      src={meetingRoom.pictures[0]}
+                                                      alt="meeting room"
                                                   />
 
                                                   <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">

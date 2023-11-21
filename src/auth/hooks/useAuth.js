@@ -3,9 +3,12 @@ import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 
 import { notification } from "antd";
+// import { endpoints } from "../helpers";
+import { firebase, auth } from "../firebase/config";
 import { AUTH_EVENTS } from "../helpers/enums";
-import { endpoints } from "../../helpers/enums";
-import { firebase } from "../firebase/config";
+// import { AUTH_EVENTS } from "../helpers";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
     const setUserAtom = useSetRecoilState(userAtom);
     const userAuth = useRecoilValue(authSelector());
@@ -19,21 +22,15 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
     const [clientSecret, setClientSecret] = useState(null);
 
     useEffect(() => {
-        if (action === "signup" && signupComplete) {
-            fetch(`${process.env.REACT_APP_BACKEND_BASE_URL}${endpoints["create-subscription"]}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json;charset=utf-8" },
-                body: JSON.stringify({ email: userEmail }),
-            })
-                .then((response) => response.json())
-                .then((data) => setClientSecret(data.clientSecret))
-                .catch((err) => console.log(err));
-        }
-    }, [signupComplete]); // eslint-disable-line
-
-    useEffect(() => {
+        // console.log("USE EFFECT useAuth");
+        // console.log("USE EFFECT userAuth", userAuth);
+        // console.log("USE EFFECT pathname", pathname);
+        // console.log("USE EFFECT action", action);
         if (!loading && userAuth) {
+            console.log("!loading && userAuth", !loading && userAuth);
             if (userAuth?.user === "no user") {
+                console.log("no user");
+
                 setAlert({
                     type: "error",
                     message: "No user record for this email address.",
@@ -41,41 +38,51 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
                 setLoading(false);
                 localStorage.setItem("user", JSON.stringify(null));
             } else if (userAuth?.authorized === false) {
+                console.log("not authorized");
                 setLoading(false);
                 setUserAtom(null);
                 localStorage.setItem("user", JSON.stringify(null));
-            } else if (userAuth?.authorized === true && pathname.includes("auth") && action === "login") {
+            } else if (userAuth?.authorized === true && pathname.includes("login")) {
+                console.log("userAuth?.authorized pathname.includesauth action login");
+
                 setLoading(false);
                 const redirectTo = sessionStorage.getItem("redirectTo");
                 sessionStorage.setItem("redirectTo", JSON.stringify(null));
-                navigate(redirectTo || reroute || "/", { replace: true });
+                console.log("redirectTo", redirectTo);
+                console.log("reroute", reroute);
+                navigate("/", { replace: true });
             }
         }
     }, [userAuth, loading]); // eslint-disable-line
 
-    const signInWithEmailAndPassword = async ({ email, password }) => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_BASE_URL}users/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json;charset=utf-8" },
-            body: JSON.stringify({ email, password }),
-        });
-        console.log(response);
+    const signIn = async ({ email, password }) => {
         try {
-            if (response.status === 200) {
-                const result = await response.json();
-                console.log({ result });
-                if (result.user) {
-                    const token = result.token;
-                    localStorage.setItem("user", JSON.stringify(result.user));
+            let user = await signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in
+
+                    const user = userCredential.user;
+                    localStorage.setItem("user", JSON.stringify(user));
+
+                    const token = user.accessToken;
+                    localStorage.setItem("user", JSON.stringify(user));
                     localStorage.setItem("token", JSON.stringify({ token }));
-                    setUserAtom(result.user);
-                }
-            } else {
-                setAlert({
-                    type: "error",
-                    message: "Email address or password is incorrect.",
+                    setUserAtom(user);
+
+                    return user;
+                })
+                .catch((error) => {
+                    console.log("error", error);
+                    setAlert({
+                        type: "error",
+                        message: "Email address or password is incorrect.",
+                    });
+
+                    return null;
                 });
-            }
+
+            console.log("user", user);
+
             setLoading(false);
         } catch (err) {
             console.log(err);
@@ -87,6 +94,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
         // await firebase.auth.sendPasswordResetEmail(email)
         return "success";
     };
+
     const signUp = async (values) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_BACKEND_BASE_URL}users/signUp`, {
@@ -122,12 +130,13 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
             setLoading(false);
         }
     };
+
     const logout = () => {
         if (userAuth) {
-            // firebase.auth.signOut()
-            // localStorage.setItem('user', JSON.stringify(null))
-            // localStorage.setItem('token', JSON.stringify(null))
-            // window.location.href = '/'
+            firebase.auth.signOut();
+            localStorage.setItem("user", JSON.stringify(null));
+            localStorage.setItem("token", JSON.stringify(null));
+            window.location.href = "/";
         }
     };
 
@@ -136,7 +145,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
         try {
             switch (event.type) {
                 case AUTH_EVENTS.LOGIN:
-                    signInWithEmailAndPassword(event.payload);
+                    signIn(event.payload);
                     break;
                 case AUTH_EVENTS.SIGNUP:
                     signUp(event.payload);

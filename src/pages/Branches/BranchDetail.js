@@ -1,6 +1,10 @@
 // import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ReactComponent as PlusIcon } from "../../assets/PlusIcon.svg";
+import { ReactComponent as EditIcon } from "../../assets/EditIcon.svg";
+import { ReactComponent as MapsIcon } from "../../assets/MapsIcon.svg";
+import { ReactComponent as EyeIcon } from "../../assets/EyeIcon.svg";
+import { ReactComponent as UserIcon } from "../../assets/UserIcon.svg";
 import { GET_BRANCH } from "../../queries/branchesQueries";
 import { useQuery } from "@apollo/client";
 
@@ -8,67 +12,6 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
 function BranchDetail() {
-    // let data = [
-    //     {
-    //         type: "Workspaces",
-    //         items: [
-    //             {
-    //                 title: "Worksapce 1",
-    //                 cost: 230,
-    //                 capacity: 24,
-    //                 image: "",
-    //             },
-    //             {
-    //                 title: "Worksapce 1",
-    //                 cost: 230,
-    //                 capacity: 24,
-    //                 image: "",
-    //             },
-    //             {
-    //                 title: "Worksapce 1",
-    //                 cost: 230,
-    //                 capacity: 24,
-    //                 image: "",
-    //             },
-    //             {
-    //                 title: "Worksapce 1",
-    //                 cost: 230,
-    //                 capacity: 24,
-    //                 image: "",
-    //             },
-    //             {
-    //                 title: "Worksapce 1",
-    //                 cost: 230,
-    //                 capacity: 24,
-    //                 image: "",
-    //             },
-    //         ],
-    //     },
-    //     {
-    //         type: "Meeting Rooms",
-    //         items: [
-    //             {
-    //                 title: "Meeting Room 1",
-    //                 cost: 230,
-    //                 capacity: 24,
-    //                 image: "",
-    //             },
-    //             {
-    //                 title: "Meeting Room 2",
-    //                 cost: 230,
-    //                 capacity: 24,
-    //                 image: "",
-    //             },
-    //             {
-    //                 title: "Meeting Room 3",
-    //                 cost: 230,
-    //                 capacity: 24,
-    //                 image: "",
-    //             },
-    //         ],
-    //     },
-    // ];
-
     const { id } = useParams();
     console.log("PARAMSSSS", id);
 
@@ -94,12 +37,18 @@ function BranchDetail() {
         console.log("data loaded", data);
         return (
             <div className="BranchDetail ">
-                <Breadcrumbs locationName={data.branch.name} id={id} />
-                <div className="body border justify-start rounded-xl border-borderColor py-12 px-8 shadow-md flex flex-col gap-12">
-                    <div className="flex gap-2.5">
-                        <div>Icon</div>
-                        <div>{data.branch.location}</div>
-                        <div>aankh</div>Location
+                <div className="flex gap-8">
+                    <Breadcrumbs locationName={data.branch.name} id={id} />
+                    <Link className="p-2 active:bg-primaryLight h-fit rounded-lg">
+                        <EditIcon className="text-primary" />
+                    </Link>
+                </div>
+
+                <div className="body border  justify-start rounded-xl border-borderColor py-12 px-8 shadow-xl flex flex-col gap-12">
+                    <div className="flex gap-2.5 items-center">
+                        <MapsIcon />
+                        <span className="text-dark text-lg leading-none">{data.branch.location}</span>
+                        <EyeIcon />
                     </div>
 
                     <div className="border-t w-full h-[1px] border-borderColor"></div>
@@ -117,17 +66,17 @@ function BranchDetail() {
                                         to={`/meeting-rooms/new`}
                                         state={{ branch_id: data.branch._id }}
                                         className="flex justify-center items-center gap-2 p-3 rounded-xl bg-primary">
-                                        <PlusIcon className="h-6 w-6" />
-                                        <span className="font-Adam text-white text-xl leading-6">
+                                        <PlusIcon className="h-6 w-6 text-white" />
+                                        <span className="font-Adam mt-0.5 text-white font-medium text-xl leading-none">
                                             Add New
                                         </span>
                                     </Link>
                                 </div>
                                 {data.branch.meetingRooms.length ? (
                                     <div className="flex gap-6 overflow-auto ">
-                                        {data.branch.meetingRooms.map((item, index) => (
+                                        {data.branch.meetingRooms.map((meetingRoom, index) => (
                                             <Link
-                                                to={`/meeting-rooms/${item._id}`}
+                                                to={`/meeting-rooms/${meetingRoom._id}`}
                                                 key={index}
                                                 className="rounded-xl h-fit border border-borderColor  min-w-[302px] overflow-hidden">
                                                 <div className="relative h-[134px] overflow-hidden ">
@@ -137,19 +86,20 @@ function BranchDetail() {
                                                         alt="workspace"
                                                     />
 
-                                                    <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
-                                                        <span className="font-Adam text-dark text-xs">
-                                                            SAR {item.ratesPerHour} / period
+                                                    <div className="bg-white h-[30px] flex items-center w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-75">
+                                                        <span className="font-Adam text-dark text-xs px-2">
+                                                            SAR {meetingRoom.ratesPerHour} / period
                                                         </span>
                                                     </div>
                                                 </div>
                                                 <div className="h-fit py-2.5 px-3 gap-1.5 flex flex-col">
                                                     <span className="font-Adam w-fit text-lg text-dark">
-                                                        {item.name}
+                                                        {meetingRoom.name}
                                                     </span>
-                                                    <div className="w-fit">
-                                                        <span className="font-Adam w-fit text-left text-sm text-light">
-                                                            {item.totalSeats}
+                                                    <div className="w-fit flex gap-1 items-base">
+                                                        <UserIcon className="text-light h-3 w-3" />
+                                                        <span className="font-Adam w-fit text-left text-xs text-light">
+                                                            {meetingRoom.totalSeats}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -168,8 +118,8 @@ function BranchDetail() {
                                         to={`/workspaces/new`}
                                         state={{ branch_id: data.branch._id }}
                                         className="flex justify-center items-center gap-2 p-3 rounded-xl bg-primary">
-                                        <PlusIcon className="h-6 w-6" />
-                                        <span className="font-Adam text-white text-xl leading-6">
+                                        <PlusIcon className="h-6 w-6 text-white" />
+                                        <span className="font-Adam mt-0.5 text-white text-xl font-medium leading-none">
                                             Add New
                                         </span>
                                     </Link>
@@ -188,8 +138,8 @@ function BranchDetail() {
                                                         alt="workspace"
                                                     />
 
-                                                    <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
-                                                        <span className="font-Adam text-dark text-xs">
+                                                    <div className="bg-white flex items-center h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-75">
+                                                        <span className="font-Adam text-dark text-xs px-2">
                                                             SAR {workspace.ratesPerHour} / period
                                                         </span>
                                                     </div>
@@ -199,11 +149,10 @@ function BranchDetail() {
                                                     <span className="font-Adam w-fit text-lg text-dark">
                                                         {workspace.name}
                                                     </span>
-                                                    <div className="w-fit">
-                                                        <span className="font-Adam w-fit text-left text-sm text-light">
-                                                            {workspace.totalSeats}
-                                                        </span>
-                                                    </div>
+                                                    <UserIcon className="text-light h-3 w-3" />
+                                                    <span className="font-Adam w-fit text-left text-xs text-light">
+                                                        {workspace.totalSeats}
+                                                    </span>
                                                 </div>
                                             </Link>
                                         ))}

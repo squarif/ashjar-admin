@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "target": "ES6",
+        "module": "commonjs",
+        "allowSyntheticDefaultImports": true,
+        "paths": {
+            "@": ["../src/*"],
+            "@assets": ["./assets/index.js"],
+            "@components": ["./components/index.js"],
+            "@pages": ["./pages/index.js"],
+            "@auth": ["./auth/index.js"],
+            "@helpers": ["./helpers/index.js"],
+            "@hooks": ["./hooks/index.js"],
+            "@atoms": ["./recoil/atoms.js"],
+            "@selectors": ["./recoil/selectors.js"]
+        }
+    }
+}

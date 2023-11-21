@@ -21,8 +21,8 @@ function BranchListing() {
         <Link
             key={index}
             to={`/branches/${branch._id}`}
-            className="h-[148px] w-[148px] bg-primaryLight border border-borderColor flex justify-center items-center gap-4 flex-col rounded-xl">
-            <span className="text-primaryDark text-xl ">{branch.name}</span>
+            className="h-[148px] w-[148px] p-6 bg-primaryLight border border-borderColor flex justify-center items-center gap-4 flex-col rounded-xl">
+            <span className="text-primaryDark text-xl capitalize">{branch.name}</span>
         </Link>
     ));
 
@@ -33,7 +33,7 @@ function BranchListing() {
                 <Link
                     to="/branches/new"
                     className="h-[148px] w-[148px] bg-primary flex justify-center items-center gap-4 flex-col rounded-xl">
-                    <PlusIcon />
+                    <PlusIcon className="text-white" />
                     <span className="text-white text-xl">Add Branch</span>
                 </Link>
 

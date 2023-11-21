@@ -12,6 +12,7 @@
         "@testing-library/jest-dom": "^5.17.0",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
+        "antd": "^5.11.1",
         "dayjs": "^1.11.10",
         "firebase": "^10.5.2",
         "framer-motion": "^10.16.4",
@@ -19,8 +20,10 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-icons": "^4.11.0",
+        "react-quill": "^2.0.0",
         "react-router-dom": "^6.18.0",
         "react-scripts": "5.0.1",
+        "recharts": "^2.9.3",
         "recoil": "^0.7.7",
         "web-vitals": "^2.1.4"
     },
@@ -28,7 +31,8 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "deployproduction": "npm run build && firebase deploy --only hosting:production -P production"
     },
     "eslintConfig": {
         "extends": [

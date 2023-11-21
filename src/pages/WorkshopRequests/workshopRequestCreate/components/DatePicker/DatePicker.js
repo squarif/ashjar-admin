@@ -13,8 +13,6 @@ import { workshopRequestPayload } from "../../../../../stores/workshopRequestPay
 import { Switch } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
 
-import { useEffect } from "react";
-
 function DatePicker() {
     // stores
     const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
@@ -34,7 +32,7 @@ function DatePicker() {
     // const workshopRequestPayload2 = useRecoilValue(workshopRequestPayload);
 
     return (
-        <div className="">
+        <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-1">
                 <div>allowSeparateBooking: {requestPayload.allowSeparateBooking} </div>
             </div>

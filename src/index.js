@@ -8,6 +8,7 @@ import { ApolloProvider } from "@apollo/client";
 import client from "./apollo";
 
 import { RecoilRoot } from "recoil";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,7 +16,9 @@ root.render(
         <ChakraProvider>
             <RecoilRoot>
                 <ApolloProvider client={client}>
-                    <App />
+                    <Router>
+                        <App />
+                    </Router>
                 </ApolloProvider>
             </RecoilRoot>
         </ChakraProvider>
