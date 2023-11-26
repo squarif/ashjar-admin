@@ -7,12 +7,18 @@ import { Link } from "react-router-dom";
 
 import { ReactComponent as ChevronRight } from "../../assets/ChevronRight.svg";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import Loader from "../../components/Loader";
 
 function BranchListing() {
     let { loading, error, data } = useQuery(GET_BRANCHES);
 
-    console.log("branches res", data);
-    if (loading) return "Loading...";
+    if (loading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
+
     if (error) return `Error! ${error.message}`;
 
     const branches = data.branches || [];
@@ -22,7 +28,7 @@ function BranchListing() {
             key={index}
             to={`/branches/${branch._id}`}
             className="h-[148px] w-[148px] p-6 bg-primaryLight border border-borderColor flex justify-center items-center gap-4 flex-col rounded-xl">
-            <span className="text-primaryDark text-xl capitalize">{branch.name}</span>
+            <span className="text-primaryDark text-lg capitalize text-center">{branch.name}</span>
         </Link>
     ));
 

@@ -38,12 +38,12 @@ function NurseryEdit() {
         setSelectedBranch(branch);
     }
 
-    console.log("NURSERY DATA", nurseryData);
+    //  console.log("NURSERY DATA", nurseryData);
     // console.log("NURSERY branch", nurseryData.branch.name);
 
     async function handleEditNursery() {
         try {
-            console.log("selectedBranch", selectedBranch._id);
+            //  console.log("selectedBranch", selectedBranch._id);
 
             let payload = {
                 input: {
@@ -55,7 +55,7 @@ function NurseryEdit() {
                 },
             };
 
-            console.log("EDIT NURSERY PYALOAD", payload);
+            //  console.log("EDIT NURSERY PYALOAD", payload);
             // // console.log("EDIT_NURSERY", EDIT_NURSERY);
             const { data } = await editNursery({
                 mutation: EDIT_NURSERY,

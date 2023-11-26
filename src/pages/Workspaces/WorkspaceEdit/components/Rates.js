@@ -6,14 +6,18 @@ import { useRecoilState, useRecoilValue } from "recoil";
 // import { workshopRequestPayload } from "../../../../stores/workshopRequestPayload";
 
 // import { useState } from "react";
-import { workspaceRatesState, editWorkspaceRequest } from "../../../../stores/workspaceStore";
+import {
+    workspaceRatesState,
+    editWorkspaceRequest,
+    workspaceBaseRatesState,
+} from "../../../../stores/workspaceStore";
 
 function WorkspaceRates() {
     // const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
 
     const [requestPayload, setNewWorkspacePayload] = useRecoilState(editWorkspaceRequest);
 
-    const [rates, setRates] = useRecoilState(workspaceRatesState);
+    const [rates, setRates] = useRecoilState(workspaceBaseRatesState);
 
     function handleNewRate() {
         let newRate = {
@@ -24,10 +28,10 @@ function WorkspaceRates() {
 
         let updatedRates = [...rates, newRate];
 
-        console.log("updatedRates", updatedRates);
+        //  console.log("updatedRates", updatedRates);
 
         setRates(updatedRates, () => {
-            console.log("updatedRates state", rates);
+            //  console.log("updatedRates state", rates);
         });
     }
 

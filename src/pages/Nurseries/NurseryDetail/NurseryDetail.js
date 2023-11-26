@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { GET_NURSERY } from "../../../queries/nurseryQueries";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import { editNurseryData, nurseryPictures } from "../../../stores/nurseryStore";
+import Loader from "../../../components/Loader";
 
 function NurseryDetails() {
     const { id } = useParams();
@@ -33,13 +34,13 @@ function NurseryDetails() {
         variables: { id },
     });
 
-    console.log("DATAAAAA", data);
+    //  console.log("DATAAAAA", data);
 
     let nurseryData = data?.nursery;
 
     useEffect(() => {
         if (!nurseryLoading && !nurseryError) {
-            console.log("askjdnasjdnj", nurseryData);
+            //  console.log("askjdnasjdnj", nurseryData);
 
             // console.log("nurseryData.amenities", nurseryData.amenities);
             // console.log("nurseryData.customRates", nurseryData.customRates);
@@ -55,6 +56,12 @@ function NurseryDetails() {
         }
     }, [nurseryLoading, nurseryError, nurseryData, data]);
 
+    if (nurseryLoading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
     return (
         <div>
             {nurseryLoading ? (

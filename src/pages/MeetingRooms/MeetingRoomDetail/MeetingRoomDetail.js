@@ -1,4 +1,5 @@
 import { ReactComponent as ClockIcon } from "../../../assets/ClockIcon.svg";
+import { ReactComponent as EditIcon } from "../../../assets/EditIcon.svg";
 
 import { useQuery } from "@apollo/client";
 import { GET_MEETING_ROOM } from "../../../queries/meetingRoomQueries";
@@ -12,6 +13,7 @@ import {
     meetingRoomRatesState,
 } from "../../../stores/meetingRoomStore";
 import { useEffect } from "react";
+import Loader from "../../../components/Loader";
 
 function MeetingRoomDetails() {
     const { id } = useParams();
@@ -33,11 +35,12 @@ function MeetingRoomDetails() {
 
     useEffect(() => {
         if (!meetingRoomLoading && !meetingRoomError) {
-            console.log("askjdnasjdnj");
+            //  console.log("askjdnasjdnj");
 
-            console.log("meetingRoomData.amenities", meetingRoomData.amenities);
-            console.log("meetingRoomData.customRates", meetingRoomData.customRates);
-            console.log("meetingRoomData.openDays", meetingRoomData.openDays);
+            //  console.log("meetingRoomData.amenities", meetingRoomData.amenities);
+            //  console.log("meetingRoomData.customRates", meetingRoomData.customRates);
+            //  console.log("meetingRoomData.openDays", meetingRoomData.openDays);
+            //  console.log("meetingRoomData.pictures", meetingRoomData.pictures);
 
             setAmenitiesData(meetingRoomData.amenities);
             setRatesData(meetingRoomData.customRates);
@@ -46,6 +49,13 @@ function MeetingRoomDetails() {
             setEditMeetingRoomPayload(meetingRoomData);
         }
     }, [meetingRoomLoading, meetingRoomError, meetingRoomData, data]);
+
+    if (meetingRoomLoading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
 
     return (
         <div>
@@ -74,7 +84,7 @@ function MeetingRoomDetails() {
                         </div>
 
                         <div className="header flex flex-col gap-8">
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center gap-6">
                                 <div className="flex gap-5 items-center">
                                     <span className=" text-[32px] leading-normal text-dark">
                                         {meetingRoomData.name}
@@ -87,13 +97,13 @@ function MeetingRoomDetails() {
                                     <Link
                                         to={`/meeting-rooms/${meetingRoomData._id}/edit`}
                                         className="edit-button text-primary">
-                                        Edit
+                                        <EditIcon className="text-primary" />
                                     </Link>
                                 </div>
 
-                                <button className="rounded-xl font-sm font-medium text-dark border border-borderColor shadow-md px-3 py-2">
+                                {/* <button className="rounded-xl font-sm font-medium text-dark border border-borderColor shadow-md px-3 py-2">
                                     View Schedule
-                                </button>
+                                </button> */}
                             </div>
                         </div>
 
@@ -134,7 +144,7 @@ function MeetingRoomDetails() {
                         <div className="w-full h-[1px] border-t border-borderColor"></div>
                         <div className="flex flex-col gap-4">
                             {meetingRoomData.openDays.map((day, index) => (
-                                <div className="flex justify-between">
+                                <div className="flex justify-between gap-5">
                                     <span className="text-dark text-lg leading-normal">{day.day}</span>
                                     <span className="text-dark text-lg leading-normal">
                                         {day.startTime} - {day.endTime}

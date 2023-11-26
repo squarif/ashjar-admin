@@ -117,28 +117,112 @@ const workspaceOpenDaysState = atom({
     ],
 });
 
-const workspaceRatesState = atom({
-    key: "workspaceRatesState",
+const workspaceBaseRatesState = atom({
+    key: "workspaceBaseRatesState",
+    default: [
+        {
+            startTime: "11:00 AM",
+            endTime: "4:00 PM",
+            rate: 230,
+        },
+        {
+            startTime: "11:00 AM",
+            endTime: "4:00 PM",
+            rate: 230,
+        },
+        {
+            startTime: "11:00 AM",
+            endTime: "4:00 PM",
+            rate: 230,
+        },
+        {
+            startTime: "11:00 AM",
+            endTime: "4:00 PM",
+            rate: 230,
+        },
+    ],
+});
+
+const workspaceCustomRatesState = atom({
+    key: "workspaceCustomRatesState",
     default: [
         {
             startDate: "Dec 12 2023",
             endDate: "Dec 23 2023",
-            rate: 230,
+            ratesInSlot: [
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+            ],
         },
         {
-            startDate: "Mar 12 2023",
-            endDate: "April 23 2023",
-            rate: 230,
+            startDate: "Dec 23 2023",
+            endDate: "Dec 31 2023",
+            ratesInSlot: [
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+            ],
         },
         {
-            startDate: "May 12 2023",
-            endDate: "June 23 2023",
-            rate: 230,
-        },
-        {
-            startDate: "July 12 2023",
-            endDate: "August 23 2023",
-            rate: 230,
+            startDate: "Dec 12 2023",
+            endDate: "Dec 23 2023",
+            ratesInSlot: [
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+                {
+                    startTime: "11:00 AM",
+                    endTime: "4:00 PM",
+                    rate: 230,
+                },
+            ],
         },
     ],
 });
@@ -180,7 +264,8 @@ export {
     newWorkspaceRequest,
     editWorkspaceRequest,
     workspaceOpenDaysState,
-    workspaceRatesState,
+    workspaceBaseRatesState,
+    workspaceCustomRatesState,
     workspaceAmenitiesState,
     workspacePicturesState,
 };

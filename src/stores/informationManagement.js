@@ -5,4 +5,9 @@ const editInformationManagementRequest = atom({
     default: {},
 });
 
-export { editInformationManagementRequest };
+const landingPagePictures = atom({
+    key: "landingPagePictures",
+    default: [],
+});
+
+export { editInformationManagementRequest, landingPagePictures };

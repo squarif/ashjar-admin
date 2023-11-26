@@ -9,6 +9,7 @@ import { workShopAmenities } from "../../../stores/workshopStore";
 import { GET_WORKSHOP_REQUEST } from "../../../queries/workshopQueries";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
+import Loader from "../../../components/Loader";
 
 function WorkshopDetails() {
     // const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
@@ -18,7 +19,7 @@ function WorkshopDetails() {
     const params = useParams();
     let id = params.id;
 
-    console.log("ID", params.id);
+    //  console.log("ID", params.id);
 
     let { loading, error, data } = useQuery(GET_WORKSHOP_REQUEST, {
         variables: { id },
@@ -26,10 +27,10 @@ function WorkshopDetails() {
 
     let workshopRequest = data?.workshopRequest;
 
-    console.log("workshopRequest", workshopRequest);
+    //  console.log("workshopRequest", workshopRequest);
 
     function statusBadge(status) {
-        console.log(status);
+        //  console.log(status);
         if (status.includes("pending")) {
             return (
                 <div className="border rounded-xl bg-[#F0F0EE] border-light flex gap-2 py-1.5 px-3 items-center ">
@@ -59,7 +60,9 @@ function WorkshopDetails() {
     return (
         <div>
             {loading ? (
-                "Loading Request Data"
+                <div className="h-[400px]">
+                    <Loader />
+                </div>
             ) : (
                 <div className="grid  grid-cols-10 p-8 divide-x-2 gap-8">
                     <div className="col-span-7 flex flex-col gap-8">

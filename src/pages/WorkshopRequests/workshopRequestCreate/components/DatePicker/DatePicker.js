@@ -57,7 +57,7 @@ function DatePicker() {
                                 ...requestPayload,
                                 allowSeparateBooking: event.target.checked,
                             });
-                            console.log("onChange requestPayload", requestPayload.allowSeparateBooking);
+                            //  console.log("onChange requestPayload", requestPayload.allowSeparateBooking);
                         }}
                     />
                     <span className="text-base text-mediumGray">Allow Separate Booking</span>

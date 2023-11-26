@@ -13,9 +13,9 @@ import WorkspaceRates from "./components/Rates";
 import {
     workspaceAmenitiesState,
     workspaceOpenDaysState,
-    workspaceRatesState,
     editWorkspaceRequest,
     workspacePicturesState,
+    workspaceBaseRatesState,
 } from "../../../stores/workspaceStore";
 
 import { EDIT_WORKSPACE } from "../../../queries/workspaceQueries";
@@ -25,7 +25,7 @@ import { useLocation, useParams } from "react-router-dom";
 function WorkspaceNew() {
     const [editWorkspaceRequestPayload, setEditWorkspacePayload] = useRecoilState(editWorkspaceRequest);
     const [openDays, setOpenDays] = useRecoilState(workspaceOpenDaysState);
-    const rates = useRecoilValue(workspaceRatesState);
+    const rates = useRecoilValue(workspaceBaseRatesState);
     const amenities = useRecoilValue(workspaceAmenitiesState);
     const [pictures, setPictures] = useRecoilState(workspacePicturesState);
 
@@ -35,7 +35,7 @@ function WorkspaceNew() {
     // let { state } = useLocation();
     let params = useParams();
 
-    console.log("branch id", params);
+    //  console.log("branch id", params);
 
     const handleTimeChange = (dayIndex, field, value) => {
         const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
@@ -77,7 +77,7 @@ function WorkspaceNew() {
         if (payload.__typename) delete payload["__typename"];
         if (payload.slotsBooked) delete payload["slotsBooked"];
 
-        console.log("payload", payload);
+        //  console.log("payload", payload);
         try {
             // console.log("CREATE_BRANCH", CREATE_BRANCH);
             const { data } = await editWorkspace({
@@ -87,7 +87,7 @@ function WorkspaceNew() {
                 },
                 // client: client,
             });
-            console.log(data);
+            //  console.log(data);
         } catch (error) {
             console.log(error);
         }

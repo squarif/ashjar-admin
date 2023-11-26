@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_WORKSHOP_REQUESTS } from "../../../queries/workshopQueries";
 import Breadcrumbs from "../../../components/Breadcrumbs";
+import Loader from "../../../components/Loader";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
@@ -22,7 +23,7 @@ function WorkshopListing() {
 
     let { loading, error, data } = useQuery(GET_WORKSHOP_REQUESTS);
 
-    console.log("WorkshopListing data", data);
+    //  console.log("WorkshopListing data", data);
 
     function statusBadge(status) {
         if (status.includes("pending")) {
@@ -464,6 +465,13 @@ function WorkshopListing() {
             __typename: "WorkshopRequest",
         },
     ];
+
+    if (loading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
 
     return (
         <div className="flex flex-col gap-8">

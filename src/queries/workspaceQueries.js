@@ -14,23 +14,20 @@ const CREATE_WORKSPACE = gql`
                 startTime
                 endTime
             }
-            slotsInterval
-            slotsBooked {
-                date
-                slotsInDay {
-                    startTime
-                    endTime
-                    isBooked
-                    bookedBy
-                    ratePerHour
-                }
-            }
             totalSeats
-            ratesPerHour
+            baseRates {
+                startTime
+                endTime
+                rate
+            }
             customRates {
                 startDate
                 endDate
-                rate
+                ratesInSlot {
+                    startTime
+                    endTime
+                    rate
+                }
             }
             amenities {
                 name

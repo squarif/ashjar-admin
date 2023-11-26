@@ -10,72 +10,7 @@ import { ReactComponent as VerticalDots } from "../../assets/VerticalDots.svg";
 import { EDIT_USER, GET_USERS } from "../../queries/userQueries";
 import { useMutation, useQuery } from "@apollo/client";
 import client from "../../apollo";
-
-let userData = [
-    {
-        _id: "654154bb433c0c2c4cd2f1f2",
-        name: "Messi",
-        phoneNumber: "+923210987654",
-        numberOfBookings: 12,
-        isBlocked: true,
-    },
-    {
-        _id: "654154d6433c0c2c4cd2f1f6",
-        name: "Messi",
-        phoneNumber: "+923211234567",
-        numberOfBookings: 12,
-        isBlocked: true,
-    },
-    {
-        _id: "654155656f49475350253484",
-        name: "Ronaldo",
-        phoneNumber: "+923301234567",
-        numberOfBookings: 12,
-        isBlocked: true,
-    },
-    {
-        _id: "6541575772a45563b84e9ee3",
-        name: "Neymar",
-        phoneNumber: "+923301234321",
-        numberOfBookings: 12,
-        isBlocked: true,
-    },
-    {
-        _id: "654157914dabfb40b85c7c40",
-        name: "New User",
-        phoneNumber: "+923301234098",
-        numberOfBookings: 12,
-        isBlocked: true,
-    },
-    {
-        _id: "654157d3cf8fc01474e9114a",
-        name: "New User 2",
-        phoneNumber: "+923301234765",
-        numberOfBookings: 12,
-        isBlocked: true,
-    },
-    {
-        _id: "654158b8fc17c5473478b988",
-        name: "New User 3",
-        phoneNumber: "+923301234345",
-        numberOfBookings: 12,
-        isBlocked: false,
-    },
-    {
-        _id: "65415a2cca3d025b88813541",
-        name: "New User 4",
-        phoneNumber: "+923300984345",
-        numberOfBookings: 12,
-        isBlocked: false,
-    },
-    {
-        _id: "65415a4d74fd0d3730433a6a",
-        name: "New User 5",
-        phoneNumber: "+923410984345",
-        numberOfBookings: 12,
-        isBlocked: true,
-    },
-];
+import Loader from "../../components/Loader";
 
 function UserRow(props) {
     let user = props.user;
@@ -89,7 +24,7 @@ function UserRow(props) {
             isBlocked: !user.isBlocked,
         };
 
-        console.log("payload", payload);
+        //  console.log("payload", payload);
 
         try {
             const { data } = await editUser({
@@ -98,7 +33,7 @@ function UserRow(props) {
                     input: payload,
                 },
             });
-            console.log(data);
+            //  console.log(data);
         } catch (error) {
             console.log(error);
         }
@@ -165,13 +100,19 @@ function Users() {
     useEffect(() => {
         if (!usersLoading && !usersError) {
             // Set the branches data
-            console.log("users data", data);
+            //  console.log("users data", data);
             setUserData(data.users);
         } else {
-            console.log("ERRRRR", usersError, usersLoading, data);
+            //  console.log("ERRRRR", usersError, usersLoading, data);
         }
     }, [usersLoading, usersError, data]);
 
+    if (usersLoading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
     return (
         <div>
             <div className="flex justify-between">

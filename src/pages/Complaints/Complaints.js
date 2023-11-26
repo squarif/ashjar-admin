@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../assets/ChevronRight.svg";
@@ -8,6 +8,10 @@ import { ReactComponent as CloseIcon } from "../../assets/CloseIcon.svg";
 import { ReactComponent as PlusIcon } from "../../assets/PlusIcon.svg";
 import { Link } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import { useRecoilState } from "recoil";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_COMPLAINTS, UPDATE_COMPLAINT } from "../../queries/complaintQueries";
+import Loader from "../../components/Loader";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
@@ -16,98 +20,55 @@ function Complaints() {
     // let { loading, error, data } = useQuery(GET_BRANCHES);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedComplaint, setSelectedComplaint] = useState(null);
-    let [pictures, setPictures] = useState([]);
+    const [pictures, setPictures] = useState([]);
+    const [complaintsList, setComplaintsList] = useState([]);
 
-    const complaintsList = [
-        {
-            id: 1234,
-            status: "pending",
-            title: "Pottery Class",
-            complaintee: {
-                name: "Adnan",
-                email: "user2@gmail.com",
-                phone: "+92318549669",
-                company: "Bridglinx",
-            },
+    const { loading: complaintsLoading, error: complaintsError, data } = useQuery(GET_COMPLAINTS);
+    useEffect(() => {
+        if (!complaintsLoading && !complaintsError) {
+            // Set the info data
 
-            description:
-                "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-            numberOfSeats: "20",
-            cost: "12.0",
-            gender: ["Male", "Female"],
-            ageGroup: "12+",
-            duration: {
-                hours: "2",
-                minutes: "30",
-            },
-        },
-        {
-            id: 1234,
-            status: "approved",
-            title: "Potions Class",
-            complaintee: {
-                name: "Adnan",
-                email: "user2@gmail.com",
-                phone: "+92318549669",
-                company: "Bridglinx",
-            },
-            description:
-                "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-            numberOfSeats: "20",
-            cost: "12.0",
-            gender: ["Male", "Female"],
-            ageGroup: "12+",
-            duration: {
-                hours: "2",
-                minutes: "30",
-            },
-        },
-        {
-            id: 1234,
-            status: "approved",
-            title: "Witchcart Class",
-            complaintee: {
-                name: "Adnan",
-                email: "mohid@gmail.com",
-                phone: "+92318549669",
-                company: "Bridglinx",
-            },
-            description:
-                "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-            numberOfSeats: "20",
-            cost: "12.0",
-            gender: ["Male", "Female"],
-            ageGroup: "12+",
-            duration: {
-                hours: "2",
-                minutes: "30",
-            },
-        },
-        {
-            id: 1234,
-            status: "rejected",
-            title: "Session Class",
-            complaintee: {
-                name: "Adnan",
-                email: "adil@gmail.com",
-                phone: "+92318549669",
-                company: "Bridglinx",
-            },
-            description:
-                "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-            numberOfSeats: "20",
-            cost: "12.0",
-            gender: ["Male", "Female"],
-            ageGroup: "12+",
-            duration: {
-                hours: "2",
-                minutes: "30",
-            },
-        },
-    ];
+            //  console.log("compalinsts", data);
+            // console.log("data", data.informationManagementAll[0]);
+            // console.log("data", data.informationManagementAll[0].aboutAshjarSpace);
+            // console.log("data", data.informationManagementAll[0].cancellationPolicy);
+            // console.log("data", data.informationManagementAll[0].termsAndConditions);
+
+            setComplaintsList(data.complaints);
+            // setEditInfoRequest(data.informationManagementAll[0]);
+        }
+    }, [complaintsLoading, complaintsError, data]);
+
+    const [editComplaintHandler] = useMutation(UPDATE_COMPLAINT);
+
+    async function handleUpdateComplaint(status) {
+        let complaint = complaintsList[selectedComplaint];
+
+        let payload = {
+            _id: complaint._id,
+            complaintStatus: status,
+        };
+
+        if (payload.__typename) delete payload["__typename"];
+
+        //  console.log("payload", payload);
+
+        try {
+            const { data } = await editComplaintHandler({
+                mutation: UPDATE_COMPLAINT,
+                variables: {
+                    input: payload,
+                },
+            });
+
+            //  console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     function statusBadge(status) {
-        if (status.includes("pending")) {
+        if (status.toLowerCase().includes("pending")) {
             return (
                 <div className="border rounded-xl bg-[#F0F0EE] border-light flex gap-2 py-1.5 px-3 items-center ">
                     <ClockIcon className="h-4 w-4" />
@@ -115,15 +76,15 @@ function Complaints() {
                 </div>
             );
         }
-        if (status.includes("approved")) {
+        if (status.toLowerCase().includes("resolved")) {
             return (
                 <div className="border rounded-xl bg-primaryLight border-light flex gap-2 py-1.5 px-3 items-center ">
                     <TickIcon className="h-4 w-4" />
-                    <span className="text-sm leading-4 text-gray-600"> Approved</span>
+                    <span className="text-sm leading-4 text-gray-600"> Resolved</span>
                 </div>
             );
         }
-        if (status.includes("rejected")) {
+        if (status.toLowerCase().includes("rejected")) {
             return (
                 <div className="border rounded-xl bg-errorLight border-light flex gap-2 py-1.5 px-3 items-center ">
                     <CloseIcon className="h-4 w-4" />
@@ -141,24 +102,27 @@ function Complaints() {
         }
     }
 
-    const listItems = complaintsList.map((complaint, index) => (
-        <button
-            key={index}
-            onClick={() => selectComplaint(index)}
-            className="flex p-6 w-full justify-between items-center">
-            <div className="flex flex-col justify-start gap-4">
-                <div className="flex gap-6 items-center">
-                    <div className="text-base text-dark leading-5">R-{complaint.id}</div>
-                    {statusBadge(complaint.status)}
+    const listItems = complaintsList.map((complaint, index) => {
+        //  console.log("complaint", complaint);
+        return (
+            <button
+                key={index}
+                onClick={() => selectComplaint(index)}
+                className="flex p-6 w-full justify-between items-center">
+                <div className="flex flex-col justify-start gap-4">
+                    <div className="flex gap-6 items-center">
+                        <div className="text-base text-dark leading-5">R-{complaint.complaintNumber}</div>
+                        {statusBadge(complaint.complaintStatus)}
+                    </div>
+                    <div className="text-left text-xs text-light">
+                        Complaint for pottery class from user {complaint.userDetail.email}
+                    </div>
                 </div>
-                <div className="text-left text-xs text-light">
-                    Complaint for pottery class from user {complaint.complaintee.email}
-                </div>
-            </div>
 
-            <ChevronRight />
-        </button>
-    ));
+                <ChevronRight />
+            </button>
+        );
+    });
 
     function renderSelectedComplaint(selectedComplaint) {
         if (selectedComplaint == null) {
@@ -171,13 +135,13 @@ function Complaints() {
                     <div className="flex col-span-4 flex-col justify-between ">
                         <div className="complaintBody flex flex-col gap-8">
                             <div className="header flex gap-6 items-baseline">
-                                <span className="text-dark text-2xl">{complaint.title}</span>
-                                <div className="">{statusBadge(complaint.status)}</div>
+                                <span className="text-dark text-2xl">{complaint.complaintTitle}</span>
+                                {statusBadge(complaint.complaintStatus)}
                             </div>
                             <span className="description text-left text-base text-mediumGray">
-                                {complaint.description}
+                                {complaint.complaintDescription}
                             </span>
-                            {pictures.length ? (
+                            {complaint.pictures.length ? (
                                 <div>
                                     <span className="text-left text-xl text-dark">Pictures</span>
                                     <div className="pictures grid grid-cols-5 grid-rows-2 gap-6">
@@ -199,40 +163,49 @@ function Complaints() {
                             )}
                         </div>
                         <div className="complaintActions flex w-full justify-end gap-6">
-                            <button className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-errorLight shadow-md">
+                            <button
+                                onClick={() => handleUpdateComplaint("rejected")}
+                                className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-errorLight shadow-md">
                                 <span className="text-sm font-medium text-mediumGray">Reject</span>
                                 <CloseIcon className="h-4 w-4 text-error" />
                             </button>
-                            <Link
-                                to="/workshops/complaints/create-post"
+                            <button
+                                onClick={() => handleUpdateComplaint("resolved")}
                                 className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-primaryLight shadow-md">
                                 <span className="text-sm font-medium text-mediumGray">Mark as Resolved</span>
                                 <TickIcon className="h-4 w-4" />
-                            </Link>
+                            </button>
                         </div>
                     </div>
                     <div className="flex flex-col col-span-2 my-6 p-6 gap-6">
                         <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Name</div>
-                            <div className="">{complaint.complaintee.name}</div>
+                            <div className="">{complaint.userDetail.name}</div>
                         </div>
                         <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Email</div>
-                            <div className="">{complaint.complaintee.email}</div>
+                            <div className="">{complaint.userDetail.email}</div>
                         </div>
                         <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Phone</div>
-                            <div className="">{complaint.complaintee.phone}</div>
+                            <div className="">{complaint.userDetail.phoneNumber}</div>
                         </div>
-                        <div className="flex justify-between">
+                        {/* <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Company</div>
-                            <div className="">{complaint.complaintee.company}</div>
-                        </div>
+                            <div className="">{complaint.userDetail.company}</div>
+                        </div> */}
                     </div>
                 </div>
             );
         }
     }
+
+    if (complaintsLoading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
 
     return (
         <div className="workshop-complaints">

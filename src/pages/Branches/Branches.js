@@ -14,7 +14,7 @@ function Branches() {
     // let view = useState("list");
 
     const location = useLocation();
-    console.log("location", location);
+    //  console.log("location", location);
 
     return (
         <div className="Branches">

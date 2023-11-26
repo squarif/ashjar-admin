@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Input } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
@@ -6,19 +6,22 @@ import { ReactComponent as ClockIcon } from "../../../assets/ClockIcon.svg";
 import { ReactComponent as TickIcon } from "../../../assets/TickIcon.svg";
 import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
 import { ReactComponent as EditIcon } from "../../../assets/EditIcon.svg";
-import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 
 import ReactQuill from "react-quill";
 import { useRecoilState, useRecoilValue } from "recoil";
 import "react-quill/dist/quill.snow.css";
-import { editInformationManagementRequest } from "../../../stores/informationManagement";
+import { editInformationManagementRequest, landingPagePictures } from "../../../stores/informationManagement";
 import { useMutation } from "@apollo/client";
 import { EDIT_INFO } from "../../../queries/informationManagement";
 
+import PicturesUpload from "../../../components/PictureUpload";
+
 function LandingPage(props) {
     const [edit, setEdit] = useState(false);
+
+    //  console.log("PROPS", props);
     const [value, setValue] = useState(props.data.landingText);
-    const [pictures, setPictures] = useState(props.data.pictures);
+    const [pictures, setPictures] = useRecoilState(landingPagePictures);
 
     const parser = new DOMParser();
     const html = parser.parseFromString(value, "text/html");
@@ -36,7 +39,7 @@ function LandingPage(props) {
 
         if (payload.__typename) delete payload["__typename"];
 
-        console.log("payload", payload);
+        //  console.log("payload", payload);
 
         try {
             const { data } = await editInfoHandler({
@@ -46,7 +49,7 @@ function LandingPage(props) {
                 },
             });
 
-            console.log(data);
+            //  console.log(data);
             setEdit(false);
         } catch (error) {
             console.log(error);
@@ -77,13 +80,7 @@ function LandingPage(props) {
                             </div>
                         )
                     )}
-                    {edit ? (
-                        <button className="h-[124px] grid place-content-center w-[124px] rounded-xl bg-primary">
-                            <PlusIcon className="text-white h-6 w-6" />
-                        </button>
-                    ) : (
-                        ""
-                    )}
+                    {edit ? <PicturesUpload pictures={landingPagePictures} /> : ""}
                 </div>
             ) : (
                 "No pictures uploaded yet"
@@ -103,7 +100,7 @@ function LandingPage(props) {
                                 <CloseIcon className="text-error h-5 w-5" />
                             </button>
                             <button
-                                className="flex flex-row gap-2 py-2 px-3 items-center rounded-lgborder border-borderColor bg-primaryLight"
+                                className="flex flex-row gap-2 py-2 px-3 items-center rounded-lg border border-borderColor bg-primaryLight"
                                 onClick={() => handleEditLandingPage()}>
                                 <span className="text-sm text-mediumGray font-medium">Confirm Changes</span>
                                 <TickIcon className="text-primary h-5 w-5" />

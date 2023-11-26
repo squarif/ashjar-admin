@@ -18,6 +18,7 @@ import client from "../../../apollo";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import { useRecoilState } from "recoil";
 import { branchesData } from "../../../stores/branches";
+import Loader from "../../../components/Loader";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
@@ -51,16 +52,22 @@ function NurseryListing() {
         //         variables: { id },
         //     })
         //     .then((result) => {
-        //         console.log("result", result);
+        //      //  console.log("result", result);
         //         // Check for loading and error states
         //         if (!result.loading && !result.error) {
         //             // Set the branch data in the state
-        //             console.log("selected branch result.data.branch", result.data.branch);
+        //          //  console.log("selected branch result.data.branch", result.data.branch);
         //             setSelectedBranch(result.data.branch);
         //         }
         //     });
     }
 
+    if (nurseryLoading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
     return (
         <div>
             <div className="flex justify-between">

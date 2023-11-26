@@ -1,15 +1,8 @@
 import { useEffect, useState } from "react";
-import { Input } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../assets/ChevronRight.svg";
-import { ReactComponent as ClockIcon } from "../../assets/ClockIcon.svg";
-import { ReactComponent as TickIcon } from "../../assets/TickIcon.svg";
-import { ReactComponent as CloseIcon } from "../../assets/CloseIcon.svg";
-import { ReactComponent as EditIcon } from "../../assets/EditIcon.svg";
-import { Link } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import TermsAndConditions from "./components/TermsAndConditions";
 import LandingPage from "./components/LandingPage";
@@ -18,31 +11,21 @@ import AboutPage from "./components/AboutPage";
 import { useQuery } from "@apollo/client";
 import { GET_INFO } from "../../queries/informationManagement";
 import { useRecoilState } from "recoil";
-import { editInformationManagementRequest } from "../../stores/informationManagement";
-
-// import { useQuery } from "@apollo/client";
-// import { GET_BRANCHES } from "./queries";
+import { editInformationManagementRequest, landingPagePictures } from "../../stores/informationManagement";
+import Loader from "../../components/Loader";
 
 function InformationManagement() {
-    // let { loading, error, data } = useQuery(GET_BRANCHES);
-    const [searchQuery, setSearchQuery] = useState("");
     const [selectedItem, setSelectedItem] = useState(null);
-    const [value, setValue] = useState("");
     const [infoData, setInfoData] = useState([]);
-
     const [_, setEditInfoRequest] = useRecoilState(editInformationManagementRequest);
+    const [pictures, setPictures] = useRecoilState(landingPagePictures);
 
     const { loading: infoLoading, error: infoError, data } = useQuery(GET_INFO);
     useEffect(() => {
         if (!infoLoading && !infoError) {
-            // Set the info data
-            console.log("data", data.informationManagementAll[0]);
-            console.log("data", data.informationManagementAll[0].aboutAshjarSpace);
-            console.log("data", data.informationManagementAll[0].cancellationPolicy);
-            console.log("data", data.informationManagementAll[0].termsAndConditions);
-
             setInfoData(data.informationManagementAll[0]);
             setEditInfoRequest(data.informationManagementAll[0]);
+            setPictures(data.informationManagementAll[0].landingPage.pictures);
         }
     }, [infoLoading, infoError, data]);
 
@@ -85,6 +68,13 @@ function InformationManagement() {
     ));
 
     function renderSelectedItem(selectedItem) {
+        if (infoLoading)
+            return (
+                <div className="h-[400px]">
+                    <Loader />
+                </div>
+            );
+
         if (selectedItem == null) {
             return <div>No Item Selected</div>;
         } else {

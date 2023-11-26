@@ -23,7 +23,6 @@ export const GET_BRANCH = gql`
             nurseries {
                 _id
                 seats
-                priceRatePerHour
                 name
             }
         }

@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import { GET_WORKSHOP_REQUESTS } from "../../../queries/workshopQueries";
 import { useQuery } from "@apollo/client";
+import Loader from "../../../components/Loader";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
@@ -422,10 +423,9 @@ function WorkshopRequests() {
     const { loading: requestsLoading, error: requestsError, data } = useQuery(GET_WORKSHOP_REQUESTS);
 
     useEffect(() => {
-        console.log(requestsLoading, requestsError, data);
+        //  console.log(requestsLoading, requestsError, data);
         if (!requestsLoading && !requestsError) {
-            console.log("askjdnasjdnj", data);
-
+            //  console.log("askjdnasjdnj", data);
             // setRequestList(data.workshopRequests);
         }
     }, [requestsLoading, requestsError, data]);
@@ -519,7 +519,7 @@ function WorkshopRequests() {
     // ];
 
     function statusBadge(status) {
-        console.log("statusBadge", status);
+        //  console.log("statusBadge", status);
         if (status.includes("pending")) {
             return (
                 <div className="border rounded-xl bg-[#F0F0EE] border-light flex gap-2 py-1.5 px-3 items-center ">
@@ -582,7 +582,7 @@ function WorkshopRequests() {
         } else {
             let request = requestList[selectedRequest];
 
-            console.log("selectedRequest", request);
+            //  console.log("selectedRequest", request);
 
             return (
                 <div className="grid grid-cols-6 gap-2.5">
@@ -663,6 +663,12 @@ function WorkshopRequests() {
         }
     }
 
+    if (requestsLoading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
     return (
         <div className="workshop-requests">
             <Breadcrumbs />

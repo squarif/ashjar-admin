@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { Button, Input, Spinner } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -9,15 +9,18 @@ import { useMutation } from "@apollo/client";
 import { CREATE_BRANCH } from "../../queries/branchesQueries";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
 
 function NewBranch() {
     const [branchName, setBranchName] = useState("testing frontend");
     const [branchLocation, setbranchLocation] = useState("lalu khait");
-    const [createBranch] = useMutation(CREATE_BRANCH);
 
+    const navigate = useNavigate();
+
+    const [createBranch, { data, loading, error }] = useMutation(CREATE_BRANCH);
     async function handleAddBranch() {
         try {
-            // console.log("CREATE_BRANCH", CREATE_BRANCH);
             const { data } = await createBranch({
                 mutation: CREATE_BRANCH,
                 variables: {
@@ -26,9 +29,10 @@ function NewBranch() {
                         location: branchLocation,
                     },
                 },
-                // client: client,
             });
-            console.log(data);
+            //  console.log(data, loading);
+
+            navigate("/branches");
         } catch (error) {
             console.log(error);
         }
@@ -53,7 +57,11 @@ function NewBranch() {
                     <button
                         onClick={handleAddBranch}
                         className="flex justify-center items-center gap-2 py-5 px-6 rounded-xl bg-primary">
-                        <span className="text-white text-xl leading-6">Submit</span>
+                        {true ? (
+                            <Spinner color="white" className="" />
+                        ) : (
+                            <span className="text-white text-xl leading-6">Submit</span>
+                        )}
                     </button>
                 </div>
                 <div className="relative shadow-md flex justify-between border rounded-2xl px-8 py-12 items-start ">

@@ -6,37 +6,42 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { workshopRequestPayload } from "../../../../stores/workshopRequestPayload";
 
 import { useState } from "react";
-import { newWorkspaceRequest, workspaceRatesState } from "../../../../stores/workspaceStore";
+import {
+    newWorkspaceRequest,
+    workspaceBaseRatesState,
+    workspaceCustomRatesState,
+} from "../../../../stores/workspaceStore";
 
 function MeetingRoomRates() {
     // const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
 
     const [requestPayload, setNewMeetingRoomPayload] = useRecoilState(newWorkspaceRequest);
 
-    const [rates, setRates] = useRecoilState(workspaceRatesState);
+    const [baseRates, setBaseRates] = useRecoilState(workspaceBaseRatesState);
+    const [customRates, setCustomRates] = useRecoilState(workspaceCustomRatesState);
 
-    function handleNewRate() {
+    function handleNewBaseRate() {
         let newRate = {
             dateStart: "Dec 19 2023",
             dateEnd: "Dec 23 2023",
             rate: "69",
         };
 
-        let updatedRates = [...rates, newRate];
+        let updatedRates = [...baseRates, newRate];
 
-        console.log("updatedRates", updatedRates);
+        //  console.log("updatedRates", updatedRates);
 
-        setRates(updatedRates, () => {
-            console.log("updatedRates state", rates);
+        setBaseRates(updatedRates, () => {
+            //  console.log("updatedRates state", rates);
         });
     }
 
     function handleCustomRateChange(index, value) {
-        let updatedRates = [...rates];
+        let updatedRates = [...customRates];
 
         updatedRates[index] = { ...updatedRates[index], rate: value };
 
-        setRates(updatedRates);
+        setCustomRates(updatedRates);
     }
 
     function handleBaseRateChange(value) {
@@ -53,7 +58,7 @@ function MeetingRoomRates() {
                 <div className="text-left text-2xl">Rates</div>
                 <button
                     className="rounded-lg border border-borderColor px-6 py-4 bg-primaryLight flex items-center"
-                    onClick={() => handleNewRate()}>
+                    onClick={() => handleNewBaseRate()}>
                     <span className="text-lg leading-normal">Add Custom Dates</span>
                     <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                 </button>
@@ -62,23 +67,9 @@ function MeetingRoomRates() {
             <div className="border rounded-xl border-borderColor divide-y-[1px] divide-borderColor">
                 <div className="base-rate px-6 py-4 flex  items-baseline justify-between ">
                     <span className="base-rate text-lg text-mediumGray">Base Rate</span>
-                    <div className="rate flex gap-2.5 items-baseline">
-                        <span className="">SAR</span>
-                        <div className="title rounded-xl border overflow-hidden px-3 max-w-[70px]">
-                            <Input
-                                variant="unstyled"
-                                value={requestPayload.ratesPerHour}
-                                type="number"
-                                placeholder="Enter workshop name"
-                                className="py-2 text-xl text-primary leading-6 text-center"
-                                onChange={(event) => handleBaseRateChange(event.target.value)}
-                            />
-                        </div>
-                        <span className="">/ hr</span>
-                    </div>
                 </div>
 
-                {rates.map((rate, index) => (
+                {baseRates.map((rate, index) => (
                     <div key={index} className="base-rate px-6 py-4 flex  items-baseline justify-between ">
                         <span className="base-rate text-lg text-mediumGray">
                             {rate.dateStart} - {rate.dateEnd}

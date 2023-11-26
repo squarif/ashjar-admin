@@ -178,7 +178,7 @@ function Amenities() {
             <div className="">
                 <button className="rounded-xl bg-primary flex gap-3 px-3 py-4" onClick={handleAddAmenity}>
                     <span className="text-lg text-white leading-normal">Add New Amenity</span>
-                    <PlusIcon />
+                    <PlusIcon className="text-white" />
                 </button>
             </div>
         </div>

@@ -27,9 +27,9 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
         // console.log("USE EFFECT pathname", pathname);
         // console.log("USE EFFECT action", action);
         if (!loading && userAuth) {
-            console.log("!loading && userAuth", !loading && userAuth);
+            //  console.log("!loading && userAuth", !loading && userAuth);
             if (userAuth?.user === "no user") {
-                console.log("no user");
+                //  console.log("no user");
 
                 setAlert({
                     type: "error",
@@ -38,18 +38,18 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
                 setLoading(false);
                 localStorage.setItem("user", JSON.stringify(null));
             } else if (userAuth?.authorized === false) {
-                console.log("not authorized");
+                //  console.log("not authorized");
                 setLoading(false);
                 setUserAtom(null);
                 localStorage.setItem("user", JSON.stringify(null));
             } else if (userAuth?.authorized === true && pathname.includes("login")) {
-                console.log("userAuth?.authorized pathname.includesauth action login");
+                //  console.log("userAuth?.authorized pathname.includesauth action login");
 
                 setLoading(false);
                 const redirectTo = sessionStorage.getItem("redirectTo");
                 sessionStorage.setItem("redirectTo", JSON.stringify(null));
-                console.log("redirectTo", redirectTo);
-                console.log("reroute", reroute);
+                //  console.log("redirectTo", redirectTo);
+                //  console.log("reroute", reroute);
                 navigate("/", { replace: true });
             }
         }
@@ -72,7 +72,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
                     return user;
                 })
                 .catch((error) => {
-                    console.log("error", error);
+                    //  console.log("error", error);
                     setAlert({
                         type: "error",
                         message: "Email address or password is incorrect.",
@@ -81,11 +81,11 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
                     return null;
                 });
 
-            console.log("user", user);
+            //  console.log("user", user);
 
             setLoading(false);
         } catch (err) {
-            console.log(err);
+            //  console.log(err);
             setLoading(false);
         }
     };
@@ -104,7 +104,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
             });
             if (response.status === 200) {
                 response.json().then((data) => {
-                    console.log({ data });
+                    //  console.log({ data });
                     notification["success"]({
                         message: "User created successfully",
                         duration: 5,
@@ -118,7 +118,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
                     setLoading(false);
                 });
             } else {
-                console.log(response);
+                //  console.log(response);
                 setAlert({
                     type: "error",
                     message: "Email address or password is incorrect.",
@@ -126,7 +126,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
                 setLoading(false);
             }
         } catch (err) {
-            console.log(err);
+            //  console.log(err);
             setLoading(false);
         }
     };
@@ -160,7 +160,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
                     break;
             }
         } catch (err) {
-            console.log(err);
+            //  console.log(err);
         }
     });
 

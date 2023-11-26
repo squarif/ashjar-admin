@@ -13,7 +13,7 @@ function Categories() {
     const [categoriesList, setCategoriesList] = useState(["Discussion", "Poetry"]);
 
     function handleRemoveCategory(index) {
-        console.log("handleRemoveCategory", index);
+        //  console.log("handleRemoveCategory", index);
         const updatedCategories = [...categoriesList];
         updatedCategories.splice(index, 1);
 
@@ -23,7 +23,7 @@ function Categories() {
             category: updatedCategories,
         }));
 
-        console.log("categoriesList", categoriesList);
+        //  console.log("categoriesList", categoriesList);
     }
 
     function handleAddCategory() {

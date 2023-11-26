@@ -32,7 +32,7 @@ function AboutPage(props) {
 
         if (payload.__typename) delete payload["__typename"];
 
-        console.log("payload", payload);
+        //  console.log("payload", payload);
 
         try {
             const { data } = await editInfoHandler({
@@ -42,7 +42,7 @@ function AboutPage(props) {
                 },
             });
 
-            console.log(data);
+            //  console.log(data);
             setEdit(false);
         } catch (error) {
             console.log(error);

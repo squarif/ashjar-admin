@@ -9,18 +9,20 @@ import { useRecoilState, useRecoilValue } from "recoil";
 
 import Amenities from "./components/Amenities";
 import { useState } from "react";
-import WorkspaceRates from "./components/Rates";
+
 import {
     workspaceAmenitiesState,
     workspacePicturesState,
-    workspaceRatesState,
     newWorkspaceRequest,
     workspaceOpenDaysState,
+    workspaceBaseRatesState,
 } from "../../../stores/workspaceStore";
 
 import { CREATE_WORKSPACE } from "../../../queries/workspaceQueries";
 import { useMutation } from "@apollo/client";
 import { useLocation } from "react-router-dom";
+import PicturesGrid from "../../../components/PicturesGrid";
+import WorkspaceRates from "../components/Rates";
 
 function WorkspaceNew() {
     const [newWorkspaceRequestPayload, setNewWorkspacePayload] = useRecoilState(newWorkspaceRequest);
@@ -28,7 +30,7 @@ function WorkspaceNew() {
     const [pictures, setPictures] = useRecoilState(workspacePicturesState);
 
     const [openDays, setOpenDays] = useRecoilState(workspaceOpenDaysState);
-    const rates = useRecoilValue(workspaceRatesState);
+    const rates = useRecoilValue(workspaceBaseRatesState);
     const amenities = useRecoilValue(workspaceAmenitiesState);
 
     const [startAMPM, setStartAMPM] = useState("AM");
@@ -36,7 +38,7 @@ function WorkspaceNew() {
 
     let { state } = useLocation();
 
-    console.log("state", state);
+    //  console.log("state", state);
 
     const handleTimeChange = (dayIndex, field, value) => {
         const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
@@ -74,7 +76,7 @@ function WorkspaceNew() {
             pictures: pictures,
             branch: state.branch_id,
         };
-        console.log("payload", payload);
+        //  console.log("payload", payload);
         try {
             // console.log("CREATE_BRANCH", CREATE_BRANCH);
             const { data } = await createWorkspace({
@@ -84,7 +86,7 @@ function WorkspaceNew() {
                 },
                 // client: client,
             });
-            console.log(data);
+            //  console.log(data);
         } catch (error) {
             console.log(error);
         }
@@ -93,11 +95,11 @@ function WorkspaceNew() {
     return (
         <div className="flex flex-col gap-8">
             <div className="title border rounded-2xl border-light px-8 py-12 flex flex-col gap-8">
-                <div className="title mb-6 rounded-xl border overflow-hidden px-4">
+                <div className="title rounded-xl border border-light overflow-hidden px-4">
                     <Input
                         variant="unstyled"
                         value={newWorkspaceRequestPayload.name}
-                        placeholder="Enter Meeting Room Name"
+                        placeholder="Enter Workspace Name"
                         className="py-4"
                         onChange={(event) =>
                             setNewWorkspacePayload({
@@ -107,7 +109,8 @@ function WorkspaceNew() {
                         }
                     />
                 </div>
-                <div className="cost flex gap-12 items-center">
+                <div className="cost flex flex-col w-fit gap-1.5">
+                    <span className="text-sm text-mediumGray">Total Seats</span>
                     <div className="border rounded-2xl border-light px-4">
                         <Input
                             id="cost"
@@ -137,7 +140,7 @@ function WorkspaceNew() {
                                 description: event.target.value,
                             })
                         }
-                        placeholder="Here is a sample placeholder"
+                        placeholder="Please write description here"
                         size="sm"
                     />
                 </div>
@@ -303,29 +306,14 @@ function WorkspaceNew() {
                 <Amenities />
             </div>
 
-            <div className="pictures border rounded-2xl border-light px-8 py-12 flex gap-7 flex-col ">
-                <div className="text-left text-2xl">Pictures</div>
-                <div className="grid grid-cols-5 grid-rows-2 gap-6">
-                    {pictures.map((picture, index) => {
-                        return index === 0 ? (
-                            <div className="overflow-hidden rounded-2xl border col-span-3 row-span-2">
-                                <img alt="" src={picture} />
-                            </div>
-                        ) : (
-                            <div className="overflow-hidden border rounded-2xl">
-                                <img className="" alt="" src={picture} />
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+            <PicturesGrid picturesState={workspacePicturesState} />
 
             <div className="buttons  ">
                 <button
-                    className="h-[148px] w-[148px] bg-primary flex justify-center items-center gap-4 flex-col rounded-xl"
+                    className="py-2 px-3 bg-primary flex justify-center items-center gap-2 rounded-xl"
                     onClick={() => handleAddWorkspace()}>
-                    <PlusIcon />
                     <span className="text-white text-xl">Add Workspace</span>
+                    <PlusIcon className="text-white" />
                 </button>
             </div>
         </div>

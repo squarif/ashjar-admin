@@ -20,7 +20,9 @@ import {
 
 import { EDIT_MEETING_ROOM } from "../../../queries/meetingRoomQueries";
 import { useMutation } from "@apollo/client";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import PicturesUpload from "../../../components/PictureUpload";
+import PicturesGrid from "../../../components/PicturesGrid";
 
 function MeetingRoomNew() {
     const [editMeetingRoomRequestPayload, setEditMeetingRoomPayload] = useRecoilState(editMeetingRoomRequest);
@@ -28,6 +30,7 @@ function MeetingRoomNew() {
     const rates = useRecoilValue(meetingRoomRatesState);
     const amenities = useRecoilValue(meetingRoomAmenitiesState);
     const [pictures, setPictures] = useRecoilState(meetingRoomPicturesState);
+    const navigate = useNavigate();
 
     const [startAMPM, setStartAMPM] = useState("AM");
     const [endAMPM, setEndAMPM] = useState("AM");
@@ -35,7 +38,7 @@ function MeetingRoomNew() {
     // let { state } = useLocation();
     let params = useParams();
 
-    console.log("branch id", params);
+    //  console.log("branch id", params);
 
     const handleTimeChange = (dayIndex, field, value) => {
         const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
@@ -77,7 +80,7 @@ function MeetingRoomNew() {
         if (payload.__typename) delete payload["__typename"];
         if (payload.slotsBooked) delete payload["slotsBooked"];
 
-        console.log("payload", payload);
+        //  console.log("payload", payload);
 
         try {
             // console.log("CREATE_BRANCH", CREATE_BRANCH);
@@ -88,7 +91,10 @@ function MeetingRoomNew() {
                 },
                 // client: client,
             });
+
             console.log(data);
+
+            navigate(`/meeting-rooms/${editMeetingRoomRequestPayload._id}`);
         } catch (error) {
             console.log(error);
         }
@@ -307,22 +313,7 @@ function MeetingRoomNew() {
                 <Amenities />
             </div>
 
-            <div className="pictures border rounded-2xl border-light px-8 py-12 flex gap-7 flex-col ">
-                <div className="text-left text-2xl">Pictures</div>
-                <div className="grid grid-cols-5 grid-rows-2 gap-6">
-                    {pictures.map((picture, index) => {
-                        return index === 0 ? (
-                            <div className="overflow-hidden rounded-2xl border col-span-3 row-span-2">
-                                <img alt="" src={picture} />
-                            </div>
-                        ) : (
-                            <div className="overflow-hidden border rounded-2xl">
-                                <img className="" alt="" src={picture} />
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+            <PicturesGrid picturesState={meetingRoomPicturesState} />
 
             <div className="buttons  ">
                 <button

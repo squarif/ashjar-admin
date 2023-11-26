@@ -16,6 +16,7 @@ import { useQuery } from "@apollo/client";
 import { GET_BRANCH, GET_BRANCHES } from "../../../queries/branchesQueries";
 import client from "../../../apollo";
 import Breadcrumbs from "../../../components/Breadcrumbs";
+import Loader from "../../../components/Loader";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
@@ -30,7 +31,7 @@ function MeetingRoomListing() {
     useEffect(() => {
         if (!branchesLoading && !branchesError) {
             // Set the branches data
-            console.log("data", data);
+            //  console.log("data", data);
             setBranchData(data.branches);
         }
     }, [branchesLoading, branchesError, data]);
@@ -46,15 +47,22 @@ function MeetingRoomListing() {
                 variables: { id },
             })
             .then((result) => {
-                console.log("result", result);
+                //  console.log("result", result);
                 // Check for loading and error states
                 if (!result.loading && !result.error) {
                     // Set the branch data in the state
-                    console.log("selected branch result.data.branch", result.data.branch);
+                    //  console.log("selected branch result.data.branch", result.data.branch);
                     setSelectedBranch(result.data.branch);
                 }
             });
     }
+
+    if (branchesLoading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
 
     return (
         <div>

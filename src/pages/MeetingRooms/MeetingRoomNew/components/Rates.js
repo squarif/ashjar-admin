@@ -24,10 +24,10 @@ function MeetingRoomRates() {
 
         let updatedRates = [...rates, newRate];
 
-        console.log("updatedRates", updatedRates);
+        //  console.log("updatedRates", updatedRates);
 
         setRates(updatedRates, () => {
-            console.log("updatedRates state", rates);
+            //  console.log("updatedRates state", rates);
         });
     }
 

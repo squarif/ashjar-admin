@@ -16,6 +16,7 @@ import { useQuery } from "@apollo/client";
 import { GET_BRANCH, GET_BRANCHES } from "../../../queries/branchesQueries";
 import client from "../../../apollo";
 import Breadcrumbs from "../../../components/Breadcrumbs";
+import Loader from "../../../components/Loader";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
@@ -30,7 +31,7 @@ function WorkspaceListing() {
     useEffect(() => {
         if (!branchesLoading && !branchesError) {
             // Set the branches data
-            console.log("GET_BRANCHES data", data);
+            //  console.log("GET_BRANCHES data", data);
             setBranchData(data.branches);
         }
     }, [branchesLoading, branchesError, data]);
@@ -46,60 +47,22 @@ function WorkspaceListing() {
                 variables: { id },
             })
             .then((result) => {
-                console.log("GET_BRANCH result", result);
+                //  console.log("GET_BRANCH result", result);
                 // Check for loading and error states
                 if (!result.loading && !result.error) {
                     // Set the branch data in the state
-                    console.log("setSelectedBranch result.data.branch", result.data.branch);
+                    //  console.log("setSelectedBranch result.data.branch", result.data.branch);
                     setSelectedBranch(result.data.branch);
                 }
             });
     }
 
-    let items = [
-        {
-            title: "Workspace 1",
-            cost: 230,
-            capacity: 24,
-            image: "",
-        },
-        {
-            title: "Workspace 2",
-            cost: 230,
-            capacity: 24,
-            image: "",
-        },
-        {
-            title: "Workspace 3",
-            cost: 230,
-            capacity: 24,
-            image: "",
-        },
-        {
-            title: "Workspace 3",
-            cost: 230,
-            capacity: 24,
-            image: "",
-        },
-        {
-            title: "Workspace 3",
-            cost: 230,
-            capacity: 24,
-            image: "",
-        },
-        {
-            title: "Workspace 3",
-            cost: 230,
-            capacity: 24,
-            image: "",
-        },
-        {
-            title: "Workspace 3",
-            cost: 230,
-            capacity: 24,
-            image: "",
-        },
-    ];
+    if (branchesLoading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
 
     return (
         <div>

@@ -6,7 +6,7 @@ import React from "react";
 
 function NavBar() {
     const location = useLocation();
-    console.log("location", location);
+    //  console.log("location", location);
 
     function selected(route) {
         if (route === location.pathname) {
@@ -57,27 +57,31 @@ function NavBar() {
                 Nurseries
             </Link>
 
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/users">
+            <Link className={selected("/users") ? "navButtonSelected" : "navButton"} to="/users">
                 Users
             </Link>
 
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/about">
+            <Link className={selected("/about") ? "navButtonSelected" : "navButton"} to="/about">
                 Coupons
             </Link>
 
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/announcement">
+            <Link
+                className={selected("/announcement") ? "navButtonSelected" : "navButton"}
+                to="/announcement">
                 Announcement
             </Link>
 
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/info-management">
+            <Link
+                className={selected("/info-management") ? "navButtonSelected" : "navButton"}
+                to="/info-management">
                 Information
             </Link>
 
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/dashboard">
+            <Link className={selected("/dashboard") ? "navButtonSelected" : "navButton"} to="/dashboard">
                 Dashboard
             </Link>
 
-            <Link className={selected("") ? "navButtonSelected" : "navButton"} to="/complaints">
+            <Link className={selected("/complaints") ? "navButtonSelected" : "navButton"} to="/complaints">
                 Complaints
             </Link>
         </nav>
