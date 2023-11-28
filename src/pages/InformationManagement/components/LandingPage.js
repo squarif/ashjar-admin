@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Input } from "@chakra-ui/react";
+import { Input, useToast } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
 import { ReactComponent as ClockIcon } from "../../../assets/ClockIcon.svg";
@@ -18,6 +18,8 @@ import PicturesUpload from "../../../components/PictureUpload";
 
 function LandingPage(props) {
     const [edit, setEdit] = useState(false);
+
+    const toast = useToast();
 
     //  console.log("PROPS", props);
     const [value, setValue] = useState(props.data.landingText);
@@ -51,8 +53,19 @@ function LandingPage(props) {
 
             //  console.log(data);
             setEdit(false);
+
+            toast({
+                title: "Landing Page Updated!",
+                status: "success",
+            });
         } catch (error) {
             console.log(error);
+
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
         }
     }
 

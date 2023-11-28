@@ -21,14 +21,17 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 firebase.auth().onIdTokenChanged(async (user) => {
+    console.log("USER", user);
+
     if (user) {
-        const token = await user.getIdToken();
-        // console.log({ token });
-        localStorage.setItem("token", JSON.stringify({ token }));
+        let token = await user.getIdToken();
+        let refreshToken = user.refreshToken; // Retrieve the refresh token
+
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", JSON.stringify({ token, refreshToken }));
     } else {
-        // console.log("hello");
-        // localStorage.setItem('token', JSON.stringify(null))
-        // localStorage.setItem('user', JSON.stringify(null))
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
     }
 });
 

@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { Input, useToast } from "@chakra-ui/react";
 
 import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
 import { ReactComponent as EqualIcon } from "../../../assets/EqualIcon.svg";
@@ -31,6 +31,7 @@ function MeetingRoomNew() {
     const amenities = useRecoilValue(meetingRoomAmenitiesState);
     const [pictures, setPictures] = useRecoilState(meetingRoomPicturesState);
     const navigate = useNavigate();
+    const toast = useToast();
 
     const [startAMPM, setStartAMPM] = useState("AM");
     const [endAMPM, setEndAMPM] = useState("AM");
@@ -94,9 +95,20 @@ function MeetingRoomNew() {
 
             console.log(data);
 
+            toast({
+                title: "Meeting Room Updated!",
+                status: "success",
+            });
+
             navigate(`/meeting-rooms/${editMeetingRoomRequestPayload._id}`);
         } catch (error) {
             console.log(error);
+
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
         }
     }
 

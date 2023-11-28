@@ -1,7 +1,6 @@
 import { ReactComponent as PlusIcon } from "../assets/PlusIcon.svg";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { landingPagePictures } from "../stores/informationManagement";
 import { storage } from "../auth/firebase/config";
 
 function PicturesUpload(props) {

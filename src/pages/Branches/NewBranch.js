@@ -1,4 +1,4 @@
-import { Button, Input, Spinner } from "@chakra-ui/react";
+import { Button, Input, Spinner, useToast } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -18,6 +18,8 @@ function NewBranch() {
 
     const navigate = useNavigate();
 
+    const toast = useToast();
+
     const [createBranch, { data, loading, error }] = useMutation(CREATE_BRANCH);
     async function handleAddBranch() {
         try {
@@ -32,9 +34,20 @@ function NewBranch() {
             });
             //  console.log(data, loading);
 
+            toast({
+                title: "Branch Created!",
+                status: "success",
+            });
+
             navigate("/branches");
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
+
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
         }
     }
 
@@ -57,7 +70,7 @@ function NewBranch() {
                     <button
                         onClick={handleAddBranch}
                         className="flex justify-center items-center gap-2 py-5 px-6 rounded-xl bg-primary">
-                        {true ? (
+                        {loading ? (
                             <Spinner color="white" className="" />
                         ) : (
                             <span className="text-white text-xl leading-6">Submit</span>

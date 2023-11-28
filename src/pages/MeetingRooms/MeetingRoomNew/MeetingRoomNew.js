@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { Input, useToast } from "@chakra-ui/react";
 
 import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
 import { ReactComponent as EqualIcon } from "../../../assets/EqualIcon.svg";
@@ -35,8 +35,9 @@ function MeetingRoomNew() {
     const [startAMPM, setStartAMPM] = useState("AM");
     const [endAMPM, setEndAMPM] = useState("AM");
 
-    let { state } = useLocation();
-    let navigate = useNavigate();
+    const { state } = useLocation();
+    const navigate = useNavigate();
+    const toast = useToast();
 
     //  console.log("branch id", state);
 
@@ -91,9 +92,19 @@ function MeetingRoomNew() {
             });
             //  console.log(data);
 
+            toast({
+                title: "New Meeting Room Created!",
+                status: "success",
+            });
+
             navigate(`/branches/${state.branch_id}`);
         } catch (error) {
             console.log(error);
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
         }
     }
 

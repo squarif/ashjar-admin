@@ -4,8 +4,7 @@ import { setContext } from "@apollo/client/link/context";
 
 const authLink = setContext((_, { headers }) => {
     // Retrieve the authentication token from where you've stored it (e.g., cookies or local storage)
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const token = userData.stsTokenManager.accessToken;
+    const token = JSON.parse(localStorage.getItem("token")).token;
 
     // Add the token to the headers if it exists
     return {

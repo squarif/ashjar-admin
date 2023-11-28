@@ -1,7 +1,18 @@
 .navButtonSelected {
-    @apply rounded-lg bg-primary text-white px-3 py-1.5;
+    @apply flex gap-4 items-center rounded-lg bg-primary text-white px-3 py-1;
 }
 
 .navButton {
-    @apply rounded-lg bg-white text-dark px-3 py-1.5;
+    @apply flex gap-4 items-center rounded-lg bg-white text-dark px-3 py-1;
 }
+
+.navIcon {
+    @apply shrink-0 text-primary h-6 w-6;
+}
+
+.navIconSelected {
+    @apply shrink-0 text-white h-6 w-6;
+}
+
+/* px-3 py-1.5 */
+/* px-3 py-1.5 */

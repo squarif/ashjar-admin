@@ -7,25 +7,29 @@ import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 import { Textarea } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
-import Amenities from "./components/Amenities";
+import Amenities from "../components/Amenities";
 import { useState } from "react";
-import WorkspaceRates from "./components/Rates";
 import {
     workspaceAmenitiesState,
     workspaceOpenDaysState,
     editWorkspaceRequest,
     workspacePicturesState,
     workspaceBaseRatesState,
+    workspaceCustomRatesState,
 } from "../../../stores/workspaceStore";
 
 import { EDIT_WORKSPACE } from "../../../queries/workspaceQueries";
 import { useMutation } from "@apollo/client";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import WorkspaceRates from "../components/Rates";
+import PicturesUpload from "../../../components/PictureUpload";
+import PicturesGrid from "../../../components/PicturesGrid";
 
 function WorkspaceNew() {
     const [editWorkspaceRequestPayload, setEditWorkspacePayload] = useRecoilState(editWorkspaceRequest);
     const [openDays, setOpenDays] = useRecoilState(workspaceOpenDaysState);
-    const rates = useRecoilValue(workspaceBaseRatesState);
+    const baseRates = useRecoilValue(workspaceBaseRatesState);
+    const customRates = useRecoilValue(workspaceCustomRatesState);
     const amenities = useRecoilValue(workspaceAmenitiesState);
     const [pictures, setPictures] = useRecoilState(workspacePicturesState);
 
@@ -34,6 +38,7 @@ function WorkspaceNew() {
 
     // let { state } = useLocation();
     let params = useParams();
+    const navigate = useNavigate();
 
     //  console.log("branch id", params);
 
@@ -65,9 +70,15 @@ function WorkspaceNew() {
 
     const [editWorkspace] = useMutation(EDIT_WORKSPACE);
     async function handleEditWorkspace() {
+        let customRatesPayload = customRates.map((rate) => ({
+            ...rate,
+            ratesInSlot: rate.ratesInSlot.map(({ __typename, ...rest }) => rest),
+        }));
+
         let payload = {
             ...editWorkspaceRequestPayload,
-            customRates: rates.map(({ __typename, ...rest }) => rest),
+            baseRates: baseRates.map(({ __typename, ...rest }) => rest),
+            customRates: customRatesPayload.map(({ __typename, ...rest }) => rest),
             openDays: openDays.map(({ __typename, ...rest }) => rest),
             amenities: amenities.map(({ __typename, ...rest }) => rest),
             pictures: pictures,
@@ -77,7 +88,7 @@ function WorkspaceNew() {
         if (payload.__typename) delete payload["__typename"];
         if (payload.slotsBooked) delete payload["slotsBooked"];
 
-        //  console.log("payload", payload);
+        console.log("payload", payload);
         try {
             // console.log("CREATE_BRANCH", CREATE_BRANCH);
             const { data } = await editWorkspace({
@@ -88,6 +99,8 @@ function WorkspaceNew() {
                 // client: client,
             });
             //  console.log(data);
+
+            navigate(`/workspaces/${editWorkspaceRequestPayload._id}`);
         } catch (error) {
             console.log(error);
         }
@@ -306,24 +319,7 @@ function WorkspaceNew() {
                 <Amenities />
             </div>
 
-            <div className="pictures border rounded-2xl border-light px-8 py-12 flex gap-7 flex-col ">
-                <div className="text-left text-2xl">Pictures</div>
-                <div className="grid grid-cols-5 grid-rows-2 gap-6">
-                    {pictures.map((picture, index) => {
-                        return index === 0 ? (
-                            <div
-                                key={index}
-                                className="overflow-hidden rounded-2xl border col-span-3 row-span-2">
-                                <img alt="" src={picture} />
-                            </div>
-                        ) : (
-                            <div key={index} className="overflow-hidden border rounded-2xl">
-                                <img className="" alt="" src={picture} />
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+            <PicturesGrid picturesState={workspacePicturesState} />
 
             <div className="buttons  ">
                 <button

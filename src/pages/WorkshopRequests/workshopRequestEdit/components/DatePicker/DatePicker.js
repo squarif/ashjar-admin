@@ -59,7 +59,7 @@ function DatePicker() {
                                 ...requestPayload,
                                 allowSeparateBooking: event.target.checked,
                             });
-                         //  console.log("onChange requestPayload", requestPayload.allowSeparateBooking);
+                            //  console.log("onChange requestPayload", requestPayload.allowSeparateBooking);
                         }}
                     />
                     <span className="text-base text-mediumGray">Allow Separate Booking</span>
@@ -147,7 +147,7 @@ function DatePicker() {
                                                             value=""
                                                             className="text-2xl max-w-[48px] py-1"
                                                             onChange={(event) =>
-                                                             //  console.log(event.target.value)
+                                                                console.log(event.target.value)
                                                             }
                                                         />
                                                     </div>
@@ -161,7 +161,7 @@ function DatePicker() {
                                                             value=""
                                                             className="text-2xl  "
                                                             onChange={(event) =>
-                                                             //  console.log(event.target.value)
+                                                                console.log(event.target.value)
                                                             }
                                                         />
                                                     </div>
@@ -214,7 +214,7 @@ function DatePicker() {
                                                             value=""
                                                             className="text-2xl max-w-[48px] py-1"
                                                             onChange={(event) =>
-                                                             //  console.log(event.target.value)
+                                                                console.log(event.target.value)
                                                             }
                                                         />
                                                     </div>
@@ -228,7 +228,7 @@ function DatePicker() {
                                                             value=""
                                                             className="text-2xl  "
                                                             onChange={(event) =>
-                                                             //  console.log(event.target.value)
+                                                                console.log(event.target.value)
                                                             }
                                                         />
                                                     </div>

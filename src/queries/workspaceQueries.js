@@ -49,31 +49,42 @@ const GET_WORKSPACE = gql`
             branch {
                 _id
                 name
-                location
-                meetingRooms
-                workspaces
             }
             openDays {
                 day
                 startTime
                 endTime
             }
+            slotsInterval
             slotsBooked {
                 date
                 slotsInDay {
                     startTime
                     endTime
                     isBooked
-                    bookedBy
-                    ratePerHour
+                    bookings {
+                        bookedBy
+                        seatsBooked
+                    }
+                    seatsRemaining
+                    rate
                 }
             }
             totalSeats
-            ratesPerHour
+            ratePerInterval
+            baseRates {
+                startTime
+                endTime
+                rate
+            }
             customRates {
                 startDate
                 endDate
-                rate
+                ratesInSlot {
+                    startTime
+                    endTime
+                    rate
+                }
             }
             amenities {
                 name
@@ -87,18 +98,34 @@ const GET_WORKSPACE = gql`
 `;
 
 const EDIT_WORKSPACE = gql`
-    mutation Mutation($input: WorkSpaceUpdateInput!) {
+    mutation UpdateWorkSpace($input: WorkSpaceUpdateInput!) {
         updateWorkSpace(input: $input) {
             _id
             name
             description
+            branch {
+                _id
+            }
             openDays {
                 day
                 startTime
                 endTime
             }
             totalSeats
-            ratesPerHour
+            baseRates {
+                startTime
+                endTime
+                rate
+            }
+            customRates {
+                startDate
+                endDate
+                ratesInSlot {
+                    startTime
+                    endTime
+                    rate
+                }
+            }
             amenities {
                 name
                 picture
@@ -106,11 +133,6 @@ const EDIT_WORKSPACE = gql`
                 type
             }
             pictures
-            customRates {
-                startDate
-                endDate
-                rate
-            }
         }
     }
 `;

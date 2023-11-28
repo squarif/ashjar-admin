@@ -1,24 +1,9 @@
 import "./App.css";
-import MeetingRoomDetails from "./pages/MeetingRooms/MeetingRoomDetail/MeetingRoomDetail";
-import MeetingRoomEdit from "./pages/MeetingRooms/MeetingRoomEdit/MeetingRoomEdit";
-import MeetingRoomsListing from "./pages/MeetingRooms/MeetingRoomListing/MeetingRoomsListing";
-import MeetingRoomNew from "./pages/MeetingRooms/MeetingRoomNew/MeetingRoomNew";
-// import WorkshopDetails from "./pages/Workshop/WorkshopDetails/WorkshopDetails";
-import WorkshopListing from "./pages/Workshops/WorkshopListing/WorkshopListing";
-// import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@chakra-ui/react";
-// import { Input } from "@chakra-ui/react";
-// import Branches from "./pages/branches/Branches";
-import { firebase } from "./auth/firebase/config";
 
 import { ReactComponent as AshjarLogo } from "./assets/AshjarLogo.svg";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import React from "react";
 
-import WorkshopRequests from "./pages/WorkshopRequests/workshopRequestsListing/WorkshopRequestsListing";
-
-import { Link, Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from "react-router-dom";
-import WorkshopDetails from "./pages/Workshops/WorkshopDetails/WorkshopDetails";
-import React, { useEffect, useRef } from "react";
-
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./auth/firebase/config";
 
 import Branches from "./pages/Branches/Branches";
@@ -30,7 +15,6 @@ import WorkspaceDetail from "./pages/Workspaces/WorkspaceDetail/WorkspaceDetail"
 import WorkspaceEdit from "./pages/Workspaces/WorkspaceEdit/WorkspaceEdit";
 import WorkspaceNew from "./pages/Workspaces/WorkspaceNew/WorkspaceNew";
 import NavBar from "./components/NavBar/NavBar";
-import Breadcrumbs from "./components/Breadcrumbs";
 import NurseryListing from "./pages/Nurseries/NurseryListing/NurseryListing";
 import NurseryDetails from "./pages/Nurseries/NurseryDetail/NurseryDetail";
 import NurseryNew from "./pages/Nurseries/NurseryNew/NurseryNew";
@@ -41,6 +25,14 @@ import AnnouncementPage from "./pages/AnnouncementPage/AnnouncementPage";
 import Complaints from "./pages/Complaints/Complaints";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import SignIn from "./pages/SignIn/SignIn";
+import MeetingRoomDetails from "./pages/MeetingRooms/MeetingRoomDetail/MeetingRoomDetail";
+import MeetingRoomEdit from "./pages/MeetingRooms/MeetingRoomEdit/MeetingRoomEdit";
+import MeetingRoomsListing from "./pages/MeetingRooms/MeetingRoomListing/MeetingRoomsListing";
+import MeetingRoomNew from "./pages/MeetingRooms/MeetingRoomNew/MeetingRoomNew";
+import WorkshopListing from "./pages/Workshops/WorkshopListing/WorkshopListing";
+import WorkshopRequests from "./pages/WorkshopRequests/workshopRequestsListing/WorkshopRequestsListing";
+import WorkshopDetails from "./pages/Workshops/WorkshopDetails/WorkshopDetails";
+
 import PrivateRoute from "./auth/components/privateRoute";
 import { useRecoilStateCallback } from "./hooks";
 import { userAtom } from "./recoil/atoms";
@@ -51,7 +43,7 @@ function App() {
 
     return (
         <div className="">
-            <div className="header border-b px-6 py-4 flex justify-between items-center ">
+            <div className="header border-b border-borderColor px-6 py-4 flex justify-between items-center ">
                 <div className="flex gap-2 items-end">
                     <AshjarLogo />
                     <span className="text-[#AF8465] text-[32px] font-Adam leading-none">Ashjar</span>
@@ -60,7 +52,7 @@ function App() {
                 {userA ? (
                     <button
                         onClick={() => {
-                            // firebase.auth().signOut();
+                            auth.signOut();
                             localStorage.setItem("user", JSON.stringify(null));
                             localStorage.setItem("token", JSON.stringify(null));
                             setUserAtom(null);

@@ -6,34 +6,7 @@ const GET_NURSERY = gql`
             _id
             name
             seats
-            priceRatePerHour
-            branch {
-                name
-                location
-                _id
-            }
-            workshops {
-                _id
-                name
-                timing {
-                    date
-                    startTime
-                    endTime
-                }
-                workspace {
-                    name
-                    _id
-                }
-                description
-                categories
-                approvalStatus
-                draft
-                rejectionReason
-                nursery {
-                    name
-                    _id
-                }
-            }
+            pictures
         }
     }
 `;
@@ -44,7 +17,7 @@ const CREATE_NURSERY = gql`
             _id
             name
             seats
-            priceRatePerHour
+            pictures
         }
     }
 `;
@@ -55,10 +28,10 @@ const EDIT_NURSERY = gql`
             _id
             name
             seats
-            priceRatePerHour
             branch {
                 _id
             }
+            pictures
         }
     }
 `;

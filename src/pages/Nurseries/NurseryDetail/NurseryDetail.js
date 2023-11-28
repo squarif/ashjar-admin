@@ -19,12 +19,9 @@ import Loader from "../../../components/Loader";
 
 function NurseryDetails() {
     const { id } = useParams();
-    // let [amenities, setAmenitiesData] = useRecoilState(nurseryAmenitiesState);
-    // let [rates, setRatesData] = useRecoilState(nurseryRatesState);
-    // let [openDays, setOpenDays] = useRecoilState(nurseryOpenDaysState);
+
     let [pictures, setPictures] = useRecoilState(nurseryPictures);
     let [_, setEditNurseryData] = useRecoilState(editNurseryData);
-    // let [editMeetingRoom, setEditMeetingRoomPayload] = useRecoilState(editMeetingRoomRequest);
 
     const {
         loading: nurseryLoading,
@@ -34,25 +31,12 @@ function NurseryDetails() {
         variables: { id },
     });
 
-    //  console.log("DATAAAAA", data);
-
     let nurseryData = data?.nursery;
 
     useEffect(() => {
         if (!nurseryLoading && !nurseryError) {
-            //  console.log("askjdnasjdnj", nurseryData);
-
-            // console.log("nurseryData.amenities", nurseryData.amenities);
-            // console.log("nurseryData.customRates", nurseryData.customRates);
-            // console.log("nurseryData.openDays", nurseryData.openDays);
-
-            // setAmenitiesData(nurseryData.amenities);
-            // setRatesData(nurseryData.customRates);
-            // setOpenDays(nurseryData.openDays);
-
             setPictures(nurseryData.pictures ? nurseryData.pictures : []);
             setEditNurseryData(nurseryData);
-            // setEditMeetingRoomPayload(nurseryData);
         }
     }, [nurseryLoading, nurseryError, nurseryData, data]);
 
@@ -123,10 +107,10 @@ function NurseryDetails() {
                                         <div className="text-base text-mediumGray">Number of Seats</div>
                                         <div className="">{nurseryData.seats}</div>
                                     </div>
-                                    <div className="flex justify-between">
+                                    {/* <div className="flex justify-between">
                                         <div className="text-base text-mediumGray">Price / Seat</div>
                                         <div className="">{nurseryData.priceRatePerHour}</div>
-                                    </div>
+                                    </div> */}
                                     {/*
                                 <div className="flex justify-between">
                                     <div className="text-base text-mediumGray">Genders</div>

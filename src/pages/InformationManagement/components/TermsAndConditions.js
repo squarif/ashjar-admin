@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input } from "@chakra-ui/react";
+import { Input, useToast } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
 import { ReactComponent as ClockIcon } from "../../../assets/ClockIcon.svg";
@@ -18,6 +18,7 @@ import { EDIT_INFO } from "../../../queries/informationManagement";
 function TermsAndConditions(props) {
     const [edit, setEdit] = useState(false);
     const [value, setValue] = useState(props.data);
+    const toast = useToast();
 
     const parser = new DOMParser();
     const html = parser.parseFromString(value, "text/html");
@@ -44,8 +45,19 @@ function TermsAndConditions(props) {
 
             //  console.log(data);
             setEdit(false);
+
+            toast({
+                title: "Terms and Conditions Updated!",
+                status: "success",
+            });
         } catch (error) {
             console.log(error);
+
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
         }
     }
 

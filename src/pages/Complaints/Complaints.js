@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Input } from "@chakra-ui/react";
+import { Input, useToast } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../assets/ChevronRight.svg";
 import { ReactComponent as ClockIcon } from "../../assets/ClockIcon.svg";
@@ -22,6 +22,8 @@ function Complaints() {
     const [selectedComplaint, setSelectedComplaint] = useState(null);
     const [pictures, setPictures] = useState([]);
     const [complaintsList, setComplaintsList] = useState([]);
+
+    const toast = useToast();
 
     const { loading: complaintsLoading, error: complaintsError, data } = useQuery(GET_COMPLAINTS);
     useEffect(() => {
@@ -59,6 +61,11 @@ function Complaints() {
                 variables: {
                     input: payload,
                 },
+            });
+
+            toast({
+                title: "Complaint Updated!",
+                status: "success",
             });
 
             //  console.log(data);
@@ -164,14 +171,16 @@ function Complaints() {
                         </div>
                         <div className="complaintActions flex w-full justify-end gap-6">
                             <button
+                                disabled={complaint.complaintStatus === "rejected"}
                                 onClick={() => handleUpdateComplaint("rejected")}
-                                className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-errorLight shadow-md">
+                                className="disabled:opacity-75 py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-errorLight shadow-md">
                                 <span className="text-sm font-medium text-mediumGray">Reject</span>
                                 <CloseIcon className="h-4 w-4 text-error" />
                             </button>
                             <button
+                                disabled={complaint.complaintStatus === "resolved"}
                                 onClick={() => handleUpdateComplaint("resolved")}
-                                className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-primaryLight shadow-md">
+                                className="disabled:opacity-75 py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-primaryLight shadow-md">
                                 <span className="text-sm font-medium text-mediumGray">Mark as Resolved</span>
                                 <TickIcon className="h-4 w-4" />
                             </button>

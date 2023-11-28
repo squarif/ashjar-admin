@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { Input, useToast } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -25,6 +25,7 @@ function NurseryEdit() {
     const [selectedBranch, setSelectedBranch] = useState(nurseryData.branch);
 
     const navigate = useNavigate();
+    const toast = useToast();
 
     let [pictures, setPictures] = useRecoilState(nurseryPictures);
 
@@ -64,9 +65,18 @@ function NurseryEdit() {
             });
             if (data) {
                 navigate("/nurseries");
+                toast({
+                    title: "Nursery Updated!",
+                    status: "success",
+                });
             }
         } catch (error) {
             console.log(error);
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
         }
     }
 

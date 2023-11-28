@@ -5,29 +5,41 @@ const GET_WORKSHOP_REQUESTS = gql`
         workshopRequests {
             _id
             name
-            timing {
+            pricePerSeat
+            seats
+            bookings {
                 date
                 startTime
                 endTime
+                nurseryBookings {
+                    nursery
+                    seats
+                }
+                workspaceBookings {
+                    workspace
+                    seats
+                }
             }
             branch {
                 _id
                 name
                 location
             }
-            nursery {
-                _id
-                name
-            }
-            workspace {
-                _id
-                name
-            }
             description
+            amenities {
+                name
+                picture
+                quantity
+                type
+            }
             categories
             approvalStatus
             draft
             rejectionReason
+            username
+            email
+            phone
+            company
         }
     }
 `;

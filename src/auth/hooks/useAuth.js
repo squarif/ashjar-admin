@@ -13,13 +13,12 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
     const setUserAtom = useSetRecoilState(userAtom);
     const userAuth = useRecoilValue(authSelector());
     const [loading, setLoading] = useState(false);
-    const [signupComplete, setSignupComplete] = useState(false);
+
     const [userId, setUserId] = useState("");
-    const [userEmail, setUserEmail] = useState("");
+
     const navigate = useNavigate();
-    const { action } = useParams();
+
     const { pathname } = useLocation();
-    const [clientSecret, setClientSecret] = useState(null);
 
     useEffect(() => {
         // console.log("USE EFFECT useAuth");
@@ -72,7 +71,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
                     return user;
                 })
                 .catch((error) => {
-                    //  console.log("error", error);
+                    console.log("error", error);
                     setAlert({
                         type: "error",
                         message: "Email address or password is incorrect.",
@@ -95,42 +94,6 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
         return "success";
     };
 
-    const signUp = async (values) => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_BASE_URL}users/signUp`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json;charset=utf-8" },
-                body: JSON.stringify({ name: values.name, email: values.email, password: values.password }),
-            });
-            if (response.status === 200) {
-                response.json().then((data) => {
-                    //  console.log({ data });
-                    notification["success"]({
-                        message: "User created successfully",
-                        duration: 5,
-                        onClick: () => {
-                            notification.close();
-                        },
-                    });
-                    setSignupComplete(true);
-                    setUserEmail(values.email);
-                    setUserId(data._id);
-                    setLoading(false);
-                });
-            } else {
-                //  console.log(response);
-                setAlert({
-                    type: "error",
-                    message: "Email address or password is incorrect.",
-                });
-                setLoading(false);
-            }
-        } catch (err) {
-            //  console.log(err);
-            setLoading(false);
-        }
-    };
-
     const logout = () => {
         if (userAuth) {
             firebase.auth.signOut();
@@ -147,9 +110,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
                 case AUTH_EVENTS.LOGIN:
                     signIn(event.payload);
                     break;
-                case AUTH_EVENTS.SIGNUP:
-                    signUp(event.payload);
-                    break;
+
                 case AUTH_EVENTS.LOGOUT:
                     logout();
                     break;
@@ -164,7 +125,7 @@ const useAuth = ({ reroute, userAtom, authSelector, alert, setAlert }) => {
         }
     });
 
-    return [dispatch, loading, signupComplete, userId, clientSecret];
+    return [dispatch, loading, userId];
 };
 
 export default useAuth;

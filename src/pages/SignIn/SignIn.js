@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { ReactComponent as AshjarLogo } from "../../assets/AshjarLogo.svg";
 
-import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input, Button } from "@chakra-ui/react";
+import {
+    FormControl,
+    FormLabel,
+    FormErrorMessage,
+    FormHelperText,
+    Input,
+    Button,
+    useToast,
+} from "@chakra-ui/react";
 import { auth } from "../../auth/firebase/config";
 import { AUTH_EVENTS, useAuth } from "../../auth";
 import { userAtom } from "../../recoil/atoms";
@@ -13,6 +21,8 @@ function SignIn(props) {
     const [password, setPassword] = useState("ALOHOMORA!!!");
     const [alert, setAlert] = useState({ type: "", message: "" });
 
+    const toast = useToast();
+
     const [dispatch, loading, userEmail] = useAuth({
         reroute: "/home",
         userAtom: userAtom,
@@ -23,6 +33,16 @@ function SignIn(props) {
     useEffect(() => {
         setAlert({ type: "", message: "" });
     }, []);
+
+    useEffect(() => {
+        if (alert.type.length) {
+            toast({
+                title: alert.type,
+                description: alert.message,
+                status: alert.type,
+            });
+        }
+    }, [alert]);
 
     let user = useRef();
 
@@ -50,6 +70,7 @@ function SignIn(props) {
                 <FormControl className="max-w-[480px]">
                     <FormLabel className="font">Email Address</FormLabel>
                     <Input
+                        id="email"
                         type="email"
                         value={email}
                         className="text-xs text-mediumGray leading-[12px]"
@@ -58,6 +79,7 @@ function SignIn(props) {
 
                     <FormLabel className="mt-4">Password</FormLabel>
                     <Input
+                        id="password"
                         type="password"
                         value={password}
                         className="mb-6 text-xs text-mediumGray leading-[12px]"

@@ -1,14 +1,11 @@
 import { useState } from "react";
 
-import { ReactComponent as PlusIcon } from "../../../../assets/PlusIcon.svg";
+import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 import { Switch } from "@chakra-ui/react";
 
 import { Input } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
-import { workspaceAmenitiesState } from "../../../../stores/workspaceStore";
-
-// import { useQuery } from "@apollo/client";
-// import { GET_Amenities } from "./queries";
+import { workspaceAmenitiesState } from "../../../stores/workspaceStore";
 
 function Amenities() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +13,7 @@ function Amenities() {
 
     const [amenitiesData, setAmenitiesData] = useRecoilState(workspaceAmenitiesState);
 
-    const decreaseQuantity = (index) => {
+    function decreaseQuantity(index) {
         if (amenitiesData[index].quantity > 1) {
             const updatedAmenities = [...amenitiesData];
 
@@ -27,9 +24,9 @@ function Amenities() {
 
             setAmenitiesData(updatedAmenities);
         }
-    };
+    }
 
-    const increaseQuantity = (index) => {
+    function increaseQuantity(index) {
         const updatedAmenities = [...amenitiesData];
 
         updatedAmenities[index] = {
@@ -38,9 +35,9 @@ function Amenities() {
         };
 
         setAmenitiesData(updatedAmenities);
-    };
+    }
 
-    const handleAddAmenity = () => {
+    function handleAddAmenity() {
         let newAmenity = {
             picture: "",
             name: "",
@@ -49,9 +46,9 @@ function Amenities() {
         };
 
         setAmenitiesData([...amenitiesData, newAmenity]);
-    };
+    }
 
-    const handleQuantityToggle = (index, value) => {
+    function handleQuantityToggle(index, value) {
         // setQuantityToggle(value);
 
         const updatedAmenities = [...amenitiesData];
@@ -68,9 +65,9 @@ function Amenities() {
         // };
 
         setAmenitiesData(updatedAmenities);
-    };
+    }
 
-    const handleToggle = (index, value) => {
+    function handleToggle(index, value) {
         const updatedAmenities = [...amenitiesData];
         if (value) {
             updatedAmenities[index] = {
@@ -84,15 +81,27 @@ function Amenities() {
             };
         }
         setAmenitiesData(updatedAmenities);
-    };
+    }
+
+    function handleAmenityTitle(index, value) {
+        // const updatedAmenities = [...amenitiesData];
+        const updatedAmenities = JSON.parse(JSON.stringify(amenitiesData));
+
+        console.log("updatedAmenities", updatedAmenities[index]);
+
+        updatedAmenities[index].name = value;
+
+        console.log("updatedAmenities", updatedAmenities);
+
+        setAmenitiesData(updatedAmenities);
+    }
 
     return (
         <div className="flex gap-7 flex-col">
             <div className="text-left text-2xl">Amenities</div>
 
-            <div className="border rounded-2xl flex flex-col  ">
+            <div className="border rounded-2xl flex flex-col">
                 {amenitiesData.map((amenity, index) => {
-                    // console.log("amenity", amenity);
                     return (
                         <div key={index} className="flex p-6 justify-between items-center">
                             <div className="border rounded-2xl border-light px-4">
@@ -110,7 +119,7 @@ function Amenities() {
                                     variant="unstyled"
                                     value={amenity.name}
                                     className="py-1.5 text-xl max-w-[125px]"
-                                    onChange={(event) => setSearchQuery(event.target.value)}
+                                    onChange={(event) => handleAmenityTitle(index, event.target.value)}
                                 />
                             </div>
                             <div className="border w-fit rounded-lg overflow-hidden flex items-center">

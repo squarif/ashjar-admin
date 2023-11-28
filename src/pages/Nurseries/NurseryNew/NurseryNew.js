@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { Input, useToast } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -14,21 +14,21 @@ import { CREATE_NURSERY } from "../../../queries/nurseryQueries";
 import { useRecoilState } from "recoil";
 import { branchesData } from "../../../stores/branches";
 import { useLocation, useNavigate } from "react-router-dom";
+import PicturesGrid from "../../../components/PicturesGrid";
+import { nurseryPictures } from "../../../stores/nurseryStore";
 
 function NurseryNew() {
     const [nurseryName, setNurseryName] = useState("");
-    const [location, setLocation] = useState("");
-    const [totalSeats, setTotalSeats] = useState(23);
-    const [ratePerHour, setRatePerHour] = useState(69);
-    const [selectedBranch, setSelectedBranch] = useState();
-    const { state } = useLocation();
-    const navigate = useNavigate();
 
-    // console.log("SATEEE", state);
+    const [totalSeats, setTotalSeats] = useState(23);
+    const [selectedBranch, setSelectedBranch] = useState();
+    const navigate = useNavigate();
+    const toast = useToast();
 
     const [createNursery] = useMutation(CREATE_NURSERY);
 
     const [branchData, setBranchData] = useRecoilState(branchesData);
+    const [pictures, setPictures] = useRecoilState(nurseryPictures);
 
     function selectBranch(branch) {
         setSelectedBranch(branch);
@@ -36,9 +36,6 @@ function NurseryNew() {
 
     async function handleAddNursery() {
         try {
-            //  console.log("selectedBranch", selectedBranch._id);
-
-            // console.log("CREATE_NURSERY", CREATE_NURSERY);
             const { data } = await createNursery({
                 mutation: CREATE_NURSERY,
                 variables: {
@@ -46,16 +43,26 @@ function NurseryNew() {
                         name: nurseryName,
                         branch: selectedBranch._id,
                         seats: totalSeats,
-                        priceRatePerHour: ratePerHour,
+                        pictures: pictures,
                     },
                 },
                 // client: client,
             });
             if (data) {
+                toast({
+                    title: "Nursery Created!",
+                    status: "success",
+                });
+
                 navigate("/nurseries");
             }
         } catch (error) {
             console.log(error);
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
         }
     }
 
@@ -108,21 +115,6 @@ function NurseryNew() {
                             </MenuList>
                         </Menu>
                         <div className="relative grid grid-cols-8 gap-8 items-center">
-                            {/* <span className="text-[32px] text-dark">Location</span> */}
-
-                            <div className="col-span-4">
-                                <span className="text-sm text-mediumGray">Rate / Hour</span>
-                                <div className="border max-w-[125px] col-span-2 rounded-xl border-light px-4">
-                                    <Input
-                                        value={ratePerHour}
-                                        placeholder=""
-                                        className="py-[22px] text-dark text-[24px] leading-none"
-                                        onChange={(event) => setRatePerHour(event.target.value)}
-                                        variant="unstyled"
-                                    />
-                                </div>
-                            </div>
-
                             <div className="col-span-4">
                                 <span className="text-sm text-mediumGray">Total Seats</span>
                                 <div className="border max-w-[125px] rounded-xl border-light px-4">
@@ -136,6 +128,8 @@ function NurseryNew() {
                                 </div>
                             </div>
                         </div>
+
+                        <PicturesGrid picturesState={nurseryPictures} />
                     </div>
                 </div>
             </div>
