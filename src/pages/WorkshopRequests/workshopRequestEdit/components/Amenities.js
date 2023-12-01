@@ -12,7 +12,7 @@ import { useRecoilState } from "recoil";
 import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 import { switchAnatomy } from "@chakra-ui/anatomy";
 import { extendTheme } from "@chakra-ui/react";
-import { workshopRequestPayload } from "../../../../stores/workshopRequestPayload";
+import { workshopRequestPayload } from "../../../../stores/workshopStore";
 
 function Amenities() {
     const [searchQuery, setSearchQuery] = useState("");

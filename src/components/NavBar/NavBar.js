@@ -29,7 +29,7 @@ function NavBar() {
     }
 
     return (
-        <nav className="nav-panel border-r border-borderColor col-span-1 flex flex-col gap-6 py-8 px-3 text-lg">
+        <nav className="nav-panel border-r border-borderColor col-span-1 flex flex-col gap-6 py-8 px-3 text-lg h-fit">
             <Link className={selected("/branches") ? "navButtonSelected" : "navButton"} to="/branches">
                 <BranchesIcon className={selected("/branches") ? "navIconSelected" : "navIcon"} />
                 <span>Branches</span>

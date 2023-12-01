@@ -8,7 +8,7 @@ import { ReactComponent as ArrowIcon } from "../../../../../assets/ArrowIcon.svg
 import { ReactComponent as CloseIcon } from "../../../../../assets/CloseIcon.svg";
 
 import { useRecoilState, useRecoilValue } from "recoil";
-import { workshopRequestPayload } from "../../../../../stores/workshopRequestPayload";
+import { workshopRequestPayload } from "../../../../../stores/workshopStore";
 
 import { Switch } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";

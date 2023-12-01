@@ -3,7 +3,7 @@ import { Input } from "@chakra-ui/react";
 import { ReactComponent as PlusIcon } from "../../../../assets/PlusIcon.svg";
 
 import { useRecoilState, useRecoilValue } from "recoil";
-// import { workshopRequestPayload } from "../../../../stores/workshopRequestPayload";
+// import { workshopRequestPayload } from "../../../../stores/workshopStore";
 
 // import { useState } from "react";
 import {

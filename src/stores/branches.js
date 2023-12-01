@@ -5,4 +5,16 @@ const branchesData = atom({
     default: [],
 });
 
-export { branchesData };
+const branchData = atom({
+    key: "branchData",
+    default: {
+        _id: "6537572cefdb213c0c319113",
+        location: ["Islamabad"],
+        name: "Branch1",
+        meetingRooms: [],
+        workspaces: [],
+        nurseries: [],
+    },
+});
+
+export { branchesData, branchData };

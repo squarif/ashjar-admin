@@ -36,6 +36,7 @@ import WorkshopDetails from "./pages/Workshops/WorkshopDetails/WorkshopDetails";
 import PrivateRoute from "./auth/components/privateRoute";
 import { useRecoilStateCallback } from "./hooks";
 import { userAtom } from "./recoil/atoms";
+import BranchEdit from "./pages/Branches/BranchEdit";
 
 function App() {
     const [userA, setUserAtom] = useRecoilStateCallback(userAtom);
@@ -69,10 +70,10 @@ function App() {
                     </button>
                 )}
             </div>
-            <div className="app-container grid grid-cols-7  font-Adam">
+            <div className="app-container grid grid-cols-7 font-Adam">
                 {userA ? <NavBar /> : ""}
 
-                <div className="body col-span-6 p-12">
+                <div className="body col-span-6 p-12 h-fit">
                     <Routes>
                         <Route path="/login" element={<SignIn />} />
 
@@ -89,6 +90,14 @@ function App() {
                             element={
                                 <PrivateRoute redirect="/login">
                                     <BranchDetail />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/branches/:id/edit"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <BranchEdit />
                                 </PrivateRoute>
                             }
                         />

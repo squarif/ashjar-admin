@@ -6,10 +6,10 @@ import { ReactComponent as EqualIcon } from "../../../assets/EqualIcon.svg";
 import { Textarea } from "@chakra-ui/react";
 import DatePicker from "./components/DatePicker/DatePicker";
 import { useRecoilState } from "recoil";
-import { workshopRequestPayload } from "../../../stores/workshopRequestPayload";
+import { workshopRequestPayload } from "../../../stores/workshopStore";
 import Branches from "./components/Branches";
 import Amenities from "./components/Amenities";
-import Categories from "./components/Categories";
+import Categories from "../components/Categories";
 
 function WorkshopEditPost() {
     const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);

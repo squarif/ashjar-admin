@@ -1,31 +1,78 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 
 const workshopRequestPayload = atom({
     key: "workshopRequestPayload",
     default: {
-        name: "Pottery Class",
-        description:
-            "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-        branch: null,
-        approvalStatus: null,
-        category: [],
-        pictures: null,
-        rejectionReason: null,
-        timing: null,
-        amenities: ["Coffee", "Tea", "Balaclava"],
-        seats: 69,
+        description: "",
         allowSeparateBooking: false,
-        numberOfDays: 200,
-        workspace: [],
-        nursery: [],
-        meetingRooms: [],
-        spacesData: null,
     },
 });
 
-const workShopAmenities = atom({
-    key: "workShopAmenities",
-    default: ["Coffee", "Tea", "Balaclava"],
+const workshopBookingsPayload = atom({
+    key: "workshopBookingsPayload",
+    default: [],
 });
 
-export { workShopAmenities, workshopRequestPayload };
+const workspaceBookingsPayload = atom({
+    key: "workspaceBookings",
+    default: [],
+});
+
+const nurseryBookingsPayload = atom({
+    key: "nurseryBookings",
+    default: [],
+});
+
+export const totalBookingsSelector = selector({
+    key: "totalSeatsSelector",
+    get: ({ get }) => {
+        const bookings = get(workshopBookingsPayload); // Replace 'bookingsAtom' with your atom holding the bookings array
+
+        console.log(bookings);
+
+        const totalSeats = bookings.reduce((total, booking) => {
+            const nurserySeats = booking.nurseryBookings.reduce((nurseryTotal, nursery) => {
+                return nurseryTotal + nursery.seats;
+            }, 0);
+
+            const workspaceSeats = booking.workspaceBookings.reduce((workspaceTotal, workspace) => {
+                return workspaceTotal + workspace.seats;
+            }, 0);
+
+            return total + nurserySeats + workspaceSeats;
+        }, 0);
+
+        return totalSeats;
+    },
+});
+
+const workshopAmenities = atom({
+    key: "workshopAmenities",
+    default: [],
+});
+
+const workshopCategories = atom({
+    key: "workshopCategories",
+    default: [],
+});
+
+const workshopAvailableSlots = atom({
+    key: "workshopAvailableSlots",
+    default: [],
+});
+
+const workshopSelectedBranch = atom({
+    key: "workshopSelectedBranch",
+    default: [],
+});
+
+export {
+    workshopAmenities,
+    workshopBookingsPayload,
+    workspaceBookingsPayload,
+    nurseryBookingsPayload,
+    workshopRequestPayload,
+    workshopCategories,
+    workshopAvailableSlots,
+    workshopSelectedBranch,
+};

@@ -8,9 +8,23 @@ import { Link } from "react-router-dom";
 import { ReactComponent as ChevronRight } from "../../assets/ChevronRight.svg";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Loader from "../../components/Loader";
+import { useRecoilState } from "recoil";
+import { branchesData } from "../../stores/branches";
 
 function BranchListing() {
-    let { loading, error, data } = useQuery(GET_BRANCHES);
+    let { loading, error, data, refetch } = useQuery(GET_BRANCHES);
+
+    const [branches, setBranches] = useRecoilState(branchesData);
+
+    console.log("BRANCHES", branches);
+
+    useEffect(() => {
+        if (data) setBranches(data.branches);
+    }, [data]);
+
+    useEffect(() => {
+        refetch(); // Refetch data when the component mounts
+    }, [refetch]);
 
     if (loading)
         return (
@@ -20,8 +34,6 @@ function BranchListing() {
         );
 
     if (error) return `Error! ${error.message}`;
-
-    const branches = data.branches || [];
 
     const listItems = branches.map((branch, index) => (
         <Link

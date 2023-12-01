@@ -71,8 +71,6 @@ export const UPDATE_BRANCH = gql`
             _id
             name
             location
-            meetingRooms
-            workspaces
         }
     }
 `;

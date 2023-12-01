@@ -78,4 +78,79 @@ const GET_WORKSHOP_REQUEST = gql`
     }
 `;
 
-export { GET_WORKSHOP_REQUESTS, GET_WORKSHOP_REQUEST };
+const UPDATE_WORKSHOP_REQUEST = gql`
+    mutation Mutation($input: WorkshopRequestUpdateByAdminInput!) {
+        updateWorkshopRequestByAdmin(input: $input) {
+            _id
+            name
+            pricePerSeat
+            seats
+            bookings {
+                date
+                startTime
+                endTime
+                nurseryBookings {
+                    nursery
+                    seats
+                }
+                workspaceBookings {
+                    workspace
+                    seats
+                }
+            }
+            branch {
+                name
+                _id
+                location
+            }
+            description
+            amenities {
+                name
+                picture
+                quantity
+                type
+            }
+            categories
+            approvalStatus
+            draft
+            rejectionReason
+            username
+            email
+            phone
+            company
+        }
+    }
+`;
+
+const GET_AVAILABLE_SLOTS = gql`
+    query GetBranchWithWorkspacesAndNurseries(
+        $branchId: ID!
+        $date: String!
+        $startTime: String!
+        $endTime: String!
+    ) {
+        getBranchWithWorkspacesAndNurseries(
+            branchId: $branchId
+            date: $date
+            startTime: $startTime
+            endTime: $endTime
+        ) {
+            workspaces {
+                workspace {
+                    _id
+                    name
+                }
+                seatsRemaining
+            }
+            nurseries {
+                nursery {
+                    _id
+                    name
+                }
+                seatsRemaining
+            }
+        }
+    }
+`;
+
+export { GET_WORKSHOP_REQUESTS, GET_WORKSHOP_REQUEST, UPDATE_WORKSHOP_REQUEST, GET_AVAILABLE_SLOTS };

@@ -23,7 +23,7 @@ import Loader from "../../../components/Loader";
 
 function WorkspaceListing() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [upcomingFilter, setUpcomingFilter] = useState(true);
+    const [allBranchesFilter, setAllBranchesFilter] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [branchData, setBranchData] = useState([]);
     const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
@@ -36,25 +36,32 @@ function WorkspaceListing() {
         }
     }, [branchesLoading, branchesError, data]);
 
-    function handleSelectBranch(branch) {
-        const id = branch._id;
+    function handleSelectBranch(selectedBranch) {
+        setAllBranchesFilter(false);
         // Fetch data for the selected branch
         // Use Apollo Client's client.query to perform the query
         // You need to have access to the Apollo Client's client instance
-        client
-            .query({
-                query: GET_BRANCH,
-                variables: { id },
-            })
-            .then((result) => {
-                //  console.log("GET_BRANCH result", result);
-                // Check for loading and error states
-                if (!result.loading && !result.error) {
-                    // Set the branch data in the state
-                    //  console.log("setSelectedBranch result.data.branch", result.data.branch);
-                    setSelectedBranch(result.data.branch);
-                }
-            });
+        // client
+        //     .query({
+        //         query: GET_BRANCH,
+        //         variables: { id },
+        //     })
+        //     .then((result) => {
+        //         //  console.log("GET_BRANCH result", result);
+        //         // Check for loading and error states
+        //         if (!result.loading && !result.error) {
+        //             // Set the branch data in the state
+        //             //  console.log("setSelectedBranch result.data.branch", result.data.branch);
+        //             setSelectedBranch(result.data.branch);
+        //         }
+        //     });
+
+        let result = branchData.filter((branch) => {
+            if (branch._id === selectedBranch._id) {
+                return branch;
+            }
+        });
+        setSelectedBranch(result[0]);
     }
 
     if (branchesLoading)
@@ -69,12 +76,12 @@ function WorkspaceListing() {
             <div className="flex justify-between">
                 <Breadcrumbs className="mb-[-48px]" />
 
-                {selectedBranch ? (
+                {selectedBranch && !allBranchesFilter ? (
                     <Link
                         to="/workspaces/new"
                         state={{ branch_id: selectedBranch._id }}
                         className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary">
-                        <PlusIcon className="h-6 w-6" />
+                        <PlusIcon className="h-6 w-6 text-white" />
                         <span className="text-white text-xl leading-6">Add New</span>
                     </Link>
                 ) : (
@@ -95,27 +102,27 @@ function WorkspaceListing() {
                         <div className="Filter"></div>
                     </div>
 
-                    <Menu>
+                    <Menu autoSelect={false}>
                         <MenuButton
                             as="button"
                             className={
-                                upcomingFilter
+                                !allBranchesFilter
                                     ? "rounded-xl h-fit bg-primary border"
                                     : "h-fit rounded-xl border "
                             }>
                             <div className="flex px-4 w-[312px] py-3 items-center justify-between">
                                 {selectedBranch ? (
-                                    <span className={upcomingFilter ? "text-white" : "text-dark"}>
+                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
                                         {selectedBranch.name}
                                     </span>
                                 ) : (
-                                    <span className={upcomingFilter ? "text-white" : "text-dark"}>
+                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
                                         Select a branch
                                     </span>
                                 )}
                                 <ChevronRight
                                     className={
-                                        upcomingFilter
+                                        !allBranchesFilter
                                             ? "rotate-90 h-5 text-white "
                                             : " rotate-90 h-5 text-dark "
                                     }
@@ -134,24 +141,26 @@ function WorkspaceListing() {
                         </MenuList>
                     </Menu>
 
-                    <label
+                    {/* <label
                         className={
-                            upcomingFilter ? "rounded-xl h-fit bg-primary border" : "h-fit rounded-xl border "
+                            allBranchesFilter
+                                ? "rounded-xl h-fit bg-primary border"
+                                : "h-fit rounded-xl border "
                         }>
                         <input
                             key={"toggle"}
                             className="absolute hidden "
                             type="radio"
                             value={true}
-                            checked={upcomingFilter}
-                            onChange={() => setUpcomingFilter(true)}
+                            checked={allBranchesFilter}
+                            onChange={() => setAllBranchesFilter(true)}
                         />
                         <span className="block text-lg leading-normal  text-dark px-4 py-2.5 ">Upcoming</span>
-                    </label>
+                    </label> */}
 
                     <label
                         className={
-                            !upcomingFilter
+                            allBranchesFilter
                                 ? "rounded-xl bg-primary border h-fit"
                                 : "h-fit rounded-xl border "
                         }>
@@ -160,8 +169,8 @@ function WorkspaceListing() {
                             type="radio"
                             value={false}
                             className="absolute hidden "
-                            checked={!upcomingFilter}
-                            onChange={() => setUpcomingFilter(false)}
+                            checked={allBranchesFilter}
+                            onChange={() => setAllBranchesFilter(true)}
                         />
                         <span className="block text-lg leading-normal text-dark px-4 py-2.5">All</span>
                     </label>
@@ -169,7 +178,42 @@ function WorkspaceListing() {
 
                 <div className="border rounded-2xl p-8">
                     <div className="flex gap-6 flex-wrap">
-                        {selectedBranch
+                        {allBranchesFilter
+                            ? branchData.map((branch) =>
+                                  branch.workspaces.length
+                                      ? branch.workspaces.map((workspace) => (
+                                            <Link to={`/workspaces/${workspace._id}`}>
+                                                <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
+                                                    <div className="relative h-[134px] overflow-hidden ">
+                                                        <img
+                                                            className="object-contain"
+                                                            src={workspace.pictures[0]}
+                                                            alt="workspace"
+                                                        />
+
+                                                        <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                            <span className="text-dark text-xs">
+                                                                SAR {workspace.ratesPerHour} / period
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="h-fit py-2.5 px-3 flex flex-col">
+                                                        <span className="w-fit text-lg text-dark">
+                                                            {workspace.name}
+                                                        </span>
+                                                        <div className="w-fit">
+                                                            <span className="w-fit text-left text-sm text-light">
+                                                                {workspace.totalSeats}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        ))
+                                      : ""
+                              )
+                            : selectedBranch
                             ? selectedBranch.workspaces.length
                                 ? selectedBranch.workspaces.map((workspace) => (
                                       <Link to={`/workspaces/${workspace._id}`}>

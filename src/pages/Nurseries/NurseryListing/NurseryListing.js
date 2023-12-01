@@ -25,7 +25,7 @@ import Loader from "../../../components/Loader";
 
 function NurseryListing() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [upcomingFilter, setUpcomingFilter] = useState(true);
+    const [allBranchesFilter, setAllBranchesFilter] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [branchData, setBranchData] = useRecoilState(branchesData);
     const { loading: nurseryLoading, error: nurseryError, data } = useQuery(GET_BRANCHES);
@@ -38,6 +38,8 @@ function NurseryListing() {
     }, [nurseryLoading, nurseryError, data]);
 
     function handleSelectBranch(selectedBranch) {
+        setAllBranchesFilter(false);
+
         let result = branchData.filter((branch) => {
             if (branch._id === selectedBranch._id) {
                 return branch;
@@ -72,7 +74,7 @@ function NurseryListing() {
         <div>
             <div className="flex justify-between">
                 <Breadcrumbs />
-                {selectedBranch ? (
+                {selectedBranch && !allBranchesFilter ? (
                     <Link
                         to="/nurseries/new"
                         state={{ branch_id: selectedBranch._id }}
@@ -99,28 +101,28 @@ function NurseryListing() {
                         <div className="Filter"></div>
                     </div>
 
-                    <Menu>
+                    <Menu autoSelect={false}>
                         <MenuButton
                             as="button"
                             className={
-                                upcomingFilter
+                                !allBranchesFilter
                                     ? "rounded-xl h-fit bg-primary border"
                                     : "h-fit rounded-xl border "
                             }>
                             <div className="flex px-4 w-[312px] py-3 items-center justify-between">
                                 {selectedBranch ? (
-                                    <span className={upcomingFilter ? "text-white" : "text-dark"}>
+                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
                                         {selectedBranch.name}
                                     </span>
                                 ) : (
-                                    <span className={upcomingFilter ? "text-white" : "text-dark"}>
+                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
                                         Select a branch
                                     </span>
                                 )}
 
                                 <ChevronRight
                                     className={
-                                        upcomingFilter
+                                        allBranchesFilter
                                             ? "rotate-90 h-5 text-white "
                                             : " rotate-90 h-5 text-dark "
                                     }
@@ -144,22 +146,7 @@ function NurseryListing() {
 
                     <label
                         className={
-                            upcomingFilter ? "rounded-xl h-fit bg-primary border" : "h-fit rounded-xl border "
-                        }>
-                        <input
-                            key={"toggle"}
-                            className="absolute hidden "
-                            type="radio"
-                            value={true}
-                            checked={upcomingFilter}
-                            onChange={() => setUpcomingFilter(true)}
-                        />
-                        <span className="block text-lg leading-normal  text-dark px-4 py-2.5 ">Upcoming</span>
-                    </label>
-
-                    <label
-                        className={
-                            !upcomingFilter
+                            allBranchesFilter
                                 ? "rounded-xl bg-primary border h-fit"
                                 : "h-fit rounded-xl border "
                         }>
@@ -168,8 +155,8 @@ function NurseryListing() {
                             type="radio"
                             value={false}
                             className="absolute hidden "
-                            checked={!upcomingFilter}
-                            onChange={() => setUpcomingFilter(false)}
+                            checked={allBranchesFilter}
+                            onChange={() => setAllBranchesFilter(true)}
                         />
                         <span className="block text-lg leading-normal text-dark px-4 py-2.5">All</span>
                     </label>
@@ -177,7 +164,50 @@ function NurseryListing() {
 
                 <div className="border rounded-2xl p-8">
                     <div className="flex gap-6 flex-wrap">
-                        {selectedBranch
+                        {allBranchesFilter
+                            ? branchData.map((branch) =>
+                                  branch.nurseries?.length
+                                      ? branch.nurseries.map((nursery) => (
+                                            <Link to={`/nurseries/${nursery._id}`}>
+                                                <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
+                                                    <div className="relative h-[134px] overflow-hidden ">
+                                                        {nursery.pictures?.length ? (
+                                                            <img
+                                                                className="object-contain"
+                                                                src={nursery.pictures[0]}
+                                                                alt="workspace"
+                                                            />
+                                                        ) : (
+                                                            <img
+                                                                className="object-contain h-[150px] opacity-25 mx-auto"
+                                                                src="https://cdn1.iconfinder.com/data/icons/business-company-1/500/image-512.png"
+                                                                alt="workspace"
+                                                            />
+                                                        )}
+
+                                                        <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                            <span className="text-dark text-xs">
+                                                                SAR {nursery.priceRatePerHour} / period
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="h-fit py-2.5 px-3 flex flex-col">
+                                                        <span className="w-fit text-lg text-dark">
+                                                            {nursery.name}
+                                                        </span>
+                                                        <div className="w-fit">
+                                                            <span className="w-fit text-left text-sm text-light">
+                                                                {nursery.seats}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        ))
+                                      : ""
+                              )
+                            : selectedBranch
                             ? selectedBranch.nurseries?.length
                                 ? selectedBranch.nurseries.map((nursery) => (
                                       <Link to={`/nurseries/${nursery._id}`}>

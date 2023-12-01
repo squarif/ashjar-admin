@@ -5,30 +5,38 @@ import { useState } from "react";
 import { ReactComponent as MapsIcon } from "../../assets/MapsIcon.svg";
 
 import { useMutation } from "@apollo/client";
-import { CREATE_BRANCH } from "../../queries/branchesQueries";
+import { UPDATE_BRANCH } from "../../queries/branchesQueries";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { branchesData } from "../../stores/branches";
+import { branchData, branchesData } from "../../stores/branches";
 
-function NewBranch() {
-    const [branchName, setBranchName] = useState("");
-    const [branchLocation, setbranchLocation] = useState("lalu khait");
+function BranchEdit() {
+    const { state } = useLocation();
 
+    const [branchName, setBranchName] = useState(state.name);
+    const [branchLocation, setbranchLocation] = useState(state.location);
     const [branches, setBranches] = useRecoilState(branchesData);
+
+    const [branch, setBranch] = useRecoilState(branchData);
 
     const navigate = useNavigate();
 
+    setBranch(state);
+
+    console.log("state", state);
+
     const toast = useToast();
 
-    const [createBranch, { data, loading, error }] = useMutation(CREATE_BRANCH);
-    async function handleAddBranch() {
+    const [updateBranch, { data, loading, error }] = useMutation(UPDATE_BRANCH);
+    async function handleUpdateBranch() {
         try {
-            await createBranch({
-                mutation: CREATE_BRANCH,
+            await updateBranch({
+                mutation: UPDATE_BRANCH,
                 variables: {
                     input: {
+                        _id: branch._id,
                         name: branchName,
                         location: branchLocation,
                     },
@@ -36,7 +44,7 @@ function NewBranch() {
             })
                 .then((data) => {
                     console.log("THEN", data);
-                    let newBranches = [...branches, data.data.createBranch];
+                    let newBranches = [...branches, data.data.updateBranch];
                     console.log(newBranches);
                     setBranches(newBranches);
 
@@ -69,14 +77,14 @@ function NewBranch() {
                         <Input
                             value={branchName}
                             placeholder="Enter branch name"
-                            className="py-6  text-light text-[24px] leading-none"
+                            className="py-6  text-dark text-[24px] leading-none"
                             onChange={(event) => setBranchName(event.target.value)}
                             variant="unstyled"
                         />
                     </div>
 
                     <button
-                        onClick={handleAddBranch}
+                        onClick={handleUpdateBranch}
                         className="flex justify-center items-center gap-2 py-5 px-6 rounded-xl bg-primary">
                         {loading ? (
                             <Spinner color="white" className="" />
@@ -123,4 +131,4 @@ function NewBranch() {
     );
 }
 
-export default NewBranch;
+export default BranchEdit;

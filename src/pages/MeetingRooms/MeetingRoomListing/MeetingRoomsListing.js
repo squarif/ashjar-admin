@@ -23,11 +23,11 @@ import Loader from "../../../components/Loader";
 
 function MeetingRoomListing() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [upcomingFilter, setUpcomingFilter] = useState(true);
+    const [allBranchesFilter, setAllBranchesFilter] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [branchData, setBranchData] = useState([]);
-    const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
 
+    const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
     useEffect(() => {
         if (!branchesLoading && !branchesError) {
             // Set the branches data
@@ -36,25 +36,33 @@ function MeetingRoomListing() {
         }
     }, [branchesLoading, branchesError, data]);
 
-    function handleSelectBranch(branch) {
-        const id = branch._id;
-        // Fetch data for the selected branch
-        // Use Apollo Client's client.query to perform the query
-        // You need to have access to the Apollo Client's client instance
-        client
-            .query({
-                query: GET_BRANCH,
-                variables: { id },
-            })
-            .then((result) => {
-                //  console.log("result", result);
-                // Check for loading and error states
-                if (!result.loading && !result.error) {
-                    // Set the branch data in the state
-                    //  console.log("selected branch result.data.branch", result.data.branch);
-                    setSelectedBranch(result.data.branch);
-                }
-            });
+    function handleSelectBranch(selectedBranch) {
+        setAllBranchesFilter(false);
+        // const id = branch._id;
+        // // Fetch data for the selected branch
+        // // Use Apollo Client's client.query to perform the query
+        // // You need to have access to the Apollo Client's client instance
+        // client
+        //     .query({
+        //         query: GET_BRANCH,
+        //         variables: { id },
+        //     })
+        //     .then((result) => {
+        //         //  console.log("result", result);
+        //         // Check for loading and error states
+        //         if (!result.loading && !result.error) {
+        //             // Set the branch data in the state
+        //             //  console.log("selected branch result.data.branch", result.data.branch);
+        //             setSelectedBranch(result.data.branch);
+        //         }
+        //     });
+
+        let result = branchData.filter((branch) => {
+            if (branch._id === selectedBranch._id) {
+                return branch;
+            }
+        });
+        setSelectedBranch(result[0]);
     }
 
     if (branchesLoading)
@@ -66,7 +74,21 @@ function MeetingRoomListing() {
 
     return (
         <div>
-            <Breadcrumbs />
+            <div className="flex justify-between">
+                <Breadcrumbs className="mb-[-48px]" />
+
+                {selectedBranch && !allBranchesFilter ? (
+                    <Link
+                        to="/meeting-rooms/new"
+                        state={{ branch_id: selectedBranch._id }}
+                        className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary">
+                        <PlusIcon className="h-6 w-6 text-white" />
+                        <span className="text-white text-xl leading-6">Add New</span>
+                    </Link>
+                ) : (
+                    ""
+                )}
+            </div>
             <div className="flex flex-col gap-8">
                 <div className="flex gap-6 max-h-12">
                     <div className="Search rounded-xl border overflow-hidden px-4 shadow-md ">
@@ -81,28 +103,28 @@ function MeetingRoomListing() {
                         <div className="Filter"></div>
                     </div>
 
-                    <Menu>
+                    <Menu autoSelect={false}>
                         <MenuButton
                             as="button"
                             className={
-                                upcomingFilter
+                                !allBranchesFilter
                                     ? "rounded-xl h-fit bg-primary border"
                                     : "h-fit rounded-xl border "
                             }>
                             <div className="flex px-4 w-[312px] py-3 items-center justify-between">
                                 {selectedBranch ? (
-                                    <span className={upcomingFilter ? "text-white" : "text-dark"}>
+                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
                                         {selectedBranch.name}
                                     </span>
                                 ) : (
-                                    <span className={upcomingFilter ? "text-white" : "text-dark"}>
+                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
                                         Select a branch
                                     </span>
                                 )}
 
                                 <ChevronRight
                                     className={
-                                        upcomingFilter
+                                        !allBranchesFilter
                                             ? "rotate-90 h-5 text-white "
                                             : " rotate-90 h-5 text-dark "
                                     }
@@ -121,24 +143,24 @@ function MeetingRoomListing() {
                         </MenuList>
                     </Menu>
 
-                    <label
+                    {/* <label
                         className={
-                            upcomingFilter ? "rounded-xl h-fit bg-primary border" : "h-fit rounded-xl border "
+                            allBranchesFilter ? "rounded-xl h-fit bg-primary border" : "h-fit rounded-xl border "
                         }>
                         <input
                             key={"toggle"}
                             className="absolute hidden "
                             type="radio"
                             value={true}
-                            checked={upcomingFilter}
-                            onChange={() => setUpcomingFilter(true)}
+                            checked={allBranchesFilter}
+                            onChange={() => setAllBranchesFilter(true)}
                         />
                         <span className="block text-lg leading-normal  text-dark px-4 py-2.5 ">Upcoming</span>
-                    </label>
+                    </label> */}
 
                     <label
                         className={
-                            !upcomingFilter
+                            allBranchesFilter
                                 ? "rounded-xl bg-primary border h-fit"
                                 : "h-fit rounded-xl border "
                         }>
@@ -147,8 +169,8 @@ function MeetingRoomListing() {
                             type="radio"
                             value={false}
                             className="absolute hidden "
-                            checked={!upcomingFilter}
-                            onChange={() => setUpcomingFilter(false)}
+                            checked={allBranchesFilter}
+                            onChange={() => setAllBranchesFilter(true)}
                         />
                         <span className="block text-lg leading-normal text-dark px-4 py-2.5">All</span>
                     </label>
@@ -156,8 +178,43 @@ function MeetingRoomListing() {
 
                 <div className="border rounded-2xl p-8">
                     <div className="flex gap-6 flex-wrap">
-                        {selectedBranch
-                            ? selectedBranch.meetingRooms.length
+                        {allBranchesFilter
+                            ? branchData.map((branch) =>
+                                  branch.workspaces.length
+                                      ? branch.meetingRooms.map((meetingRoom) => (
+                                            <Link to={`/meeting-rooms/${meetingRoom._id}`}>
+                                                <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
+                                                    <div className="relative h-[134px] overflow-hidden ">
+                                                        <img
+                                                            className="object-contain"
+                                                            src={meetingRoom.pictures[0]}
+                                                            alt="meeting room"
+                                                        />
+
+                                                        <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                            <span className="text-dark text-xs">
+                                                                SAR {meetingRoom.ratesPerHour} / period
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="h-fit py-2.5 px-3 flex flex-col">
+                                                        <span className="w-fit text-lg text-dark">
+                                                            {meetingRoom.name}
+                                                        </span>
+                                                        <div className="w-fit">
+                                                            <span className="w-fit text-left text-sm text-light">
+                                                                {meetingRoom.totalSeats}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        ))
+                                      : ""
+                              )
+                            : selectedBranch
+                            ? selectedBranch.meetingRooms?.length
                                 ? selectedBranch.meetingRooms.map((meetingRoom) => (
                                       <Link to={`/meeting-rooms/${meetingRoom._id}`}>
                                           <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
@@ -188,7 +245,7 @@ function MeetingRoomListing() {
                                           </div>
                                       </Link>
                                   ))
-                                : "No meeting rooms"
+                                : "No Meeting Rooms"
                             : "Select a branch"}
                     </div>
                 </div>

@@ -6,7 +6,7 @@ import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from "@chakra-ui/reac
 
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
-import { workshopRequestPayload } from "../../../../stores/workshopRequestPayload";
+import { workshopRequestPayload } from "../../../../stores/workshopStore";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";

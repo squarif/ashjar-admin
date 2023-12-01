@@ -58,7 +58,7 @@ function InformationManagement() {
             onClick={() => selectItem(index)}
             className={
                 index === selectedItem
-                    ? "flex p-6 w-full justify-between items-center rounded-xl border border-primary shadow-md"
+                    ? "flex p-6 w-full justify-between items-center rounded-xl border-[0.5px] border-primary shadow-sm shadow-primaryLight"
                     : "flex p-6 w-full justify-between items-center rounded-xl border border-transparent"
             }>
             <div className="flex flex-col text-xl justify-start gap-4">{item.title}</div>

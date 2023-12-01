@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 
-import { ReactComponent as CloseIcon } from "../../../../assets/CloseIcon.svg";
-import { ReactComponent as PlusIcon } from "../../../../assets/PlusIcon.svg";
+import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
+import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 import { Input } from "@chakra-ui/react";
 
 import { useRecoilState } from "recoil";
-import { workshopRequestPayload } from "../../../../stores/workshopRequestPayload";
+import { workshopCategories } from "../../../stores/workshopStore";
 
 function Categories() {
-    const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
     const [category, setCategory] = useState("");
-    const [categoriesList, setCategoriesList] = useState(["Discussion", "Poetry"]);
+    const [categoriesList, setCategoriesList] = useRecoilState(workshopCategories);
 
     function handleRemoveCategory(index) {
         //  console.log("handleRemoveCategory", index);
@@ -18,23 +17,12 @@ function Categories() {
         updatedCategories.splice(index, 1);
 
         setCategoriesList(updatedCategories);
-        setWorkShopRequestPayload((prevPayload) => ({
-            ...prevPayload,
-            category: updatedCategories,
-        }));
-
-        //  console.log("categoriesList", categoriesList);
     }
 
     function handleAddCategory() {
         if (category.trim() !== "") {
             const updatedCategories = [...categoriesList, category];
             setCategoriesList(updatedCategories);
-
-            setWorkShopRequestPayload((prevPayload) => ({
-                ...prevPayload,
-                category: updatedCategories,
-            }));
 
             setCategory("");
         }

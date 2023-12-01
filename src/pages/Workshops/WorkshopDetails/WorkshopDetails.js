@@ -3,9 +3,9 @@ import { ReactComponent as TickIcon } from "../../../assets/TickIcon.svg";
 import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
 
 import { useRecoilState, useRecoilValue } from "recoil";
-import { workshopRequestPayload } from "../../../stores/workshopRequestPayload";
+import { workshopRequestPayload } from "../../../stores/workshopStore";
 
-import { workShopAmenities } from "../../../stores/workshopStore";
+import { workshopAmenities } from "../../../stores/workshopStore";
 import { GET_WORKSHOP_REQUEST } from "../../../queries/workshopQueries";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
@@ -14,7 +14,7 @@ import Loader from "../../../components/Loader";
 function WorkshopDetails() {
     // const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
 
-    const amenities = useRecoilValue(workShopAmenities);
+    const amenities = useRecoilValue(workshopAmenities);
 
     const params = useParams();
     let id = params.id;

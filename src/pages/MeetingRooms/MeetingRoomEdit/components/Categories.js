@@ -5,7 +5,7 @@ import { ReactComponent as PlusIcon } from "../../../../assets/PlusIcon.svg";
 import { Input } from "@chakra-ui/react";
 
 import { useRecoilState } from "recoil";
-import { workshopRequestPayload } from "../../../../stores/workshopRequestPayload";
+import { workshopRequestPayload } from "../../../../stores/workshopStore";
 
 function Categories() {
     const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);

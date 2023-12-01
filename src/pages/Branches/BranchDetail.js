@@ -11,16 +11,25 @@ import { useQuery } from "@apollo/client";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Loader from "../../components/Loader";
+import { useRecoilState } from "recoil";
+import { branchData } from "../../stores/branches";
+import { useEffect } from "react";
 
 function BranchDetail() {
     const { id } = useParams();
-    //  console.log("PARAMSSSS", id);
+    const [branch, setBranchData] = useRecoilState(branchData);
 
     let { loading, error, data } = useQuery(GET_BRANCH, {
         variables: { id },
     });
+    if (data) setBranchData(data.branch);
 
-    console.log("branch detail, ", data);
+    // useEffect(() => {
+    //     if (data) {
+    //         console.log("data", data.branch);
+    //     }
+    // }, [data]);
+
     if (loading)
         return (
             <div className="h-[400px]">
@@ -31,8 +40,11 @@ function BranchDetail() {
     return (
         <div className="BranchDetail ">
             <div className="flex gap-8">
-                <Breadcrumbs locationName={data.branch.name} id={id} />
-                <Link className="p-2 active:bg-primaryLight h-fit rounded-lg">
+                <Breadcrumbs locationName={branch.name} id={id} />
+                <Link
+                    to={`/branches/${branch._id}/edit`}
+                    state={branch}
+                    className="p-2 active:bg-primaryLight h-fit rounded-lg">
                     <EditIcon className="text-primary" />
                 </Link>
             </div>
@@ -40,13 +52,13 @@ function BranchDetail() {
             <div className="body border  justify-start rounded-xl border-borderColor py-12 px-8 shadow-xl flex flex-col gap-12">
                 <div className="flex gap-2.5 items-center">
                     <MapsIcon />
-                    <span className="text-dark text-lg leading-none">{data.branch.location}</span>
+                    <span className="text-dark text-lg leading-none">{branch.location}</span>
                     <EyeIcon />
                 </div>
 
                 <div className="border-t w-full h-[1px] border-borderColor"></div>
 
-                {data.branch.workspaces.length === 0 && data.branch.meetingRooms.length === 0 ? (
+                {branch.workspaces.length === 0 && branch.meetingRooms.length === 0 ? (
                     <span className="font-Adam text-xl text-left text-light font-adam">
                         No Associated Spaces
                     </span>
@@ -57,7 +69,7 @@ function BranchDetail() {
                                 <span className="font-Adam  text-2xl text-dark ">Meeting Rooms</span>
                                 <Link
                                     to={`/meeting-rooms/new`}
-                                    state={{ branch_id: data.branch._id }}
+                                    state={{ branch_id: branch._id }}
                                     className="flex justify-center items-center gap-2 p-3 rounded-xl bg-primary">
                                     <PlusIcon className="h-6 w-6 text-white" />
                                     <span className="font-Adam mt-0.5 text-white font-medium text-xl leading-none">
@@ -65,9 +77,9 @@ function BranchDetail() {
                                     </span>
                                 </Link>
                             </div>
-                            {data.branch.meetingRooms.length ? (
+                            {branch.meetingRooms?.length ? (
                                 <div className="flex gap-6 overflow-auto ">
-                                    {data.branch.meetingRooms.map((meetingRoom, index) => (
+                                    {branch.meetingRooms?.map((meetingRoom, index) => (
                                         <Link
                                             to={`/meeting-rooms/${meetingRoom._id}`}
                                             key={index}
@@ -109,7 +121,7 @@ function BranchDetail() {
                                 <span className="font-Adam  text-2xl text-dark ">Workspaces</span>
                                 <Link
                                     to={`/workspaces/new`}
-                                    state={{ branch_id: data.branch._id }}
+                                    state={{ branch_id: branch._id }}
                                     className="flex justify-center items-center gap-2 p-3 rounded-xl bg-primary">
                                     <PlusIcon className="h-6 w-6 text-white" />
                                     <span className="font-Adam mt-0.5 text-white text-xl font-medium leading-none">
@@ -117,9 +129,9 @@ function BranchDetail() {
                                     </span>
                                 </Link>
                             </div>
-                            {data.branch.workspaces.length ? (
+                            {branch.workspaces?.length ? (
                                 <div className="flex gap-6 overflow-auto ">
-                                    {data.branch.workspaces.map((workspace, index) => (
+                                    {branch.workspaces?.map((workspace, index) => (
                                         <Link
                                             to={`/workspaces/${workspace._id}`}
                                             key={index}
@@ -156,7 +168,6 @@ function BranchDetail() {
                         </div>
                     </div>
                 )}
-                <div></div>
             </div>
         </div>
     );
