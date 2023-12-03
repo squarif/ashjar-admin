@@ -54,7 +54,7 @@ function MeetingRoomRates() {
                 <button
                     className="rounded-lg border border-borderColor px-6 py-4 bg-primaryLight flex items-center"
                     onClick={() => handleNewRate()}>
-                    <span className="text-lg leading-normal">Add Custom Dates</span>
+                    <span className="text-lg leading-normal">Add Custom Rate</span>
                     <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                 </button>
             </div>

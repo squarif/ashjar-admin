@@ -3,8 +3,8 @@ import { atom, selector } from "recoil";
 const workshopRequestPayload = atom({
     key: "workshopRequestPayload",
     default: {
-        description: "",
-        allowSeparateBooking: false,
+        // description: "",
+        // allowSeparateBooking: false,
     },
 });
 

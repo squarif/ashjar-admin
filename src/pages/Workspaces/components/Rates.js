@@ -48,9 +48,10 @@ function WorkspaceRates() {
     ////////////////////////// Custom Rates
 
     function handleAddNewCustomDate() {
+        let date = new Date();
         let newDate = {
-            startDate: "",
-            endDate: "",
+            startDate: date.getTime(),
+            endDate: date.getTime(),
             ratesInSlot: [
                 {
                     startTime: "",
@@ -99,11 +100,15 @@ function WorkspaceRates() {
     }
 
     function getDate(value) {
-        if (value.includes("-")) {
-            return value;
+        if (typeof value === "string") {
+            if (value.includes("-")) {
+                return value;
+            } else {
+                const date = new Date(parseInt(value));
+                return date.toISOString().slice(0, 10);
+            }
         } else {
-            const date = new Date(parseInt(value));
-            return date.toISOString().slice(0, 10);
+            return value;
         }
     }
 
@@ -114,7 +119,7 @@ function WorkspaceRates() {
                 <button
                     className="rounded-lg border border-borderColor px-6 py-4 bg-primaryLight flex items-center"
                     onClick={() => handleAddNewCustomDate()}>
-                    <span className="text-lg leading-normal">Add Custom Dates</span>
+                    <span className="text-lg leading-normal">Add Custom Rate</span>
                     <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                 </button>
             </div>

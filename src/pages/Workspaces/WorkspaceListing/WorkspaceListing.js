@@ -130,10 +130,10 @@ function WorkspaceListing() {
                             </div>
                         </MenuButton>
                         <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
-                            {branchData.map((branch) => {
+                            {branchData.map((branch, index) => {
                                 // console.log("branch", branch);
                                 return (
-                                    <MenuItem onClick={() => handleSelectBranch(branch)}>
+                                    <MenuItem key={index} onClick={() => handleSelectBranch(branch)}>
                                         {branch.name}
                                     </MenuItem>
                                 );

@@ -37,7 +37,7 @@ function WorkshopCreatePost() {
     const toast = useToast();
     const navigate = useNavigate();
 
-    // console.log("requestPayload", requestPayload);
+    console.log("requestPayload", requestPayload);
 
     const [selectedBranch, setSelectedBranch] = useRecoilState(workshopSelectedBranch);
     const [branchData, setBranchData] = useState([]);
@@ -53,7 +53,7 @@ function WorkshopCreatePost() {
     }, [branchesLoading, branchesError, data]);
 
     useEffect(() => {
-        if (!requestPayload.name) {
+        if (!Object.keys(requestPayload).length) {
             navigate("/workshops/requests");
         }
     }, [requestPayload]);
@@ -187,7 +187,7 @@ function WorkshopCreatePost() {
                 <div className="text-left text-2xl">Description</div>
                 <div className="border rounded-2xl bordr-light px-8 py-12">
                     <Textarea
-                        value={requestPayload.description}
+                        value={requestPayload.description ? requestPayload.description : ""}
                         onChange={(event) =>
                             setWorkShopRequestPayload({ ...requestPayload, description: event.target.value })
                         }
@@ -197,7 +197,7 @@ function WorkshopCreatePost() {
                 </div>
             </div>
 
-            <div className="timings border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
+            <div className="location border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
                 <div className="text-left text-2xl">Location</div>
 
                 <div className="rounded-xl border  w-fit  flex justify-start">
@@ -214,10 +214,9 @@ function WorkshopCreatePost() {
                             </div>
                         </MenuButton>
                         <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
-                            {branchData.map((branch) => {
-                                // console.log("branch", branch);
+                            {branchData.map((branch, index) => {
                                 return (
-                                    <MenuItem onClick={() => setSelectedBranch(branch)}>
+                                    <MenuItem key={index} onClick={() => setSelectedBranch(branch)}>
                                         {branch.name}
                                     </MenuItem>
                                 );

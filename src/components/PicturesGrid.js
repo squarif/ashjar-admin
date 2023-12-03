@@ -10,11 +10,13 @@ function PicturesGrid(props) {
             <div className="grid grid-cols-5 grid-rows-2 gap-6">
                 {pictures.map((picture, index) => {
                     return index === 0 ? (
-                        <div className="flex overflow-hidden rounded-2xl border col-span-3 row-span-2">
+                        <div
+                            key={index}
+                            className="flex overflow-hidden rounded-2xl border col-span-3 row-span-2">
                             <img className="object-cover" alt="" src={picture} />
                         </div>
                     ) : (
-                        <div className="overflow-hidden border rounded-2xl flex">
+                        <div key={index} className="overflow-hidden border rounded-2xl flex">
                             <img className="object-cover" alt="" src={picture} />
                         </div>
                     );

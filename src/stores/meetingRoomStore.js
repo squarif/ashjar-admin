@@ -33,7 +33,13 @@ const editMeetingRoomRequest = atom({
 
 const meetingRoomOpenDaysState = atom({
     key: "openDays",
-    default: [],
+    default: [
+        {
+            day: "Monday",
+            startTime: "00:00",
+            endTime: "00:00",
+        },
+    ],
 });
 
 const meetingRoomRatesState = atom({
