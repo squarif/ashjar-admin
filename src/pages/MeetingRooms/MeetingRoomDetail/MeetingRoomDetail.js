@@ -1,6 +1,5 @@
 import { ReactComponent as ClockIcon } from "../../../assets/ClockIcon.svg";
 import { ReactComponent as EditIcon } from "../../../assets/EditIcon.svg";
-import { ReactComponent as MapsIcon } from "../../../assets/MapsIcon.svg";
 
 import { useQuery } from "@apollo/client";
 import { GET_MEETING_ROOM } from "../../../queries/meetingRoomQueries";

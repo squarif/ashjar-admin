@@ -102,10 +102,6 @@ function WorkspaceDetail() {
                                 <EditIcon className="text-primary" />
                             </Link>
                         </div>
-
-                        {/* <button className="rounded-xl font-sm font-medium text-dark border border-borderColor shadow-md px-3 py-2">
-                            View Schedule
-                        </button> */}
                     </div>
                 </div>
 
@@ -129,10 +125,11 @@ function WorkspaceDetail() {
                     <div className="h-[1px] w-full border-t border-borderColor"></div>
 
                     <div className="text-left text-2xl">Location</div>
-
-                    <div className="h-[300px] w-full rounded-2xl overflow-hidden">
-                        <Maps center={JSON.parse(workspaceData.branch.location).location} />
-                    </div>
+                    {workspaceData.branch.location && (
+                        <div className="h-[300px] w-full rounded-2xl overflow-hidden">
+                            <Maps center={JSON.parse(workspaceData.branch.location).location} />
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="col-span-3 px-8 flex flex-col gap-12 ">
@@ -143,7 +140,7 @@ function WorkspaceDetail() {
                     <div className="w-full h-[1px] border-t border-borderColor"></div>
                     <div className="flex flex-col gap-4">
                         {workspaceData.baseRates.map((rate, index) => (
-                            <div className="flex justify-between">
+                            <div key={index} className="flex justify-between">
                                 <span className="text-dark text-lg leading-normal">
                                     {rate.startTime} - {rate.endTime}
                                 </span>
@@ -160,7 +157,7 @@ function WorkspaceDetail() {
                     <div className="w-full h-[1px] border-t border-borderColor"></div>
                     <div className="flex flex-col gap-4">
                         {workspaceData.openDays.map((day, index) => (
-                            <div className="flex justify-between">
+                            <div key={index} className="flex justify-between">
                                 <span className="text-dark text-lg leading-normal">{day.day}</span>
                                 <span className="text-dark text-lg leading-normal">
                                     {day.startTime} - {day.endTime}

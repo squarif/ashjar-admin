@@ -12,8 +12,6 @@ function OpenDays(props) {
     const [startAMPM, setStartAMPM] = useState("AM");
     const [endAMPM, setEndAMPM] = useState("AM");
 
-    //  console.log("branch id", state);
-
     function handleNewDay() {
         let newDay = {
             day: "",
@@ -66,7 +64,7 @@ function OpenDays(props) {
             <div className="flex flex-col gap-4">
                 {openDays.map((day, index) => (
                     <div key={index} className="flex gap-4 justify-between items-center h-9">
-                        <div className="border rounded border-mediumGray grid place-content-center">
+                        <div className="grid place-content-center">
                             <Input
                                 id="day"
                                 variant="unstyled"

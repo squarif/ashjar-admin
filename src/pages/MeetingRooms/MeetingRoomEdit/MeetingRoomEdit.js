@@ -1,10 +1,12 @@
 import { Input, useToast } from "@chakra-ui/react";
 
+import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
+
 import { Textarea } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 import Amenities from "../components/Amenities";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     meetingRoomAmenitiesState,
     meetingRoomOpenDaysState,
@@ -13,22 +15,38 @@ import {
     meetingRoomPicturesState,
 } from "../../../stores/meetingRoomStore";
 
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+
 import { EDIT_MEETING_ROOM } from "../../../queries/meetingRoomQueries";
-import { useMutation } from "@apollo/client";
-import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 
 import PicturesGrid from "../../../components/PicturesGrid";
 import OpenDays from "../../../components/OpenDays";
 import MeetingRoomRates from "../components/Rates";
+import { GET_BRANCHES } from "../../../queries/branchesQueries";
 
-function MeetingRoomNew() {
+function MeetingRoomEdit() {
     const [editMeetingRoomRequestPayload, setEditMeetingRoomPayload] = useRecoilState(editMeetingRoomRequest);
-    const [openDays, setOpenDays] = useRecoilState(meetingRoomOpenDaysState);
+    const openDays = useRecoilValue(meetingRoomOpenDaysState);
+    const pictures = useRecoilValue(meetingRoomPicturesState);
     const rates = useRecoilValue(meetingRoomRatesState);
     const amenities = useRecoilValue(meetingRoomAmenitiesState);
-    const [pictures, setPictures] = useRecoilState(meetingRoomPicturesState);
+
     const navigate = useNavigate();
+
     const toast = useToast();
+
+    const [selectedBranch, setSelectedBranch] = useState(editMeetingRoomRequestPayload.branch);
+    const [branchData, setBranchData] = useState([]);
+    const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
+    useEffect(() => {
+        if (!branchesLoading && !branchesError) {
+            setBranchData(data.branches);
+        }
+    }, [branchesLoading, branchesError, data]);
+
+    console.log(editMeetingRoomRequestPayload);
 
     const [editMeetingRoom] = useMutation(EDIT_MEETING_ROOM);
     async function handleEditMeetingRoom() {
@@ -93,23 +111,54 @@ function MeetingRoomNew() {
                         }
                     />
                 </div>
-                <div className="flex flex-col gap-1 w-fit">
-                    <span className="text-sm text-mediumGray">Total Seats</span>
-                    <div className="border rounded-2xl border-light px-4">
-                        <Input
-                            id="cost"
-                            variant="unstyled"
-                            type="number"
-                            value={editMeetingRoomRequestPayload.totalSeats}
-                            style={{ fontSize: 20 }}
-                            className="py-4 max-w-[143px]"
-                            onChange={(event) =>
-                                setEditMeetingRoomPayload({
-                                    ...editMeetingRoomRequestPayload,
-                                    totalSeats: parseInt(event.target.value),
-                                })
-                            }
-                        />
+
+                <div className="flex gap-8">
+                    <div className="flex flex-col gap-1 w-fit">
+                        <span className="text-sm text-mediumGray">Total Seats</span>
+                        <div className="border rounded-xl border-light px-4">
+                            <Input
+                                id="cost"
+                                variant="unstyled"
+                                type="number"
+                                value={editMeetingRoomRequestPayload.totalSeats}
+                                style={{ fontSize: 20 }}
+                                className="py-2.5 max-w-[143px]"
+                                onChange={(event) =>
+                                    setEditMeetingRoomPayload({
+                                        ...editMeetingRoomRequestPayload,
+                                        totalSeats: parseInt(event.target.value),
+                                    })
+                                }
+                            />
+                        </div>
+                    </div>
+                    <div className="location flex flex-col gap-1">
+                        <span className="text-sm text-mediumGray">Location</span>
+
+                        <div className="rounded-xl border border-light  w-fit  flex justify-start">
+                            <Menu autoSelect={false} closeOnBlur>
+                                <MenuButton as="button" className="h-fit rounded-xl  ">
+                                    <div className="flex px-4 w-[312px] py-3 items-center justify-between">
+                                        {selectedBranch.name ? (
+                                            <span className="text-dark">{selectedBranch.name}</span>
+                                        ) : (
+                                            <span className="text-dark">Select a branch</span>
+                                        )}
+
+                                        <ChevronRight className="rotate-90 h-5 text-dark " />
+                                    </div>
+                                </MenuButton>
+                                <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
+                                    {branchData.map((branch, index) => {
+                                        return (
+                                            <MenuItem key={index} onClick={() => setSelectedBranch(branch)}>
+                                                {branch.name}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </MenuList>
+                            </Menu>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -154,4 +203,4 @@ function MeetingRoomNew() {
     );
 }
 
-export default MeetingRoomNew;
+export default MeetingRoomEdit;

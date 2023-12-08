@@ -46,8 +46,6 @@ function WorkshopCreatePost() {
 
     useEffect(() => {
         if (!branchesLoading && !branchesError) {
-            // Set the branches data
-            //  console.log("data", data);
             setBranchData(data.branches);
         }
     }, [branchesLoading, branchesError, data]);

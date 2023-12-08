@@ -1,4 +1,3 @@
-// import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ReactComponent as PlusIcon } from "../../assets/PlusIcon.svg";
 import { ReactComponent as EditIcon } from "../../assets/EditIcon.svg";
@@ -8,12 +7,10 @@ import { ReactComponent as UserIcon } from "../../assets/UserIcon.svg";
 import { GET_BRANCH } from "../../queries/branchesQueries";
 import { useQuery } from "@apollo/client";
 
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Loader from "../../components/Loader";
 import { useRecoilState } from "recoil";
 import { branchData } from "../../stores/branches";
-import { useEffect } from "react";
 
 function BranchDetail() {
     const { id } = useParams();

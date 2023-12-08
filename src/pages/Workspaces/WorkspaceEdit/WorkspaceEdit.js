@@ -1,11 +1,11 @@
 import { Input } from "@chakra-ui/react";
 
-import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
-import { ReactComponent as EqualIcon } from "../../../assets/EqualIcon.svg";
-import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
+import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
 
 import { Textarea } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
+
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 
 import Amenities from "../components/Amenities";
 import { useEffect, useState } from "react";
@@ -19,25 +19,22 @@ import {
 } from "../../../stores/workspaceStore";
 
 import { EDIT_WORKSPACE } from "../../../queries/workspaceQueries";
-import { useMutation } from "@apollo/client";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery } from "@apollo/client";
+import { useNavigate, useParams } from "react-router-dom";
 import WorkspaceRates from "../components/Rates";
-import PicturesUpload from "../../../components/PictureUpload";
 import PicturesGrid from "../../../components/PicturesGrid";
 import OpenDays from "../../../components/OpenDays";
+import { GET_BRANCHES } from "../../../queries/branchesQueries";
 
 function WorkspaceNew() {
     const [editWorkspaceRequestPayload, setEditWorkspacePayload] = useRecoilState(editWorkspaceRequest);
-    const [openDays, setOpenDays] = useRecoilState(workspaceOpenDaysState);
+    const openDays = useRecoilValue(workspaceOpenDaysState);
+    const pictures = useRecoilValue(workspacePicturesState);
+
     const baseRates = useRecoilValue(workspaceBaseRatesState);
     const customRates = useRecoilValue(workspaceCustomRatesState);
     const amenities = useRecoilValue(workspaceAmenitiesState);
-    const [pictures, setPictures] = useRecoilState(workspacePicturesState);
 
-    const [startAMPM, setStartAMPM] = useState("AM");
-    const [endAMPM, setEndAMPM] = useState("AM");
-
-    // let { state } = useLocation();
     let params = useParams();
     const navigate = useNavigate();
 
@@ -46,6 +43,15 @@ function WorkspaceNew() {
             navigate(`/workspaces/${params.id}`);
         }
     }, [editWorkspaceRequestPayload]);
+
+    const [selectedBranch, setSelectedBranch] = useState(editWorkspaceRequestPayload.branch);
+    const [branchData, setBranchData] = useState([]);
+    const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
+    useEffect(() => {
+        if (!branchesLoading && !branchesError) {
+            setBranchData(data.branches);
+        }
+    }, [branchesLoading, branchesError, data]);
 
     const [editWorkspace] = useMutation(EDIT_WORKSPACE);
     async function handleEditWorkspace() {
@@ -69,15 +75,12 @@ function WorkspaceNew() {
 
         console.log("payload", payload);
         try {
-            // console.log("CREATE_BRANCH", CREATE_BRANCH);
             const { data } = await editWorkspace({
                 mutation: EDIT_WORKSPACE,
                 variables: {
                     input: payload,
                 },
-                // client: client,
             });
-            //  console.log(data);
 
             navigate(`/workspaces/${params.id}`);
         } catch (error) {
@@ -88,12 +91,13 @@ function WorkspaceNew() {
     return (
         <div className="flex flex-col gap-8">
             <div className="title border rounded-2xl border-light px-8 py-12 flex flex-col gap-8">
-                <div className="title mb-6 rounded-xl border overflow-hidden px-4">
+                <div className="title rounded-xl border overflow-hidden px-4">
                     <Input
                         variant="unstyled"
                         value={editWorkspaceRequestPayload.name}
                         placeholder="Enter Workspace Name"
                         className="py-4"
+                        style={{ fontSize: 24 }}
                         onChange={(event) =>
                             setEditWorkspacePayload({
                                 ...editWorkspaceRequestPayload,
@@ -102,40 +106,71 @@ function WorkspaceNew() {
                         }
                     />
                 </div>
-                <div className="cost flex gap-12 items-center">
-                    <div className="border rounded-2xl border-light px-4">
-                        <Input
-                            id="cost"
-                            variant="unstyled"
-                            type="number"
-                            value={editWorkspaceRequestPayload.totalSeats}
-                            className="py-4 max-w-[143px]"
-                            onChange={(event) =>
-                                setEditWorkspacePayload({
-                                    ...editWorkspaceRequestPayload,
-                                    totalSeats: parseInt(event.target.value),
-                                })
-                            }
-                        />
+                <div className="flex flex-row gap-4">
+                    <div className="cost flex flex-col w-fit gap-1">
+                        <span className="text-sm text-mediumGray">Total Seats</span>
+                        <div className="border rounded-xl border-light px-4">
+                            <Input
+                                id="cost"
+                                variant="unstyled"
+                                type="number"
+                                style={{ fontSize: 20 }}
+                                value={editWorkspaceRequestPayload.totalSeats}
+                                className="py-[9px] max-w-[143px]"
+                                onChange={(event) =>
+                                    setEditWorkspacePayload({
+                                        ...editWorkspaceRequestPayload,
+                                        totalSeats: parseInt(event.target.value),
+                                    })
+                                }
+                            />
+                        </div>
+                    </div>
+                    <div className="cost flex flex-col w-fit gap-1">
+                        <span className="text-sm text-mediumGray">Location</span>
+
+                        <div className="rounded-xl border border-light  w-fit  flex justify-start">
+                            <Menu autoSelect={false} closeOnBlur>
+                                <MenuButton as="button" className="h-fit rounded-xl  ">
+                                    <div className="flex px-4 w-[312px] py-3 items-center justify-between">
+                                        {selectedBranch.name ? (
+                                            <span className="text-dark">{selectedBranch.name}</span>
+                                        ) : (
+                                            <span className="text-dark">Select a branch</span>
+                                        )}
+
+                                        <ChevronRight className="rotate-90 h-5 text-dark " />
+                                    </div>
+                                </MenuButton>
+                                <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
+                                    {branchData.map((branch, index) => {
+                                        return (
+                                            <MenuItem key={index} onClick={() => setSelectedBranch(branch)}>
+                                                {branch.name}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </MenuList>
+                            </Menu>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="description flex gap-7 flex-col border rounded-2xl border-light px-8 py-12">
                 <div className="text-left text-2xl font-Adam">Description</div>
-                <div className="border rounded-2xl bordr-light px-8 py-12">
-                    <Textarea
-                        value={editWorkspaceRequestPayload.description}
-                        onChange={(event) =>
-                            setEditWorkspacePayload({
-                                ...editWorkspaceRequestPayload,
-                                description: event.target.value,
-                            })
-                        }
-                        placeholder="Here is a sample placeholder"
-                        size="sm"
-                    />
-                </div>
+
+                <Textarea
+                    value={editWorkspaceRequestPayload.description}
+                    onChange={(event) =>
+                        setEditWorkspacePayload({
+                            ...editWorkspaceRequestPayload,
+                            description: event.target.value,
+                        })
+                    }
+                    placeholder="Here is a sample placeholder"
+                    size="sm"
+                />
             </div>
 
             <div className="timings border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">

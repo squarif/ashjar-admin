@@ -70,41 +70,41 @@ const editWorkspaceRequest = atom({
 const workspaceOpenDaysState = atom({
     key: "workspaceOpenDaysState",
     default: [
-        // {
-        //     day: "Monday",
-        //     startTime: "03:24",
-        //     endTime: "18:24",
-        // },
-        // {
-        //     day: "Tuesday",
-        //     startTime: "03:25",
-        //     endTime: "05:24",
-        // },
-        // {
-        //     day: "Wednesday",
-        //     startTime: "03:28",
-        //     endTime: "06:24",
-        // },
-        // {
-        //     day: "Thursday",
-        //     startTime: "03:22",
-        //     endTime: "08:24",
-        // },
-        // {
-        //     day: "Friday",
-        //     startTime: "03:24",
-        //     endTime: "09:24",
-        // },
-        // {
-        //     day: "Saturday",
-        //     startTime: "02:21",
-        //     endTime: "06:24",
-        // },
-        // {
-        //     day: "Sunday",
-        //     startTime: "06:18",
-        //     endTime: "07:24",
-        // },
+        {
+            day: "Monday",
+            startTime: "",
+            endTime: "",
+        },
+        {
+            day: "Tuesday",
+            startTime: "",
+            endTime: "",
+        },
+        {
+            day: "Wednesday",
+            startTime: "",
+            endTime: "",
+        },
+        {
+            day: "Thursday",
+            startTime: "",
+            endTime: "",
+        },
+        {
+            day: "Friday",
+            startTime: "",
+            endTime: "",
+        },
+        {
+            day: "Saturday",
+            startTime: "",
+            endTime: "",
+        },
+        {
+            day: "Sunday",
+            startTime: "",
+            endTime: "",
+        },
     ],
 });
 

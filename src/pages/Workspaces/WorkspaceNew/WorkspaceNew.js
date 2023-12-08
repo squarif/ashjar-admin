@@ -3,11 +3,14 @@ import { Input } from "@chakra-ui/react";
 import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
 import { ReactComponent as EqualIcon } from "../../../assets/EqualIcon.svg";
 import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
+import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
 
 import { Textarea } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
-import { useState } from "react";
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+
+import { useEffect, useState } from "react";
 
 import {
     workspaceAmenitiesState,
@@ -19,13 +22,14 @@ import {
 } from "../../../stores/workspaceStore";
 
 import { CREATE_WORKSPACE } from "../../../queries/workspaceQueries";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom";
 import PicturesGrid from "../../../components/PicturesGrid";
 import WorkspaceRates from "../components/Rates";
 
 import Amenities from "../components/Amenities";
 import OpenDays from "../../../components/OpenDays";
+import { GET_BRANCHES } from "../../../queries/branchesQueries";
 
 function WorkspaceNew() {
     const [newWorkspaceRequestPayload, setNewWorkspacePayload] = useRecoilState(newWorkspaceRequest);
@@ -43,31 +47,16 @@ function WorkspaceNew() {
 
     const navigate = useNavigate();
 
-    const handleTimeChange = (dayIndex, field, value) => {
-        const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
-        updatedOpenDays[dayIndex][field] = value;
-        setOpenDays(updatedOpenDays);
-    };
-
-    const handleAMPMChange = (dayIndex, field, value) => {
-        const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
-
-        updatedOpenDays[dayIndex][field] = value;
-        setOpenDays(updatedOpenDays);
-    };
-
-    const inputStyle = {
-        /* Hide the time input's clock icon */
-        WebkitAppearance: "none",
-    };
-
-    function getAMPM(time) {
-        if (time.substring(0, 2) > 12) {
-            return "PM";
-        } else {
-            return "AM";
+    const [selectedBranch, setSelectedBranch] = useState({
+        name: "",
+    });
+    const [branchData, setBranchData] = useState([]);
+    const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
+    useEffect(() => {
+        if (!branchesLoading && !branchesError) {
+            setBranchData(data.branches);
         }
-    }
+    }, [branchesLoading, branchesError, data]);
 
     const [createWorkspace] = useMutation(CREATE_WORKSPACE);
     async function handleAddWorkspace() {
@@ -86,7 +75,7 @@ function WorkspaceNew() {
         let payload = {
             ...newWorkspaceRequestPayload,
             openDays: openDays,
-            branch: state.branch_id,
+            branch: selectedBranch._id,
             baseRates: baseRates,
             customRates: customRates,
             amenities: amenities,
@@ -119,6 +108,7 @@ function WorkspaceNew() {
                         value={newWorkspaceRequestPayload.name}
                         placeholder="Enter Workspace Name"
                         className="py-4"
+                        style={{ fontSize: 24 }}
                         onChange={(event) =>
                             setNewWorkspacePayload({
                                 ...newWorkspaceRequestPayload,
@@ -129,15 +119,16 @@ function WorkspaceNew() {
                 </div>
 
                 <div className="flex flex-row gap-4">
-                    <div className="cost flex flex-col w-fit gap-1.5">
+                    <div className="cost flex flex-col w-fit gap-1">
                         <span className="text-sm text-mediumGray">Total Seats</span>
-                        <div className="border rounded-2xl border-light px-4">
+                        <div className="border rounded-xl border-light px-4">
                             <Input
                                 id="cost"
                                 variant="unstyled"
                                 type="number"
+                                style={{ fontSize: 20 }}
                                 value={newWorkspaceRequestPayload.totalSeats}
-                                className="py-4 max-w-[143px]"
+                                className="py-[9px] max-w-[143px]"
                                 onChange={(event) =>
                                     setNewWorkspacePayload({
                                         ...newWorkspaceRequestPayload,
@@ -148,22 +139,32 @@ function WorkspaceNew() {
                         </div>
                     </div>
 
-                    <div className="cost flex flex-col w-fit gap-1.5">
-                        <span className="text-sm text-mediumGray">Rate per Interval</span>
-                        <div className="border rounded-2xl border-light px-4">
-                            <Input
-                                id="cost"
-                                variant="unstyled"
-                                type="number"
-                                value={newWorkspaceRequestPayload.ratePerInterval}
-                                className="py-4 max-w-[143px]"
-                                onChange={(event) =>
-                                    setNewWorkspacePayload({
-                                        ...newWorkspaceRequestPayload,
-                                        ratePerInterval: parseInt(event.target.value),
-                                    })
-                                }
-                            />
+                    <div className="cost flex flex-col w-fit gap-1">
+                        <span className="text-sm text-mediumGray">Location</span>
+
+                        <div className="rounded-xl border border-light  w-fit  flex justify-start">
+                            <Menu autoSelect={false} closeOnBlur>
+                                <MenuButton as="button" className="h-fit rounded-xl  ">
+                                    <div className="flex px-4 w-[312px] py-3 items-center justify-between">
+                                        {selectedBranch.name ? (
+                                            <span className="text-dark">{selectedBranch.name}</span>
+                                        ) : (
+                                            <span className="text-dark">Select a branch</span>
+                                        )}
+
+                                        <ChevronRight className="rotate-90 h-5 text-dark " />
+                                    </div>
+                                </MenuButton>
+                                <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
+                                    {branchData.map((branch, index) => {
+                                        return (
+                                            <MenuItem key={index} onClick={() => setSelectedBranch(branch)}>
+                                                {branch.name}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </MenuList>
+                            </Menu>
                         </div>
                     </div>
                 </div>
@@ -171,19 +172,18 @@ function WorkspaceNew() {
 
             <div className="description flex gap-7 flex-col border rounded-2xl border-light px-8 py-12">
                 <div className="text-left text-2xl">Description</div>
-                <div className="border rounded-2xl bordr-light px-8 py-12">
-                    <Textarea
-                        value={newWorkspaceRequestPayload.description}
-                        onChange={(event) =>
-                            setNewWorkspacePayload({
-                                ...newWorkspaceRequestPayload,
-                                description: event.target.value,
-                            })
-                        }
-                        placeholder="Please write description here"
-                        size="sm"
-                    />
-                </div>
+
+                <Textarea
+                    value={newWorkspaceRequestPayload.description}
+                    onChange={(event) =>
+                        setNewWorkspacePayload({
+                            ...newWorkspaceRequestPayload,
+                            description: event.target.value,
+                        })
+                    }
+                    placeholder="Please write description here"
+                    size="sm"
+                />
             </div>
 
             <div className="timings border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
