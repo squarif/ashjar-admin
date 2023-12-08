@@ -6,6 +6,7 @@ export const GET_BRANCH = gql`
         branch(_id: $id) {
             _id
             location
+            address
             name
             meetingRooms {
                 _id
@@ -37,6 +38,7 @@ export const GET_BRANCHES = gql`
                 name
                 totalSeats
                 pictures
+                ratesPerHour
             }
             name
             workspaces {
@@ -61,6 +63,7 @@ export const CREATE_BRANCH = gql`
             _id
             name
             location
+            address
         }
     }
 `;
@@ -71,6 +74,7 @@ export const UPDATE_BRANCH = gql`
             _id
             name
             location
+            address
         }
     }
 `;

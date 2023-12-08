@@ -1,6 +1,6 @@
 import { Button, Input, Spinner, useToast } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { ReactComponent as MapsIcon } from "../../assets/MapsIcon.svg";
 
@@ -11,14 +11,19 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { branchData, branchesData } from "../../stores/branches";
+import Maps from "../../components/Maps";
+import { LoadScript, StandaloneSearchBox, useJsApiLoader } from "@react-google-maps/api";
+
+const MAP_LIBRARIES = ["places"];
 
 function BranchEdit() {
     const { state } = useLocation();
 
     const [branchName, setBranchName] = useState(state.name);
-    const [branchLocation, setbranchLocation] = useState(state.location);
+    const [branchAddress, setbranchAddress] = useState(state.address);
+    const [location, setLocation] = useState(state.location);
+    const [locationName, setLocationName] = useState(JSON.parse(state.location).name);
     const [branches, setBranches] = useRecoilState(branchesData);
-
     const [branch, setBranch] = useRecoilState(branchData);
 
     const navigate = useNavigate();
@@ -26,26 +31,29 @@ function BranchEdit() {
     setBranch(state);
 
     console.log("state", state);
+    console.log("location", JSON.parse(state.location));
 
     const toast = useToast();
 
     const [updateBranch, { data, loading, error }] = useMutation(UPDATE_BRANCH);
     async function handleUpdateBranch() {
         try {
+            let payload = {
+                _id: branch._id,
+                name: branchName,
+                address: branchAddress,
+                location: JSON.stringify(location),
+            };
+
             await updateBranch({
                 mutation: UPDATE_BRANCH,
                 variables: {
-                    input: {
-                        _id: branch._id,
-                        name: branchName,
-                        location: branchLocation,
-                    },
+                    input: payload,
                 },
             })
                 .then((data) => {
-                    console.log("THEN", data);
                     let newBranches = [...branches, data.data.updateBranch];
-                    console.log(newBranches);
+
                     setBranches(newBranches);
 
                     toast({
@@ -66,6 +74,36 @@ function BranchEdit() {
             });
         }
     }
+
+    const { isLoaded } = useJsApiLoader({
+        id: "google-map-script",
+        googleMapsApiKey: "AIzaSyBWRimC90Mj6kSABtRjLPtbBQylm_XszkM",
+        libraries: MAP_LIBRARIES,
+    });
+
+    const mapsRef = useRef(null);
+
+    const onSearchBoxLoad = (ref) => {
+        if (mapsRef.current) {
+            mapsRef.current.onSearchBoxLoad(ref);
+        } else {
+            console.log("onSearchBoxLoad REF NF");
+        }
+    };
+
+    const callOnPlacesChanged = () => {
+        if (mapsRef.current) {
+            mapsRef.current.onPlacesChanged();
+        } else {
+            console.log("callOnPlacesChanged REF NF");
+        }
+    };
+
+    const onSetLocation = (value) => {
+        console.log("onSetLocation", value);
+        setLocation(value);
+        setLocationName(value.name);
+    };
 
     return (
         <div className="NewBranch">
@@ -97,34 +135,41 @@ function BranchEdit() {
                     <div className="relative flex flex-col gap-6 items-start justify-center">
                         <span className="text-[32px] text-dark">Location</span>
 
-                        <Menu>
-                            <MenuButton as="button">
-                                <div className="flex items-center gap-4 border border-light py-4 px-2 rounded-xl w-[430px]">
-                                    <MapsIcon className=" h-5" />
-                                    <span className=" text-lg leading-none">Location</span>
+                        {isLoaded && (
+                            <StandaloneSearchBox
+                                onLoad={onSearchBoxLoad}
+                                onPlacesChanged={callOnPlacesChanged}>
+                                <div className="border rounded-xl w-[430px] border-light px-4">
+                                    <Input
+                                        className="py-6  text-light text-[24px] leading-none"
+                                        placeholder="Search for a place"
+                                        variant="unstyled"
+                                        type="text"
+                                        value={locationName}
+                                        onChange={(event) => setLocationName(event.target.value)}
+                                    />
                                 </div>
-                            </MenuButton>
-                            <MenuList className="MenuList inset-0 w-[430px] left-[-200px]">
-                                <MenuItem>Download</MenuItem>
-                                <MenuItem>Create a Copy</MenuItem>
-                                <MenuItem>Mark as Draft</MenuItem>
-                                <MenuItem>Delete</MenuItem>
-                                <MenuItem>Attend a Workshop</MenuItem>
-                            </MenuList>
-                        </Menu>
+                            </StandaloneSearchBox>
+                        )}
 
                         <div className="border rounded-xl w-[430px] border-light px-4">
                             <Input
-                                value={branchLocation}
-                                placeholder="Enter branch name"
+                                value={branchAddress}
+                                placeholder="Enter branch address"
                                 className="py-5 text-dark text-[24px] leading-none"
-                                onChange={(event) => setbranchLocation(event.target.value)}
+                                onChange={(event) => setbranchAddress(event.target.value)}
                                 variant="unstyled"
                             />
                         </div>
                     </div>
 
-                    <div className="border rounded-xl w-[315px] h-[315px]">map</div>
+                    <div className="border rounded-xl w-[315px] h-[315px]">
+                        <Maps
+                            ref={mapsRef}
+                            center={JSON.parse(state.location).location}
+                            onSetLocation={(location) => onSetLocation(location)}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

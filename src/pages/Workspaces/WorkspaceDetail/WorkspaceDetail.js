@@ -17,6 +17,7 @@ import { useQuery } from "@apollo/client";
 import { GET_WORKSPACE } from "../../../queries/workspaceQueries";
 import { useEffect } from "react";
 import Loader from "../../../components/Loader";
+import Maps from "../../../components/Maps";
 
 function WorkspaceDetail() {
     // const [workspaceData, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
@@ -38,181 +39,6 @@ function WorkspaceDetail() {
     });
 
     let workspaceData = data?.WorkSpace;
-
-    // let workspaceData = {
-    //     _id: "65644ce90cbe13002b446d62",
-    //     name: "Testing workspace",
-    //     description:
-    //         "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-    //     branch: {
-    //         _id: "6537572cefdb213c0c319113",
-    //         __typename: "Branch",
-    //     },
-    //     openDays: [
-    //         {
-    //             day: "Monday",
-    //             startTime: "03:24",
-    //             endTime: "18:24",
-    //             __typename: "OpenDays",
-    //         },
-    //         {
-    //             day: "Tuesday",
-    //             startTime: "03:25",
-    //             endTime: "05:24",
-    //             __typename: "OpenDays",
-    //         },
-    //         {
-    //             day: "Wednesday",
-    //             startTime: "03:28",
-    //             endTime: "06:24",
-    //             __typename: "OpenDays",
-    //         },
-    //         {
-    //             day: "Thursday",
-    //             startTime: "03:22",
-    //             endTime: "08:24",
-    //             __typename: "OpenDays",
-    //         },
-    //         {
-    //             day: "Friday",
-    //             startTime: "03:24",
-    //             endTime: "09:24",
-    //             __typename: "OpenDays",
-    //         },
-    //         {
-    //             day: "Saturday",
-    //             startTime: "02:21",
-    //             endTime: "06:24",
-    //             __typename: "OpenDays",
-    //         },
-    //         {
-    //             day: "Sunday",
-    //             startTime: "06:18",
-    //             endTime: "07:24",
-    //             __typename: "OpenDays",
-    //         },
-    //     ],
-    //     totalSeats: 699,
-    //     baseRates: [
-    //         {
-    //             startTime: "11:00",
-    //             endTime: "04:00",
-    //             rate: 230,
-    //             __typename: "baseRateInWorkspace",
-    //         },
-    //         {
-    //             startTime: "11:00",
-    //             endTime: "04:00",
-    //             rate: 230,
-    //             __typename: "baseRateInWorkspace",
-    //         },
-    //         {
-    //             startTime: "11:00",
-    //             endTime: "04:00",
-    //             rate: 230,
-    //             __typename: "baseRateInWorkspace",
-    //         },
-    //         {
-    //             startTime: "11:00",
-    //             endTime: "04:00",
-    //             rate: 230,
-    //             __typename: "baseRateInWorkspace",
-    //         },
-    //     ],
-    //     customRates: [
-    //         {
-    //             startDate: "1689984000000",
-    //             endDate: "1690502400000",
-    //             ratesInSlot: [
-    //                 {
-    //                     startTime: "11:00",
-    //                     endTime: "04:00",
-    //                     rate: 230,
-    //                     __typename: "baseRateInWorkspace",
-    //                 },
-    //                 {
-    //                     startTime: "11:00",
-    //                     endTime: "04:00",
-    //                     rate: 230,
-    //                     __typename: "baseRateInWorkspace",
-    //                 },
-    //                 {
-    //                     startTime: "11:00",
-    //                     endTime: "04:00",
-    //                     rate: 230,
-    //                     __typename: "baseRateInWorkspace",
-    //                 },
-    //                 {
-    //                     startTime: "11:00",
-    //                     endTime: "04:00",
-    //                     rate: 230,
-    //                     __typename: "baseRateInWorkspace",
-    //                 },
-    //             ],
-    //             __typename: "customRateInWorkspace",
-    //         },
-    //         {
-    //             startDate: "1689984000000",
-    //             endDate: "1690848000000",
-    //             ratesInSlot: [
-    //                 {
-    //                     startTime: "11:00",
-    //                     endTime: "07:00",
-    //                     rate: 230,
-    //                     __typename: "baseRateInWorkspace",
-    //                 },
-    //                 {
-    //                     startTime: "11:00",
-    //                     endTime: "07:00",
-    //                     rate: 230,
-    //                     __typename: "baseRateInWorkspace",
-    //                 },
-    //                 {
-    //                     startTime: "11:00",
-    //                     endTime: "07:00",
-    //                     rate: 230,
-    //                     __typename: "baseRateInWorkspace",
-    //                 },
-    //                 {
-    //                     startTime: "11:00",
-    //                     endTime: "07:00",
-    //                     rate: 230,
-    //                     __typename: "baseRateInWorkspace",
-    //                 },
-    //             ],
-    //             __typename: "customRateInWorkspace",
-    //         },
-    //     ],
-    //     amenities: [
-    //         {
-    //             name: "Nursery",
-    //             picture: "Nursery 69.svg",
-    //             quantity: 5,
-    //             type: "quantity",
-    //             __typename: "Amenities",
-    //         },
-    //         {
-    //             name: "Workspace",
-    //             picture: "Nursery 2.svg",
-    //             quantity: 46,
-    //             type: "toggle",
-    //             __typename: "Amenities",
-    //         },
-    //         {
-    //             name: "Workspace",
-    //             picture: "Nursery 3.svg",
-    //             quantity: 1,
-    //             type: "toggle",
-    //             __typename: "Amenities",
-    //         },
-    //     ],
-    //     pictures: [
-    //         "https://images.inc.com/uploaded_files/image/1920x1080/getty_517610514_353435.jpg",
-    //         "https://images.inc.com/uploaded_files/image/1920x1080/getty_517610514_353435.jpg",
-    //         "https://images.inc.com/uploaded_files/image/1920x1080/getty_517610514_353435.jpg",
-    //     ],
-    //     __typename: "WorkSpace",
-    // };
 
     useEffect(() => {
         if (!workspaceLoading && !workspaceError) {
@@ -304,9 +130,8 @@ function WorkspaceDetail() {
 
                     <div className="text-left text-2xl">Location</div>
 
-                    <div className="flex gap-12 items-center">
-                        <div className=""></div>
-                        <div className=""></div>
+                    <div className="h-[300px] w-full rounded-2xl overflow-hidden">
+                        <Maps center={JSON.parse(workspaceData.branch.location).location} />
                     </div>
                 </div>
             </div>

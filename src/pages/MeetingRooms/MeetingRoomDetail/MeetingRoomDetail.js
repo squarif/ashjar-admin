@@ -1,5 +1,6 @@
 import { ReactComponent as ClockIcon } from "../../../assets/ClockIcon.svg";
 import { ReactComponent as EditIcon } from "../../../assets/EditIcon.svg";
+import { ReactComponent as MapsIcon } from "../../../assets/MapsIcon.svg";
 
 import { useQuery } from "@apollo/client";
 import { GET_MEETING_ROOM } from "../../../queries/meetingRoomQueries";
@@ -14,6 +15,7 @@ import {
 } from "../../../stores/meetingRoomStore";
 import { useEffect } from "react";
 import Loader from "../../../components/Loader";
+import Maps from "../../../components/Maps";
 
 function MeetingRoomDetails() {
     const { id } = useParams();
@@ -47,6 +49,9 @@ function MeetingRoomDetails() {
             setOpenDays(meetingRoomData.openDays);
             setPictures(meetingRoomData.pictures);
             setEditMeetingRoomPayload(meetingRoomData);
+
+            // let loc = JSON.parse(meetingRoomData.branch.location);
+            // console.log(loc, typeof loc);
         }
     }, [meetingRoomLoading, meetingRoomError, meetingRoomData, data]);
 
@@ -129,10 +134,8 @@ function MeetingRoomDetails() {
                             <div className="h-[1px] w-full border-t border-borderColor"></div>
 
                             <div className="text-left text-2xl">Location</div>
-
-                            <div className="flex gap-12 items-center">
-                                <div className=""></div>
-                                <div className=""></div>
+                            <div className="h-[300px] w-full rounded-2xl overflow-hidden">
+                                <Maps center={JSON.parse(meetingRoomData.branch.location).location} />
                             </div>
                         </div>
                     </div>
@@ -144,7 +147,7 @@ function MeetingRoomDetails() {
                         <div className="w-full h-[1px] border-t border-borderColor"></div>
                         <div className="flex flex-col gap-4">
                             {meetingRoomData.openDays.map((day, index) => (
-                                <div className="flex justify-between gap-5">
+                                <div key={index} className="flex justify-between gap-5">
                                     <span className="text-dark text-lg leading-normal">{day.day}</span>
                                     <span className="text-dark text-lg leading-normal">
                                         {day.startTime} - {day.endTime}

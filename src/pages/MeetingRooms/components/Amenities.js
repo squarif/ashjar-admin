@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-import { ReactComponent as PlusIcon } from "../../../../assets/PlusIcon.svg";
+import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 import { Switch } from "@chakra-ui/react";
 
 import { Input } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
-import { workspaceAmenitiesState } from "../../../../stores/workspaceStore";
+import { meetingRoomAmenitiesState } from "../../../stores/meetingRoomStore";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_Amenities } from "./queries";
@@ -14,7 +14,7 @@ function Amenities() {
     const [searchQuery, setSearchQuery] = useState("");
     // const [quantityToggle, setQuantityToggle] = useState("quantity");
 
-    const [amenitiesData, setAmenitiesData] = useRecoilState(workspaceAmenitiesState);
+    const [amenitiesData, setAmenitiesData] = useRecoilState(meetingRoomAmenitiesState);
 
     const decreaseQuantity = (index) => {
         if (amenitiesData[index].quantity > 1) {
@@ -95,7 +95,6 @@ function Amenities() {
                     // console.log("amenity", amenity);
                     return (
                         <div key={index} className="flex p-6 justify-between items-center">
-                            type {amenity.type}
                             <div className="border rounded-2xl border-light px-4">
                                 <Input
                                     id="svg"
@@ -185,8 +184,8 @@ function Amenities() {
 
             <div className="">
                 <button className="rounded-xl bg-primary flex gap-3 px-3 py-4" onClick={handleAddAmenity}>
+                    <PlusIcon className="text-white" />
                     <span className="text-lg text-white leading-normal">Add New Amenity</span>
-                    <PlusIcon />
                 </button>
             </div>
         </div>

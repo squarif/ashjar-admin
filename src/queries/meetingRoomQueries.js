@@ -75,8 +75,6 @@ const GET_MEETING_ROOM = gql`
                 _id
                 name
                 location
-                meetingRooms
-                workspaces
             }
             openDays {
                 day
@@ -117,13 +115,33 @@ const EDIT_MEETING_ROOM = gql`
             _id
             name
             description
+            branch {
+                _id
+                name
+                location
+            }
             openDays {
                 day
                 startTime
                 endTime
             }
+            slotsBooked {
+                date
+                slotsInDay {
+                    startTime
+                    endTime
+                    isBooked
+                    bookedBy
+                    ratePerHour
+                }
+            }
             totalSeats
             ratesPerHour
+            customRates {
+                startDate
+                endDate
+                rate
+            }
             amenities {
                 name
                 picture
@@ -131,11 +149,6 @@ const EDIT_MEETING_ROOM = gql`
                 type
             }
             pictures
-            customRates {
-                startDate
-                endDate
-                rate
-            }
         }
     }
 `;

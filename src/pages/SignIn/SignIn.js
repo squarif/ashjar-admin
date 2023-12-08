@@ -17,8 +17,8 @@ import { authSelector } from "../../recoil/selectors";
 
 function SignIn(props) {
     const [isLoading, setIsLoading] = useState(false);
-    const [email, setEmail] = useState("aliadnanarif25@gmail.com");
-    const [password, setPassword] = useState("ALOHOMORA!!!");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [alert, setAlert] = useState({ type: "", message: "" });
 
     const toast = useToast();

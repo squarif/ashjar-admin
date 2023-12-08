@@ -7,9 +7,9 @@ import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 import { Textarea } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
-import Amenities from "./components/Amenities";
+import Amenities from "../components/Amenities";
 import { useState } from "react";
-import MeetingRoomRates from "./components/Rates";
+import MeetingRoomRates from "../components/Rates";
 import {
     meetingRoomAmenitiesState,
     newMeetingRoomRequest,
@@ -32,40 +32,9 @@ function MeetingRoomNew() {
     const amenities = useRecoilValue(meetingRoomAmenitiesState);
     const [pictures, setPictures] = useRecoilState(meetingRoomPicturesState);
 
-    const [startAMPM, setStartAMPM] = useState("AM");
-    const [endAMPM, setEndAMPM] = useState("AM");
-
     const { state } = useLocation();
-    const navigate = useNavigate();
+
     const toast = useToast();
-
-    //  console.log("branch id", state);
-
-    const handleTimeChange = (dayIndex, field, value) => {
-        const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
-        updatedOpenDays[dayIndex][field] = value;
-        setOpenDays(updatedOpenDays);
-    };
-
-    const handleAMPMChange = (dayIndex, field, value) => {
-        const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
-
-        updatedOpenDays[dayIndex][field] = value;
-        setOpenDays(updatedOpenDays);
-    };
-
-    const inputStyle = {
-        /* Hide the time input's clock icon */
-        WebkitAppearance: "none",
-    };
-
-    function getAMPM(time) {
-        if (time.substring(0, 2) > 12) {
-            return "PM";
-        } else {
-            return "AM";
-        }
-    }
 
     const [createMeetingRoom] = useMutation(CREATE_MEETING_ROOM);
     async function handleAddMeetingRoom() {
@@ -76,6 +45,7 @@ function MeetingRoomNew() {
             amenities: amenities.map(({ __typename, ...rest }) => rest),
             pictures: pictures,
             branch: state.branch_id,
+            ratesPerHour: parseFloat(newMeetingRoomRequestPayload.ratesPerHour),
         };
 
         if (payload.__typename) delete payload["__typename"];
@@ -118,6 +88,7 @@ function MeetingRoomNew() {
                             variant="unstyled"
                             value={newMeetingRoomRequestPayload.name}
                             placeholder="Enter Meeting Room Name"
+                            style={{ fontSize: 24 }}
                             className="py-4"
                             onChange={(event) =>
                                 setNewMeetingRoomPayload({
@@ -127,7 +98,7 @@ function MeetingRoomNew() {
                             }
                         />
                     </div>
-                    <div className="flex flex-col w-fit gap-1.5">
+                    <div className="flex flex-col w-fit gap-1">
                         <span className="text-sm text-mediumGray">Total Seats</span>
                         <div className="border rounded-2xl border-light px-4">
                             <Input
@@ -135,6 +106,7 @@ function MeetingRoomNew() {
                                 variant="unstyled"
                                 type="number"
                                 value={newMeetingRoomRequestPayload.totalSeats}
+                                style={{ fontSize: 20 }}
                                 className="py-4 max-w-[143px]"
                                 onChange={(event) =>
                                     setNewMeetingRoomPayload({
@@ -149,19 +121,20 @@ function MeetingRoomNew() {
 
                 <div className="description flex gap-7 flex-col border rounded-2xl border-light px-8 py-12">
                     <div className="text-left text-2xl">Description</div>
-                    <div className="border rounded-2xl bordr-light px-8 py-12">
-                        <Textarea
-                            value={newMeetingRoomRequestPayload.description}
-                            onChange={(event) =>
-                                setNewMeetingRoomPayload({
-                                    ...newMeetingRoomRequestPayload,
-                                    description: event.target.value,
-                                })
-                            }
-                            placeholder="Please write description here"
-                            size="sm"
-                        />
-                    </div>
+
+                    <Textarea
+                        variant="unstyled"
+                        value={newMeetingRoomRequestPayload.description}
+                        onChange={(event) =>
+                            setNewMeetingRoomPayload({
+                                ...newMeetingRoomRequestPayload,
+                                description: event.target.value,
+                            })
+                        }
+                        placeholder="Please write description here"
+                        size="sm"
+                        style={{ borderRadius: 16 }}
+                    />
                 </div>
 
                 <div className="timings border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">

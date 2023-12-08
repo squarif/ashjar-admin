@@ -39,6 +39,36 @@ const meetingRoomOpenDaysState = atom({
             startTime: "00:00",
             endTime: "00:00",
         },
+        {
+            day: "Tuesday",
+            startTime: "00:00",
+            endTime: "00:00",
+        },
+        {
+            day: "Wednesday",
+            startTime: "00:00",
+            endTime: "00:00",
+        },
+        {
+            day: "Thursday",
+            startTime: "00:00",
+            endTime: "00:00",
+        },
+        {
+            day: "Friday",
+            startTime: "00:00",
+            endTime: "00:00",
+        },
+        {
+            day: "Saturday",
+            startTime: "00:00",
+            endTime: "00:00",
+        },
+        {
+            day: "Sunday",
+            startTime: "00:00",
+            endTime: "00:00",
+        },
     ],
 });
 

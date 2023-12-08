@@ -16,7 +16,7 @@ function OpenDays(props) {
 
     function handleNewDay() {
         let newDay = {
-            day: "Monday",
+            day: "",
             startTime: "00:00",
             endTime: "00:00",
         };
