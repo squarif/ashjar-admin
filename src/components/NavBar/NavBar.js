@@ -21,7 +21,7 @@ function NavBar() {
     //  console.log("location", location);
 
     function selected(route) {
-        if (route === location.pathname) {
+        if (location.pathname.includes(route)) {
             return true;
         } else {
             return false;

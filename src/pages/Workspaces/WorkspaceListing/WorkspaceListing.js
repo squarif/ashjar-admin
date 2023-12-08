@@ -2,24 +2,15 @@ import { useEffect, useState } from "react";
 import { Input } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
-import { ReactComponent as ClockIcon } from "../../../assets/ClockIcon.svg";
-import { ReactComponent as TickIcon } from "../../../assets/TickIcon.svg";
-import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
 
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
-
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from "@chakra-ui/react";
 
 import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 import { Link } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { GET_BRANCH, GET_BRANCHES } from "../../../queries/branchesQueries";
-import client from "../../../apollo";
+import { GET_BRANCHES } from "../../../queries/branchesQueries";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import Loader from "../../../components/Loader";
-
-// import { useQuery } from "@apollo/client";
-// import { GET_BRANCHES } from "./queries";
 
 function WorkspaceListing() {
     const [searchQuery, setSearchQuery] = useState("");

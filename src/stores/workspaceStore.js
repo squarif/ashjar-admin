@@ -72,38 +72,38 @@ const workspaceOpenDaysState = atom({
     default: [
         {
             day: "Monday",
-            startTime: "",
-            endTime: "",
+            startTime: "09:00",
+            endTime: "21:00",
         },
         {
             day: "Tuesday",
-            startTime: "",
-            endTime: "",
+            startTime: "09:00",
+            endTime: "21:00",
         },
         {
             day: "Wednesday",
-            startTime: "",
-            endTime: "",
+            startTime: "09:00",
+            endTime: "21:00",
         },
         {
             day: "Thursday",
-            startTime: "",
-            endTime: "",
+            startTime: "09:00",
+            endTime: "21:00",
         },
         {
             day: "Friday",
-            startTime: "",
-            endTime: "",
+            startTime: "09:00",
+            endTime: "21:00",
         },
         {
             day: "Saturday",
-            startTime: "",
-            endTime: "",
+            startTime: "09:00",
+            endTime: "21:00",
         },
         {
             day: "Sunday",
-            startTime: "",
-            endTime: "",
+            startTime: "09:00",
+            endTime: "21:00",
         },
     ],
 });

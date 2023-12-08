@@ -36,12 +36,9 @@ function WorkspaceNew() {
 
     const [pictures, setPictures] = useRecoilState(workspacePicturesState);
     const [openDays, setOpenDays] = useRecoilState(workspaceOpenDaysState);
-    const amenities = useRecoilValue(workspaceAmenitiesState);
     const [baseRates, setBaseRates] = useRecoilState(workspaceBaseRatesState);
     const [customRates, setCustomRates] = useRecoilState(workspaceCustomRatesState);
-
-    const [startAMPM, setStartAMPM] = useState("AM");
-    const [endAMPM, setEndAMPM] = useState("AM");
+    const amenities = useRecoilValue(workspaceAmenitiesState);
 
     let { state } = useLocation();
 
@@ -74,7 +71,7 @@ function WorkspaceNew() {
 
         let payload = {
             ...newWorkspaceRequestPayload,
-            openDays: openDays,
+            openDays: openDays.map(({ __typename, ...rest }) => rest),
             branch: selectedBranch._id,
             baseRates: baseRates,
             customRates: customRates,
