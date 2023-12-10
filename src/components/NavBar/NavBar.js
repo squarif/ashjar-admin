@@ -77,8 +77,8 @@ function NavBar() {
                 <span>Users</span>
             </Link>
 
-            <Link className={selected("/about") ? "navButtonSelected" : "navButton"} to="/about">
-                <CouponsIcon className={selected("/about") ? "navIconSelected" : "navIcon"} />
+            <Link className={selected("/coupons") ? "navButtonSelected" : "navButton"} to="/coupons">
+                <CouponsIcon className={selected("/coupons") ? "navIconSelected" : "navIcon"} />
                 <span>Coupons</span>
             </Link>
 

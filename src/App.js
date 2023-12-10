@@ -37,6 +37,7 @@ import PrivateRoute from "./auth/components/privateRoute";
 import { useRecoilStateCallback } from "./hooks";
 import { userAtom } from "./recoil/atoms";
 import BranchEdit from "./pages/Branches/BranchEdit";
+import CouponsPage from "./pages/Coupons/CouponsPage";
 
 function App() {
     const [userA, setUserAtom] = useRecoilStateCallback(userAtom);
@@ -299,6 +300,14 @@ function App() {
                             element={
                                 <PrivateRoute redirect="/login">
                                     <Complaints />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/coupons"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <CouponsPage />
                                 </PrivateRoute>
                             }
                         />
