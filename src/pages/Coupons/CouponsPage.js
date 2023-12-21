@@ -15,17 +15,90 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@apollo/client";
 import client from "../../apollo";
 import Loader from "../../components/Loader";
+import { CREATE_COUPON, EDIT_COUPON, GET_COUPONS } from "../../queries/couponsQueries";
+import { useRecoilState } from "recoil";
+import { couponData, couponDataState, couponsDataState } from "../../stores/couponsStore";
 
+function getDate(value) {
+    if (typeof value === "string") {
+        if (value.includes("-")) {
+            return value;
+        } else {
+            const date = new Date(parseInt(value));
+            return date.toISOString().slice(0, 10);
+        }
+    } else {
+        return value;
+    }
+}
 function AddCoupon({ setAddCoupon }) {
     const [code, setCode] = useState("20off");
-    const [discount, setDiscount] = useState({
-        type: "percent",
-        value: null,
-    });
+    const [discountPercentage, setDiscountPercentage] = useState(0);
+    const [discountAmount, setDiscountAmount] = useState(0);
     const [type, setType] = useState("workspace");
     const [numberOfUses, setNumberOfUses] = useState(1);
     const [startDate, setStartDate] = useState("2024-01-01");
-    const [expiryData, setExpiryData] = useState("2024-01-01");
+    const [expiryDate, setExpiryDate] = useState("2024-01-01");
+    const [percentageAmountSelector, setPercentageAmountSelector] = useState("percentage");
+
+    const [couponsData, setCouponsData] = useRecoilState(couponsDataState);
+
+    const toast = useToast();
+
+    function handlePercentageOrAmountSelector(type) {
+        if (type === "amount") {
+            setPercentageAmountSelector("amount");
+            setDiscountPercentage(0);
+        } else {
+            setPercentageAmountSelector("percentage");
+            setDiscountAmount(0);
+        }
+    }
+
+    const [createCoupon] = useMutation(CREATE_COUPON);
+    async function handleCreateCoupon() {
+        let payload = {
+            couponCode: code,
+            discountPercentage: parseFloat(discountPercentage),
+            discountAmount: parseFloat(discountAmount),
+            startingDate: startDate,
+            expiryDate: expiryDate,
+            duration_in_months: 0,
+            numberOfUsers: parseInt(numberOfUses),
+            type: type,
+        };
+
+        console.log("payload", payload);
+        try {
+            await createCoupon({
+                mutation: CREATE_COUPON,
+                variables: {
+                    input: payload,
+                },
+                // client: client,
+            }).then((data) => {
+                console.log(data);
+                let newCouponsData = [...couponsData, data.data.createCoupon];
+                setCouponsData(newCouponsData);
+                setAddCoupon(false);
+            });
+
+            toast({
+                title: "New Coupon Created!",
+                status: "success",
+            });
+
+            //  console.log(data);
+            // navigate(`/branches/${state.branch_id}`);
+        } catch (error) {
+            console.log(error);
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
+        }
+    }
 
     return (
         <div className="">
@@ -58,34 +131,25 @@ function AddCoupon({ setAddCoupon }) {
                                 <Menu autoSelect={false} closeOnBlur>
                                     <MenuButton as="button" className="h-fit rounded-xl flex justify-between">
                                         <div className="flex pl-4 w-[125px] py-3 items-center justify-between text-lg">
-                                            {discount.type ? (
+                                            {/* {percentageAmountSelector === "percentage" ? ( */}
+                                            <span className="text-mediumGray capitalize">
+                                                {percentageAmountSelector}
+                                            </span>
+                                            {/* ) : (
                                                 <span className="text-mediumGray capitalize">
-                                                    {discount.type}
+                                                    {discountAmount}
                                                 </span>
-                                            ) : (
-                                                <span className="text-mediumGray">Select a branch</span>
-                                            )}
+                                            )} */}
 
                                             <ChevronRight className="rotate-90 h-7 text-light " />
                                         </div>
                                     </MenuButton>
                                     <MenuList className="MenuList inset-0 w-[125px] left-[-200px] text-lg">
                                         <MenuItem
-                                            onClick={() =>
-                                                setDiscount({
-                                                    type: "percent",
-                                                    value: null,
-                                                })
-                                            }>
+                                            onClick={() => handlePercentageOrAmountSelector("percentage")}>
                                             Percent
                                         </MenuItem>
-                                        <MenuItem
-                                            onClick={() =>
-                                                setDiscount({
-                                                    type: "amount",
-                                                    value: null,
-                                                })
-                                            }>
+                                        <MenuItem onClick={() => handlePercentageOrAmountSelector("amount")}>
                                             Amount
                                         </MenuItem>
                                     </MenuList>
@@ -93,18 +157,29 @@ function AddCoupon({ setAddCoupon }) {
 
                                 <div className="border border-r border-light h-[80%] w-[1px] mr-2"></div>
 
-                                <Input
-                                    id="cost"
-                                    variant="unstyled"
-                                    type="number"
-                                    placeholder="Enter Percentage"
-                                    value={discount.value}
-                                    style={{ fontSize: 18 }}
-                                    className="py-2.5 min-w-[215px] !h-14 placeholder:text-lg"
-                                    onChange={(event) =>
-                                        setDiscount({ ...discount, value: event.target.value })
-                                    }
-                                />
+                                {percentageAmountSelector === "percentage" ? (
+                                    <Input
+                                        id="cost"
+                                        variant="unstyled"
+                                        type="number"
+                                        placeholder="Enter Percentage"
+                                        value={discountPercentage}
+                                        style={{ fontSize: 18 }}
+                                        className="py-2.5 min-w-[215px] !h-14 placeholder:text-lg"
+                                        onChange={(event) => setDiscountPercentage(event.target.value)}
+                                    />
+                                ) : (
+                                    <Input
+                                        id="cost"
+                                        variant="unstyled"
+                                        type="number"
+                                        placeholder="Enter Amount"
+                                        value={discountAmount}
+                                        style={{ fontSize: 18 }}
+                                        className="py-2.5 min-w-[215px] !h-14 placeholder:text-lg"
+                                        onChange={(event) => setDiscountAmount(event.target.value)}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -178,10 +253,10 @@ function AddCoupon({ setAddCoupon }) {
                                     id="code"
                                     variant="unstyled"
                                     type="date"
-                                    value={expiryData}
+                                    value={expiryDate}
                                     style={{ fontSize: 18 }}
                                     className="py-2.5 !w-[184px] !h-14"
-                                    onChange={(event) => setExpiryData(event.target.value)}
+                                    onChange={(event) => setExpiryDate(event.target.value)}
                                 />
                             </div>
                         </div>
@@ -194,7 +269,9 @@ function AddCoupon({ setAddCoupon }) {
                         className="py-2.5 px-3 flex justify-center items-center gap-2 rounded-lg border border-error">
                         <span className="text-mediumGray text-sm font-medium">Cancel</span>
                     </button>
-                    <button className="py-2.5 px-3 bg-primary flex justify-center items-center gap-2 rounded-lg">
+                    <button
+                        onClick={() => handleCreateCoupon()}
+                        className="py-2.5 px-3 bg-primary flex justify-center items-center gap-2 rounded-lg">
                         <span className="text-white text-sm font-medium">Add Coupon</span>
                     </button>
                 </div>
@@ -203,21 +280,76 @@ function AddCoupon({ setAddCoupon }) {
     );
 }
 
-function EditCoupon(props) {
-    const [code, setCode] = useState(props.code);
-    const [discount, setDiscount] = useState(props.discount);
-    const [startDate, setStartDate] = useState(props.startDate);
-    const [expiryData, setExpiryData] = useState(props.expiryData);
+function EditCoupon({ setEditCoupon }) {
+    const [couponData, setCouponData] = useRecoilState(couponDataState);
+
+    const [code, setCode] = useState(couponData.couponCode);
+
+    const [discountPercentage, setDiscountPercentage] = useState(couponData.discountPercentage);
+    const [discountAmount, setDiscountAmount] = useState(couponData.discountAmount);
+    const [startDate, setStartDate] = useState(getDate(couponData.startingDate));
+    const [expiryDate, setExpiryDate] = useState(getDate(couponData.expiryDate));
+    const [percentageAmountSelector, setPercentageAmountSelector] = useState("percentage");
+    const toast = useToast();
+
+    function handlePercentageOrAmountSelector(type) {
+        if (type === "amount") {
+            setPercentageAmountSelector("amount");
+            setDiscountPercentage(0);
+        } else {
+            setPercentageAmountSelector("percentage");
+            setDiscountAmount(0);
+        }
+    }
+
+    const [editCoupon] = useMutation(EDIT_COUPON);
+    async function handleEditCoupon() {
+        let payload = {
+            _id: couponData._id,
+            couponCode: code,
+            discountPercentage: parseFloat(discountPercentage),
+            discountAmount: parseFloat(discountAmount),
+            startingDate: startDate,
+            expiryDate: expiryDate,
+
+            isActive: couponData.isActive,
+        };
+
+        console.log("payload", payload);
+
+        try {
+            await editCoupon({
+                mutation: EDIT_COUPON,
+                variables: {
+                    input: payload,
+                },
+            }).then((data) => {
+                console.log(data);
+                setEditCoupon(false);
+            });
+
+            toast({
+                title: "Coupon Edited!",
+                status: "success",
+            });
+        } catch (error) {
+            console.log(error);
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
+        }
+    }
 
     return (
         <div className="">
             <div
-                onClick={() => props.setEditCoupon(false)}
+                onClick={() => setEditCoupon(false)}
                 className="fixed bg-dark bg-opacity-50 top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] backdrop-blur-sm"></div>
 
             <div className="top-0 bottom-0 left-0 right-0 p-8 mx-auto my-auto gap-12 shadow-lg flex w-fit h-fit absolute bg-white z-10 flex-col rounded-lg text-mediumGray text-sm text-center border border-borderColor">
-                <span className="text-[32px] text-mediumGray text-left">Add New Coupon</span>
-
+                <span className="text-[32px] text-mediumGray text-left">Edit Coupon</span>
                 <div className="flex flex-col gap-6">
                     <div className="flex gap-6">
                         <div className="flex flex-col w-fit gap-1.5">
@@ -240,53 +372,53 @@ function EditCoupon(props) {
                                 <Menu autoSelect={false} closeOnBlur>
                                     <MenuButton as="button" className="h-fit rounded-xl flex justify-between">
                                         <div className="flex pl-4 w-[125px] py-3 items-center justify-between text-lg">
-                                            {discount.type ? (
+                                            {/* {percentageAmountSelector === "percentage" ? ( */}
+                                            <span className="text-mediumGray capitalize">
+                                                {percentageAmountSelector}
+                                            </span>
+                                            {/* ) : (
                                                 <span className="text-mediumGray capitalize">
-                                                    {discount.type}
+                                                    {discountAmount}
                                                 </span>
-                                            ) : (
-                                                <span className="text-mediumGray">Select type</span>
-                                            )}
+                                            )} */}
 
                                             <ChevronRight className="rotate-90 h-7 text-light " />
                                         </div>
                                     </MenuButton>
                                     <MenuList className="MenuList inset-0 w-[125px] left-[-200px] text-lg">
                                         <MenuItem
-                                            onClick={() =>
-                                                setDiscount({
-                                                    type: "percent",
-                                                    value: null,
-                                                })
-                                            }>
+                                            onClick={() => handlePercentageOrAmountSelector("percentage")}>
                                             Percent
                                         </MenuItem>
-                                        <MenuItem
-                                            onClick={() =>
-                                                setDiscount({
-                                                    type: "amount",
-                                                    value: null,
-                                                })
-                                            }>
+                                        <MenuItem onClick={() => handlePercentageOrAmountSelector("amount")}>
                                             Amount
                                         </MenuItem>
                                     </MenuList>
                                 </Menu>
-
                                 <div className="border border-r border-light h-[80%] w-[1px] mr-2"></div>
-
-                                <Input
-                                    id="cost"
-                                    variant="unstyled"
-                                    type="number"
-                                    placeholder="Enter Percentage"
-                                    value={discount.value}
-                                    style={{ fontSize: 18 }}
-                                    className="py-2.5 min-w-[215px] !h-14 placeholder:text-lg"
-                                    onChange={(event) =>
-                                        setDiscount({ ...discount, value: event.target.value })
-                                    }
-                                />
+                                {percentageAmountSelector === "percentage" ? (
+                                    <Input
+                                        id="cost"
+                                        variant="unstyled"
+                                        type="number"
+                                        placeholder="Enter Percentage"
+                                        value={discountPercentage}
+                                        style={{ fontSize: 18 }}
+                                        className="py-2.5 min-w-[215px] !h-14 placeholder:text-lg"
+                                        onChange={(event) => setDiscountPercentage(event.target.value)}
+                                    />
+                                ) : (
+                                    <Input
+                                        id="cost"
+                                        variant="unstyled"
+                                        type="number"
+                                        placeholder="Enter Amount"
+                                        value={discountAmount}
+                                        style={{ fontSize: 18 }}
+                                        className="py-2.5 min-w-[215px] !h-14 placeholder:text-lg"
+                                        onChange={(event) => setDiscountAmount(event.target.value)}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -317,10 +449,10 @@ function EditCoupon(props) {
                                     id="code"
                                     variant="unstyled"
                                     type="date"
-                                    value={expiryData}
+                                    value={expiryDate}
                                     style={{ fontSize: 18 }}
                                     className="py-2.5 !w-[184px] !h-14"
-                                    onChange={(event) => setExpiryData(event.target.value)}
+                                    onChange={(event) => setExpiryDate(event.target.value)}
                                 />
                             </div>
                         </div>
@@ -329,12 +461,14 @@ function EditCoupon(props) {
 
                 <div className="flex justify-end gap-6">
                     <button
-                        onClick={() => props.setEditCoupon(false)}
+                        onClick={() => setEditCoupon(false)}
                         className="py-2.5 px-3 flex justify-center items-center gap-2 rounded-lg border border-error">
                         <span className="text-mediumGray text-sm font-medium">Cancel</span>
                     </button>
-                    <button className="py-2.5 px-3 bg-primary flex justify-center items-center gap-2 rounded-lg">
-                        <span className="text-white text-sm font-medium">Add Coupon</span>
+                    <button
+                        onClick={() => handleEditCoupon()}
+                        className="py-2.5 px-3 bg-primary flex justify-center items-center gap-2 rounded-lg">
+                        <span className="text-white text-sm font-medium">Edit Coupon</span>
                     </button>
                 </div>
             </div>
@@ -343,31 +477,41 @@ function EditCoupon(props) {
 }
 
 function CouponRow(props) {
-    let coupon = props.coupon;
+    // let coupon = props.coupon;
+
+    let [coupon, setCoupon] = useState(props.coupon);
 
     const [showOptions, setShowOptions] = useState(false);
     const toast = useToast();
 
-    // const [addCoupon] = useMutation(EDIT_USER);
+    const [couponData, setCouponData] = useRecoilState(couponDataState);
+
+    const [editCoupon] = useMutation(EDIT_COUPON);
     async function handleChangeCouponStatus() {
         let payload = {
-            _id: coupon._id,
-            isExpired: !coupon.isExpired,
+            ...coupon,
+            isActive: !coupon.isActive,
         };
 
+        if ("__typename" in payload) delete payload["__typename"];
+        if ("createdAt" in payload) delete payload["createdAt"];
+        if ("numberOfUsers" in payload) delete payload["numberOfUsers"];
+        if ("type" in payload) delete payload["type"];
+
         try {
-            // const { data } = await addCoupon({
-            //     mutation: EDIT_USER,
-            //     variables: {
-            //         input: payload,
-            //     },
-            // });
-            //  console.log(data);
+            await editCoupon({
+                mutation: EDIT_COUPON,
+                variables: {
+                    input: payload,
+                },
+            }).then((data) => {
+                setCoupon(payload);
+            });
+
             toast({
-                title: !coupon.isExpired ? "Coupon Expired!" : "Coupon Unexpired!",
+                title: "Coupon Status Updated!",
                 status: "success",
             });
-            setShowOptions(false);
         } catch (error) {
             console.log(error);
             toast({
@@ -376,14 +520,22 @@ function CouponRow(props) {
                 status: "error",
             });
         }
+
+        setShowOptions(false);
     }
 
     function handleSendToUsers() {
         console.log("HADNDLE SEND TO USERS");
     }
 
-    function statusBadge(isExpired) {
-        if (isExpired) {
+    function handleEditCoupon() {
+        setCouponData(props.coupon);
+        props.setEditCoupon(true);
+        setShowOptions(false);
+    }
+
+    function statusBadge(isActive) {
+        if (!isActive) {
             return (
                 <div className="border rounded-xl bg-errorLight border-light flex gap-2 py-1.5 px-3 items-center ">
                     <CloseIcon className="h-4 w-4 text-error" />
@@ -403,10 +555,10 @@ function CouponRow(props) {
     return (
         <Tr>
             <Td>{coupon._id}</Td>
-            <Td>{coupon.code}</Td>
-            <Td>{coupon.discount}</Td>
-            <Td>{coupon.expiry}</Td>
-            <Td>{statusBadge(coupon.isExpired)}</Td>
+            <Td>{coupon.couponCode}</Td>
+            <Td>{coupon.discountPercentage}</Td>
+            <Td>{getDate(coupon.expiryDate)}</Td>
+            <Td>{statusBadge(coupon.isActive)}</Td>
             <Td className="relative">
                 <button onClick={() => setShowOptions(!showOptions)}>
                     <VerticalDots />
@@ -420,11 +572,13 @@ function CouponRow(props) {
                             <button
                                 onClick={() => handleChangeCouponStatus()}
                                 className="p-3 pb-2.5 gap-2 flex justify-between items-center">
-                                <span>Expire Token</span>
+                                <span>{coupon.isActive ? "Expire Token" : "Activate Token"}</span>
                                 <ClockIcon className="text-mediumGray" />
                             </button>
                             <div className="border-b h-[1px] mx-3"></div>
-                            <button className="p-3 pt-2.5 gap-2 flex justify-between items-center">
+                            <button
+                                onClick={() => handleEditCoupon()}
+                                className="p-3 pt-2.5 gap-2 flex justify-between items-center">
                                 <span>Edit Coupon</span>
                                 <EditIcon className="h-[14px] w-[14px] text-mediumGray" />
                             </button>
@@ -447,49 +601,28 @@ function CouponRow(props) {
 
 function CouponsPage() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [couponsData, setCouponsData] = useState([
-        {
-            _id: "123",
-            code: "abc288",
-            discount: "25%",
-            expiry: "2023-12-17T03:24:00",
-            expired: false,
-        },
-        {
-            _id: "123",
-            code: "abc288",
-            discount: "25%",
-            expiry: "2023-12-17T03:24:00",
-            expired: false,
-        },
-        {
-            _id: "123",
-            code: "abc288",
-            discount: "25%",
-            expiry: "2022-12-17T03:24:00",
-            expired: false,
-        },
-    ]);
-    const [addCoupon, setAddCoupon] = useState(true);
+    const [couponsData, setCouponsData] = useRecoilState(couponsDataState);
+    const [addCoupon, setAddCoupon] = useState(false);
+    const [editCoupon, setEditCoupon] = useState(false);
 
-    // const { loading: couponsLoading, error: couponsError, data } = useQuery(GET_COUPONS);
+    const { loading: couponsLoading, error: couponsError, data } = useQuery(GET_COUPONS);
 
-    // useEffect(() => {
-    //     if (!couponsLoading && !couponsError) {
-    //         // Set the branches data
-    //         //  console.log("coupons data", data);
-    //         setCouponsData(data.coupons);
-    //     } else {
-    //         //  console.log("ERRRRR", couponsError, couponsLoading, data);
-    //     }
-    // }, [couponsLoading, couponsError, data]);
+    useEffect(() => {
+        if (!couponsLoading && !couponsError) {
+            // Set the branches data
+            //  console.log("coupons data", data);
+            setCouponsData(data.coupons);
+        } else {
+            //  console.log("ERRRRR", couponsError, couponsLoading, data);
+        }
+    }, [couponsLoading, couponsError, data]);
 
-    // if (couponsLoading)
-    //     return (
-    //         <div className="h-[400px]">
-    //             <Loader />
-    //         </div>
-    //     );
+    if (couponsLoading)
+        return (
+            <div className="h-[400px]">
+                <Loader />
+            </div>
+        );
 
     return (
         <div>
@@ -516,7 +649,8 @@ function CouponsPage() {
                     </div>
 
                     <div className="border rounded-xl">
-                        <TableContainer>
+                        {/* <TableContainer> */}
+                        <TableContainer className="!overflow-visible !overflow-x-visible !overflow-y-visible">
                             <Table variant="simple">
                                 <Thead className="h-[60px]">
                                     <Tr>
@@ -542,7 +676,12 @@ function CouponsPage() {
                                 </Thead>
                                 <Tbody>
                                     {couponsData.map((coupon, index) => (
-                                        <CouponRow coupon={coupon} index={index} key={index} />
+                                        <CouponRow
+                                            coupon={coupon}
+                                            index={index}
+                                            key={index}
+                                            setEditCoupon={() => setEditCoupon(true)}
+                                        />
                                     ))}
                                 </Tbody>
                             </Table>
@@ -554,6 +693,7 @@ function CouponsPage() {
             )}
 
             {addCoupon && <AddCoupon setAddCoupon={() => setAddCoupon(false)} />}
+            {editCoupon && <EditCoupon setEditCoupon={() => setEditCoupon(false)} />}
         </div>
     );
 }

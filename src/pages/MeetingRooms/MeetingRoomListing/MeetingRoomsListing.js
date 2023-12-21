@@ -77,17 +77,12 @@ function MeetingRoomListing() {
             <div className="flex justify-between">
                 <Breadcrumbs className="mb-[-48px]" />
 
-                {selectedBranch && !allBranchesFilter ? (
-                    <Link
-                        to="/meeting-rooms/new"
-                        state={{ branch_id: selectedBranch._id }}
-                        className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary">
-                        <PlusIcon className="h-6 w-6 text-white" />
-                        <span className="text-white text-xl leading-6">Add New</span>
-                    </Link>
-                ) : (
-                    ""
-                )}
+                <Link
+                    to="/meeting-rooms/new"
+                    className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary">
+                    <PlusIcon className="h-6 w-6 text-white" />
+                    <span className="text-white text-xl leading-6">Add New</span>
+                </Link>
             </div>
             <div className="flex flex-col gap-8">
                 <div className="flex gap-6 max-h-12">

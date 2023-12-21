@@ -23,11 +23,12 @@ import {
 
 import { CREATE_MEETING_ROOM } from "../../../queries/meetingRoomQueries";
 import { useMutation, useQuery } from "@apollo/client";
-import { useLocation, useNavigate } from "react-router-dom";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import PicturesGrid from "../../../components/PicturesGrid";
 import OpenDays from "../../../components/OpenDays";
 import { GET_BRANCHES } from "../../../queries/branchesQueries";
+import Loader from "../../../components/Loader";
+import { useNavigate } from "react-router-dom";
 
 function MeetingRoomNew() {
     const [newMeetingRoomRequestPayload, setNewMeetingRoomPayload] = useRecoilState(newMeetingRoomRequest);
@@ -37,6 +38,8 @@ function MeetingRoomNew() {
     const amenities = useRecoilValue(meetingRoomAmenitiesState);
 
     const toast = useToast();
+
+    const navigate = useNavigate();
 
     const [selectedBranch, setSelectedBranch] = useState({
         name: "",
@@ -49,8 +52,78 @@ function MeetingRoomNew() {
         }
     }, [branchesLoading, branchesError, data]);
 
-    const [createMeetingRoom] = useMutation(CREATE_MEETING_ROOM);
+    function validateInputs() {
+        if (!newMeetingRoomRequestPayload.name.length) {
+            toast({
+                title: "Meetin Room name cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (!newMeetingRoomRequestPayload.ratesPerHour) {
+            toast({
+                title: "Meetin Room name cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (!newMeetingRoomRequestPayload.description) {
+            toast({
+                title: "Meetin Room description cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (!selectedBranch._id) {
+            toast({
+                title: "Please select a branch",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (!newMeetingRoomRequestPayload.totalSeats) {
+            toast({
+                title: "Please enter seats",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (
+            amenities.some((amenity) => {
+                return !amenity.name.length;
+            })
+        ) {
+            toast({
+                title: "Amenity name cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (rates.some((rate) => !rate.rate)) {
+            toast({
+                title: "Custom Rates cannot be null",
+                status: "error",
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+    const [createMeetingRoom, { createData, loading, error }] = useMutation(CREATE_MEETING_ROOM);
     async function handleAddMeetingRoom() {
+        console.log("payload", newMeetingRoomRequestPayload);
+
+        if (validateInputs() === false) {
+            return;
+        }
+
         let payload = {
             ...newMeetingRoomRequestPayload,
             customRates: rates.map(({ __typename, ...rest }) => rest),
@@ -61,7 +134,7 @@ function MeetingRoomNew() {
             ratesPerHour: parseFloat(newMeetingRoomRequestPayload.ratesPerHour),
         };
 
-        if (payload.__typename) delete payload["__typename"];
+        if ("__typename" in payload) delete payload["__typename"];
 
         console.log("payload", payload);
         try {
@@ -73,14 +146,14 @@ function MeetingRoomNew() {
                 },
                 // client: client,
             });
-            console.log(data);
+            // console.log(data);
 
             toast({
                 title: "New Meeting Room Created!",
                 status: "success",
             });
 
-            // navigate(`/branches/${state.branch_id}`);
+            navigate(`/branches/${selectedBranch._id}`);
         } catch (error) {
             console.log(error);
             toast({
@@ -196,13 +269,25 @@ function MeetingRoomNew() {
 
                 <PicturesGrid picturesState={meetingRoomPicturesState} />
 
-                <div className="buttons  ">
+                <div className="buttons flex gap-6 w-full justify-end">
                     <button
-                        className="py-2 px-3 bg-primary flex justify-center items-center gap-2 flex-row rounded-xl"
-                        onClick={() => handleAddMeetingRoom()}>
-                        <span className="text-white text-xl">Add Meeting Room </span>
-                        <PlusIcon className="text-white" />
+                        className="p-4 bg-errorLight flex justify-center items-center gap-2 flex-row rounded-xl"
+                        onClick={() => navigate(`/meeting-rooms`)}>
+                        <span className="text-mediumGray text-xl">Cancel </span>
+                        <CloseIcon className="text-error" />
                     </button>
+                    {loading ? (
+                        <div className="h-11 w-[227px] bg-primary rounded-xl">
+                            <Loader color="#FFF" />
+                        </div>
+                    ) : (
+                        <button
+                            className="py-2 px-3 bg-primary flex justify-center items-center gap-2 flex-row rounded-xl"
+                            onClick={() => handleAddMeetingRoom()}>
+                            <span className="text-white text-xl">Add Meeting Room </span>
+                            <PlusIcon className="text-white" />
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

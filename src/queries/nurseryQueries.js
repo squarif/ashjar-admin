@@ -28,9 +28,7 @@ const EDIT_NURSERY = gql`
             _id
             name
             seats
-            branch {
-                _id
-            }
+            branch
             pictures
         }
     }

@@ -1,6 +1,7 @@
 import { Input, useToast } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
+import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
 
 import { Textarea } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -19,12 +20,13 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 
 import { EDIT_MEETING_ROOM } from "../../../queries/meetingRoomQueries";
 import { useMutation, useQuery } from "@apollo/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import PicturesGrid from "../../../components/PicturesGrid";
 import OpenDays from "../../../components/OpenDays";
 import MeetingRoomRates from "../components/Rates";
 import { GET_BRANCHES } from "../../../queries/branchesQueries";
+import Loader from "../../../components/Loader";
 
 function MeetingRoomEdit() {
     const [editMeetingRoomRequestPayload, setEditMeetingRoomPayload] = useRecoilState(editMeetingRoomRequest);
@@ -34,8 +36,18 @@ function MeetingRoomEdit() {
     const amenities = useRecoilValue(meetingRoomAmenitiesState);
 
     const navigate = useNavigate();
-
+    const params = useParams();
     const toast = useToast();
+
+    useEffect(() => {
+        if (!Object.keys(editMeetingRoomRequestPayload).length) {
+            navigate(`/meeting-rooms/${params.id}`);
+        }
+
+        if (!Object.keys(selectedBranch).length) {
+            navigate(`/meeting-rooms/${params.id}`);
+        }
+    }, [editMeetingRoomRequestPayload]);
 
     const [selectedBranch, setSelectedBranch] = useState(editMeetingRoomRequestPayload.branch);
     const [branchData, setBranchData] = useState([]);
@@ -46,10 +58,76 @@ function MeetingRoomEdit() {
         }
     }, [branchesLoading, branchesError, data]);
 
-    console.log(editMeetingRoomRequestPayload);
+    function validateInputs() {
+        if (!editMeetingRoomRequestPayload.name.length) {
+            toast({
+                title: "Meetin Room name cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
 
-    const [editMeetingRoom] = useMutation(EDIT_MEETING_ROOM);
+        if (!editMeetingRoomRequestPayload.ratesPerHour) {
+            toast({
+                title: "Meetin Room name cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (!editMeetingRoomRequestPayload.description) {
+            toast({
+                title: "Meetin Room description cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (!selectedBranch._id) {
+            toast({
+                title: "Please select a branch",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (!editMeetingRoomRequestPayload.totalSeats) {
+            toast({
+                title: "Please enter seats",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (
+            amenities.some((amenity) => {
+                return !amenity.name.length;
+            })
+        ) {
+            toast({
+                title: "Amenity name cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (rates.some((rate) => !rate.rate)) {
+            toast({
+                title: "Custom Rates cannot be null",
+                status: "error",
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+    const [editMeetingRoom, { createData, loading, error }] = useMutation(EDIT_MEETING_ROOM);
     async function handleEditMeetingRoom() {
+        if (validateInputs() === false) {
+            return;
+        }
+
         let payload = {
             ...editMeetingRoomRequestPayload,
             customRates: rates.map(({ __typename, ...rest }) => rest),
@@ -59,8 +137,8 @@ function MeetingRoomEdit() {
             branch: editMeetingRoomRequestPayload.branch._id,
         };
 
-        if (payload.__typename) delete payload["__typename"];
-        if (payload.slotsBooked) delete payload["slotsBooked"];
+        if ("__typename" in payload) delete payload["__typename"];
+        if ("slotsBooked" in payload) delete payload["slotsBooked"];
 
         console.log("payload", payload);
 
@@ -73,8 +151,6 @@ function MeetingRoomEdit() {
                 },
                 // client: client,
             });
-
-            console.log(data);
 
             toast({
                 title: "Meeting Room Updated!",
@@ -192,12 +268,25 @@ function MeetingRoomEdit() {
 
             <PicturesGrid picturesState={meetingRoomPicturesState} />
 
-            <div className="buttons  ">
+            <div className="buttons flex gap-6 w-full justify-end">
                 <button
-                    className="p-4 bg-primary flex justify-center items-center gap-4 flex-col rounded-xl"
-                    onClick={() => handleEditMeetingRoom()}>
-                    <span className="text-white text-xl">Edit Meeting Room </span>
+                    className="p-4 bg-errorLight flex justify-center items-center gap-2 flex-row rounded-xl"
+                    onClick={() => navigate(`/meeting-rooms/${params.id}`)}>
+                    <span className="text-mediumGray text-xl">Cancel </span>
+                    <CloseIcon className="text-error" />
                 </button>
+
+                {loading ? (
+                    <div className="h-11 w-[227px] bg-primary rounded-xl">
+                        <Loader color="#FFF" />
+                    </div>
+                ) : (
+                    <button
+                        className="p-4 bg-primary flex justify-center items-center gap-4 rounded-xl"
+                        onClick={() => handleEditMeetingRoom()}>
+                        <span className="text-white text-xl">Update Meeting Room </span>
+                    </button>
+                )}
             </div>
         </div>
     );

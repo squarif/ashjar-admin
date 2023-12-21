@@ -40,6 +40,8 @@ function WorkspaceDetail() {
 
     let workspaceData = data?.WorkSpace;
 
+    console.log("workspaceData", workspaceData);
+
     useEffect(() => {
         if (!workspaceLoading && !workspaceError) {
             //  console.log("askjdnasjdnj");

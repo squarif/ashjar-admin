@@ -73,12 +73,12 @@ function WorkshopCreatePost() {
                     branch: selectedBranch._id,
                 };
 
-                if (payload.__typename) delete payload["__typename"];
-                delete payload["draft"];
-                delete payload["username"];
-                delete payload["email"];
-                delete payload["phone"];
-                delete payload["company"];
+                if ("__typename" in payload) delete payload["__typename"];
+                if ("draft" in payload) delete payload["draft"];
+                if ("username" in payload) delete payload["username"];
+                if ("email" in payload) delete payload["email"];
+                if ("phone" in payload) delete payload["phone"];
+                if ("company" in payload) delete payload["company"];
 
                 console.log("PAYLOAD", payload);
                 const { data } = await updateWorkshopRequest({

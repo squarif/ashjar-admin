@@ -7,16 +7,13 @@ import { Input } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import { meetingRoomAmenitiesState } from "../../../stores/meetingRoomStore";
 
-// import { useQuery } from "@apollo/client";
-// import { GET_Amenities } from "./queries";
-
 function Amenities() {
     const [searchQuery, setSearchQuery] = useState("");
     // const [quantityToggle, setQuantityToggle] = useState("quantity");
 
     const [amenitiesData, setAmenitiesData] = useRecoilState(meetingRoomAmenitiesState);
 
-    const decreaseQuantity = (index) => {
+    function decreaseQuantity(index) {
         if (amenitiesData[index].quantity > 1) {
             const updatedAmenities = [...amenitiesData];
 
@@ -27,9 +24,9 @@ function Amenities() {
 
             setAmenitiesData(updatedAmenities);
         }
-    };
+    }
 
-    const increaseQuantity = (index) => {
+    function increaseQuantity(index) {
         const updatedAmenities = [...amenitiesData];
 
         updatedAmenities[index] = {
@@ -38,9 +35,9 @@ function Amenities() {
         };
 
         setAmenitiesData(updatedAmenities);
-    };
+    }
 
-    const handleAddAmenity = () => {
+    function handleAddAmenity() {
         let newAmenity = {
             picture: "",
             name: "",
@@ -49,9 +46,15 @@ function Amenities() {
         };
 
         setAmenitiesData([...amenitiesData, newAmenity]);
-    };
+    }
 
-    const handleQuantityToggle = (index, value) => {
+    function handleDeleteAmenity(index) {
+        const updatedAmenties = JSON.parse(JSON.stringify(amenitiesData));
+        updatedAmenties.splice(index, 1);
+        setAmenitiesData(updatedAmenties);
+    }
+
+    function handleQuantityToggle(index, value) {
         // setQuantityToggle(value);
 
         const updatedAmenities = [...amenitiesData];
@@ -68,9 +71,9 @@ function Amenities() {
         // };
 
         setAmenitiesData(updatedAmenities);
-    };
+    }
 
-    const handleToggle = (index, value) => {
+    function handleToggle(index, value) {
         const updatedAmenities = [...amenitiesData];
         if (value) {
             updatedAmenities[index] = {
@@ -84,15 +87,27 @@ function Amenities() {
             };
         }
         setAmenitiesData(updatedAmenities);
-    };
+    }
+
+    function handleAmenityTitle(index, value) {
+        // const updatedAmenities = [...amenitiesData];
+        const updatedAmenities = JSON.parse(JSON.stringify(amenitiesData));
+
+        console.log("updatedAmenities", updatedAmenities[index]);
+
+        updatedAmenities[index].name = value;
+
+        console.log("updatedAmenities", updatedAmenities);
+
+        setAmenitiesData(updatedAmenities);
+    }
 
     return (
         <div className="flex gap-7 flex-col">
             <div className="text-left text-2xl">Amenities</div>
 
-            <div className="border rounded-2xl flex flex-col  ">
+            <div className="border rounded-2xl flex flex-col">
                 {amenitiesData.map((amenity, index) => {
-                    // console.log("amenity", amenity);
                     return (
                         <div key={index} className="flex p-6 justify-between items-center">
                             <div className="border rounded-2xl border-light px-4">
@@ -110,7 +125,7 @@ function Amenities() {
                                     variant="unstyled"
                                     value={amenity.name}
                                     className="py-1.5 text-xl max-w-[125px]"
-                                    onChange={(event) => setSearchQuery(event.target.value)}
+                                    onChange={(event) => handleAmenityTitle(index, event.target.value)}
                                 />
                             </div>
                             <div className="border w-fit rounded-lg overflow-hidden flex items-center">
@@ -145,37 +160,46 @@ function Amenities() {
                                     <span className="text-base text-dark ">Quantity</span>
                                 </label>
                             </div>
-                            <div className="w-[112px]">
-                                {amenity.type === "toggle" ? (
-                                    <Switch
-                                        id="toggle"
-                                        size="lg"
-                                        isChecked={amenity.quantity}
-                                        onChange={(event) => handleToggle(index, event.target.checked)}
-                                    />
-                                ) : (
-                                    <div className="w-[112px] rounded-lg justify-center items-center gap-2 flex">
-                                        <button className="w-4 h-4 p-2 rounded-full border border-error flex justify-center items-center gap-2.5">
-                                            <div
-                                                className="text-center text-error text-2xl font-normal  leading-[18px]"
-                                                onClick={() => decreaseQuantity(index)}>
-                                                -
+
+                            <div className="flex items-center">
+                                <div className="w-[112px]">
+                                    {amenity.type === "toggle" ? (
+                                        <Switch
+                                            id="toggle"
+                                            size="lg"
+                                            isChecked={amenity.quantity}
+                                            onChange={(event) => handleToggle(index, event.target.checked)}
+                                        />
+                                    ) : (
+                                        <div className="w-[112px] rounded-lg justify-center items-center gap-2 flex">
+                                            <button className="w-4 h-4 p-2 rounded-full border border-error flex justify-center items-center gap-2.5">
+                                                <div
+                                                    className="text-center text-error text-2xl font-normal  leading-[18px]"
+                                                    onClick={() => decreaseQuantity(index)}>
+                                                    -
+                                                </div>
+                                            </button>
+                                            <div className="py-1 px-2">
+                                                <div className="text-center text-dark text-2xl font-normal leading-[18px]">
+                                                    {amenity.quantity}
+                                                </div>
                                             </div>
-                                        </button>
-                                        <div className="py-1 px-2">
-                                            <div className="text-center text-dark text-2xl font-normal leading-[18px]">
-                                                {amenity.quantity}
-                                            </div>
+                                            <button
+                                                className="w-4 h-4 p-2 rounded-full border border-primary flex justify-center items-center gap-2.5"
+                                                onClick={() => increaseQuantity(index)}>
+                                                <div className="text-center text-primary text-2xl font-normal  leading-[18px]">
+                                                    +
+                                                </div>
+                                            </button>
                                         </div>
-                                        <button
-                                            className="w-4 h-4 p-2 rounded-full border border-primary flex justify-center items-center gap-2.5"
-                                            onClick={() => increaseQuantity(index)}>
-                                            <div className="text-center text-primary text-2xl font-normal  leading-[18px]">
-                                                +
-                                            </div>
-                                        </button>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
+
+                                <button
+                                    onClick={() => handleDeleteAmenity(index)}
+                                    className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                    <PlusIcon className="rotate-45 text-error" />
+                                </button>
                             </div>
                         </div>
                     );
@@ -184,8 +208,8 @@ function Amenities() {
 
             <div className="">
                 <button className="rounded-xl bg-primary flex gap-3 px-3 py-4" onClick={handleAddAmenity}>
-                    <PlusIcon className="text-white" />
                     <span className="text-lg text-white leading-normal">Add New Amenity</span>
+                    <PlusIcon />
                 </button>
             </div>
         </div>

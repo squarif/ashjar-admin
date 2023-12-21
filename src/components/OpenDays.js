@@ -15,11 +15,31 @@ function OpenDays(props) {
     function handleNewDay() {
         let newDay = {
             day: "",
-            startTime: "00:00",
-            endTime: "00:00",
+            startTime: "20:00",
+            endTime: "20:00",
         };
 
         setOpenDays([...openDays, newDay]);
+    }
+
+    // function getDate(value) {
+    //     if (typeof value === "string") {
+    //         if (value.includes("-")) {
+    //             return value;
+    //         } else {
+    //             const date = new Date(parseInt(value));
+    //             return date.toISOString().slice(0, 10);
+    //         }
+    //     } else {
+    //         return value;
+    //     }
+    // }
+
+    function handleDeleteDay(index) {
+        const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
+        updatedOpenDays.splice(index, 1);
+
+        setOpenDays(updatedOpenDays);
     }
 
     function handleDayChange(dayIndex, value) {
@@ -69,121 +89,135 @@ function OpenDays(props) {
                                 id="day"
                                 variant="unstyled"
                                 value={day.day}
-                                style={{ fontSize: "20px" }}
-                                className="text-xl 
-																						input text-mediumGray leading-[18px] h-8  mx-2 my-2 "
+                                placeholder="Enter Day"
+                                style={{ fontSize: "20px", paddingLeft: "8px" }}
+                                className={
+                                    day.day
+                                        ? `text-xl 
+																						input text-mediumGray leading-[18px] h-8 mx-2 my-2`
+                                        : `text-xl 
+																						input text-mediumGray leading-[18px] h-8 p-2 border border-borderColor`
+                                }
                                 onChange={(event) => handleDayChange(index, event.target.value)}
-                                type="day"
                             />
                         </div>
-                        <div className="timeSelector flex items-center w-fit gap-9">
-                            <div className="start-time flex py-2 px-4 items-center justify-center gap-3 w-full">
-                                <div className="border rounded border-mediumGray grid place-content-center">
-                                    <Input
-                                        id="starthour"
-                                        variant="unstyled"
-                                        value={day.startTime}
-                                        style={{ fontSize: "20px" }}
-                                        className="
+
+                        <div className="flex items-center">
+                            <div className="timeSelector flex items-center w-fit gap-9">
+                                <div className="start-time flex py-2 px-4 items-center justify-center gap-3 w-full">
+                                    <div className="border rounded border-mediumGray grid place-content-center">
+                                        <Input
+                                            id="starthour"
+                                            variant="unstyled"
+                                            value={day.startTime}
+                                            style={{ fontSize: "20px" }}
+                                            className="
 																						input text-mediumGray leading-[18px] my-2 mx-2 "
-                                        onChange={(event) =>
-                                            handleTimeChange(index, "startTime", event.target.value)
-                                        }
-                                        type="time"
-                                    />
-                                </div>
-
-                                <div className="border rounded h-full w-fit flex">
-                                    <label
-                                        className={
-                                            getAMPM(day.startTime) === "AM"
-                                                ? "bg-primary font-xs rounded-l"
-                                                : ""
-                                        }>
-                                        <input
-                                            type="radio"
-                                            value="AM"
-                                            className="absolute hidden"
-                                            checked={getAMPM(day.startTime) === "AM"}
                                             onChange={(event) =>
-                                                handleAMPMChange(index, day.startTime, event.target.value)
+                                                handleTimeChange(index, "startTime", event.target.value)
                                             }
+                                            type="time"
                                         />
-                                        <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
-                                            AM
-                                        </span>
-                                    </label>
-                                    <label
-                                        className={
-                                            getAMPM(day.startTime) === "PM" ? "bg-primary rounded-r" : ""
-                                        }>
-                                        <input
-                                            className="absolute hidden"
-                                            type="radio"
-                                            value="PM"
-                                            checked={getAMPM(day.startTime) === "PM"}
-                                            onChange={(event) => setStartAMPM(event.target.value)}
-                                        />
-                                        <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
-                                            PM
-                                        </span>
-                                    </label>
+                                    </div>
+
+                                    <div className="border rounded h-full w-fit flex">
+                                        <label
+                                            className={
+                                                getAMPM(day.startTime) === "AM"
+                                                    ? "bg-primary font-xs rounded-l"
+                                                    : ""
+                                            }>
+                                            <input
+                                                type="radio"
+                                                value="AM"
+                                                className="absolute hidden"
+                                                checked={getAMPM(day.startTime) === "AM"}
+                                                onChange={(event) =>
+                                                    handleAMPMChange(index, day.startTime, event.target.value)
+                                                }
+                                            />
+                                            <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                                AM
+                                            </span>
+                                        </label>
+                                        <label
+                                            className={
+                                                getAMPM(day.startTime) === "PM" ? "bg-primary rounded-r" : ""
+                                            }>
+                                            <input
+                                                className="absolute hidden"
+                                                type="radio"
+                                                value="PM"
+                                                checked={getAMPM(day.startTime) === "PM"}
+                                                onChange={(event) => setStartAMPM(event.target.value)}
+                                            />
+                                            <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                                PM
+                                            </span>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <span className="text-base text-center font-normal">to</span>
+                                <span className="text-base text-center font-normal">to</span>
 
-                            <div className="end-time flex py-2 px-4 items-center justify-center gap-3 w-full">
-                                <div className="border rounded border-mediumGray grid place-content-center">
-                                    <Input
-                                        id="endhour"
-                                        variant="unstyled"
-                                        value={day.endTime}
-                                        style={{ fontSize: "20px" }}
-                                        className="input 
+                                <div className="end-time flex py-2 px-4 items-center justify-center gap-3 w-full">
+                                    <div className="border rounded border-mediumGray grid place-content-center">
+                                        <Input
+                                            id="endhour"
+                                            variant="unstyled"
+                                            value={day.endTime}
+                                            style={{ fontSize: "20px" }}
+                                            className="input 
 																						text-mediumGray leading-[18px] my-2 mx-2"
-                                        onChange={(event) =>
-                                            handleTimeChange(index, "endTime", event.target.value)
-                                        }
-                                        type="time"
-                                    />
-                                </div>
+                                            onChange={(event) =>
+                                                handleTimeChange(index, "endTime", event.target.value)
+                                            }
+                                            type="time"
+                                        />
+                                    </div>
 
-                                <div className="border rounded h-full w-fit flex">
-                                    <label
-                                        className={
-                                            getAMPM(day.endTime) === "AM"
-                                                ? "bg-primary font-xs rounded-l"
-                                                : ""
-                                        }>
-                                        <input
-                                            type="radio"
-                                            value="AM"
-                                            className="absolute hidden"
-                                            checked={getAMPM(day.startTime) === "AM"}
-                                            onChange={(event) => setEndAMPM(event.target.value)}
-                                        />
-                                        <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
-                                            AM
-                                        </span>
-                                    </label>
-                                    <label
-                                        className={
-                                            getAMPM(day.endTime) === "PM" ? "bg-primary rounded-r" : ""
-                                        }>
-                                        <input
-                                            className="absolute hidden"
-                                            type="radio"
-                                            value="PM"
-                                            checked={getAMPM(day.startTime) === "PM"}
-                                            onChange={(event) => setEndAMPM(event.target.value)}
-                                        />
-                                        <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
-                                            PM
-                                        </span>
-                                    </label>
+                                    <div className="border rounded h-full w-fit flex">
+                                        <label
+                                            className={
+                                                getAMPM(day.endTime) === "AM"
+                                                    ? "bg-primary font-xs rounded-l"
+                                                    : ""
+                                            }>
+                                            <input
+                                                type="radio"
+                                                value="AM"
+                                                className="absolute hidden"
+                                                checked={getAMPM(day.startTime) === "AM"}
+                                                onChange={(event) => setEndAMPM(event.target.value)}
+                                            />
+                                            <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                                AM
+                                            </span>
+                                        </label>
+                                        <label
+                                            className={
+                                                getAMPM(day.endTime) === "PM" ? "bg-primary rounded-r" : ""
+                                            }>
+                                            <input
+                                                className="absolute hidden"
+                                                type="radio"
+                                                value="PM"
+                                                checked={getAMPM(day.startTime) === "PM"}
+                                                onChange={(event) => setEndAMPM(event.target.value)}
+                                            />
+                                            <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                                PM
+                                            </span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
+
+                            <button
+                                onClick={() => handleDeleteDay(index)}
+                                className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                <PlusIcon className="rotate-45 text-error" />
+                            </button>
                         </div>
                     </div>
                 ))}

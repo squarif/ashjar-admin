@@ -1,12 +1,12 @@
 import { Input, useToast } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ReactComponent as MapsIcon } from "../../../assets/MapsIcon.svg";
 
 import client from "../../../apollo";
 
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
@@ -16,6 +16,8 @@ import { branchesData } from "../../../stores/branches";
 import { useLocation, useNavigate } from "react-router-dom";
 import PicturesGrid from "../../../components/PicturesGrid";
 import { nurseryPictures } from "../../../stores/nurseryStore";
+import Loader from "../../../components/Loader";
+import { GET_BRANCHES } from "../../../queries/branchesQueries";
 
 function NurseryNew() {
     const [nurseryName, setNurseryName] = useState("");
@@ -25,16 +27,56 @@ function NurseryNew() {
     const navigate = useNavigate();
     const toast = useToast();
 
-    const [createNursery] = useMutation(CREATE_NURSERY);
-
-    const [branchData, setBranchData] = useRecoilState(branchesData);
     const [pictures, setPictures] = useRecoilState(nurseryPictures);
 
+    // for branches selector
+    const [branchData, setBranchData] = useRecoilState(branchesData);
+    const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
+    useEffect(() => {
+        if (!branchesLoading && !branchesError) {
+            setBranchData(data.branches);
+        }
+    }, [branchesLoading, branchesError, data]);
+
+    // selecting branch heandler
     function selectBranch(branch) {
         setSelectedBranch(branch);
     }
 
+    function validateInputs() {
+        if (!nurseryName) {
+            toast({
+                title: "Nursery name cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (!selectedBranch._id) {
+            toast({
+                title: "Please select a branch",
+                status: "error",
+            });
+            return false;
+        }
+
+        if (!totalSeats) {
+            toast({
+                title: "Please select seats",
+                status: "error",
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+    // create nursery handler
+    const [createNursery, { createData, loading, error }] = useMutation(CREATE_NURSERY);
     async function handleAddNursery() {
+        if (validateInputs() === false) {
+            return;
+        }
         try {
             const { data } = await createNursery({
                 mutation: CREATE_NURSERY,
@@ -71,12 +113,17 @@ function NurseryNew() {
             <div className="flex flex-col gap-16 ">
                 <div className="flex justify-between">
                     <Breadcrumbs />
-
-                    <button
-                        onClick={handleAddNursery}
-                        className="flex h-14 justify-center items-center gap-2 py-5 px-6 rounded-xl bg-primary">
-                        <span className="text-white text-xl leading-6">Submit</span>
-                    </button>
+                    {loading ? (
+                        <div className="h-[56px] w-[106.38px] bg-primary rounded-xl">
+                            <Loader color="#FFF" />
+                        </div>
+                    ) : (
+                        <button
+                            onClick={handleAddNursery}
+                            className="flex h-14 justify-center items-center gap-2 py-5 px-6 rounded-xl bg-primary">
+                            <span className="text-white text-xl leading-6">Submit</span>
+                        </button>
+                    )}
                 </div>
                 <div className="relative shadow-md  border rounded-2xl px-8 py-12">
                     <div className="flex gap-8 flex-col justify-between items-start w-[500px]">

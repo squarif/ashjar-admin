@@ -74,17 +74,13 @@ function NurseryListing() {
         <div>
             <div className="flex justify-between">
                 <Breadcrumbs />
-                {selectedBranch && !allBranchesFilter ? (
-                    <Link
-                        to="/nurseries/new"
-                        state={{ branch_id: selectedBranch._id }}
-                        className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary">
-                        <PlusIcon className="h-6 w-6 text-white" />
-                        <span className="text-white text-xl leading-6">Add New</span>
-                    </Link>
-                ) : (
-                    ""
-                )}
+
+                <Link
+                    to="/nurseries/new"
+                    className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary">
+                    <PlusIcon className="h-6 w-6 text-white" />
+                    <span className="text-white text-xl leading-6">Add New</span>
+                </Link>
             </div>
 
             <div className="flex flex-col gap-8">
@@ -185,11 +181,11 @@ function NurseryListing() {
                                                             />
                                                         )}
 
-                                                        <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                        {/* <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
                                                             <span className="text-dark text-xs">
                                                                 SAR {nursery.priceRatePerHour} / period
                                                             </span>
-                                                        </div>
+                                                        </div> */}
                                                     </div>
 
                                                     <div className="h-fit py-2.5 px-3 flex flex-col">

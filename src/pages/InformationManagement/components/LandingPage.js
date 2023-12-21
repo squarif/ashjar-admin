@@ -39,7 +39,7 @@ function LandingPage(props) {
             },
         };
 
-        if (payload.__typename) delete payload["__typename"];
+        if ("__typename" in payload) delete payload["__typename"];
 
         //  console.log("payload", payload);
 

@@ -13,6 +13,7 @@ function MeetingRoomRates() {
 
     const [requestPayload, setNewMeetingRoomPayload] = useRecoilState(newMeetingRoomRequest);
 
+    console.log("request payload", requestPayload);
     const [rates, setRates] = useRecoilState(meetingRoomRatesState);
 
     function handleNewRate() {
@@ -55,7 +56,6 @@ function MeetingRoomRates() {
     }
 
     function getDate(value) {
-        console.log("getDate", value);
         if (typeof value === "string") {
             if (value.includes("-")) {
                 return value;

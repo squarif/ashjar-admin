@@ -46,12 +46,16 @@ export const GET_BRANCHES = gql`
                 name
                 totalSeats
                 pictures
+                baseRates {
+                    rate
+                }
             }
             _id
             nurseries {
                 _id
                 name
                 seats
+                pictures
             }
         }
     }
@@ -75,6 +79,14 @@ export const UPDATE_BRANCH = gql`
             name
             location
             address
+        }
+    }
+`;
+
+export const BRANCH_REVENUE = gql`
+    query BranchRevenue($id: ID!, $startDate: String, $endDate: String) {
+        branchRevenue(_id: $id, startDate: $startDate, endDate: $endDate) {
+            riyals
         }
     }
 `;

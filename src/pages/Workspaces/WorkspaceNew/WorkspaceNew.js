@@ -30,6 +30,7 @@ import WorkspaceRates from "../components/Rates";
 import Amenities from "../components/Amenities";
 import OpenDays from "../../../components/OpenDays";
 import { GET_BRANCHES } from "../../../queries/branchesQueries";
+import Loader from "../../../components/Loader";
 
 function WorkspaceNew() {
     const [newWorkspaceRequestPayload, setNewWorkspacePayload] = useRecoilState(newWorkspaceRequest);
@@ -39,8 +40,6 @@ function WorkspaceNew() {
     const [baseRates, setBaseRates] = useRecoilState(workspaceBaseRatesState);
     const [customRates, setCustomRates] = useRecoilState(workspaceCustomRatesState);
     const amenities = useRecoilValue(workspaceAmenitiesState);
-
-    let { state } = useLocation();
 
     const navigate = useNavigate();
 
@@ -55,7 +54,7 @@ function WorkspaceNew() {
         }
     }, [branchesLoading, branchesError, data]);
 
-    const [createWorkspace] = useMutation(CREATE_WORKSPACE);
+    const [createWorkspace, { createData, loading, error }] = useMutation(CREATE_WORKSPACE);
     async function handleAddWorkspace() {
         // "name"
         // "description"
@@ -90,7 +89,7 @@ function WorkspaceNew() {
                 // client: client,
             });
             //  console.log(data);
-            navigate(`/branches/${state.branch_id}`);
+            navigate(`/workspaces`);
         } catch (error) {
             console.log(error);
         }
@@ -196,13 +195,25 @@ function WorkspaceNew() {
 
             <PicturesGrid picturesState={workspacePicturesState} />
 
-            <div className="buttons  ">
+            <div className="buttons flex gap-6 w-full justify-end">
                 <button
-                    className="py-2 px-3 bg-primary flex justify-center items-center gap-2 rounded-xl"
-                    onClick={() => handleAddWorkspace()}>
-                    <span className="text-white text-xl">Add Workspace</span>
-                    <PlusIcon className="text-white" />
+                    className="p-4 bg-errorLight flex justify-center items-center gap-2 flex-row rounded-xl"
+                    onClick={() => navigate(`/workspaces`)}>
+                    <span className="text-mediumGray text-xl">Cancel </span>
+                    <CloseIcon className="text-error" />
                 </button>
+                {loading ? (
+                    <div className="h-11 w-[227px] bg-primary rounded-xl">
+                        <Loader color="#FFF" />
+                    </div>
+                ) : (
+                    <button
+                        className="py-2 px-3 bg-primary flex justify-center items-center gap-2 rounded-xl"
+                        onClick={() => handleAddWorkspace()}>
+                        <span className="text-white text-xl">Add Workspace</span>
+                        <PlusIcon className="text-white" />
+                    </button>
+                )}
             </div>
         </div>
     );

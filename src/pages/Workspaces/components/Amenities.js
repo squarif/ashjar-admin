@@ -48,6 +48,12 @@ function Amenities() {
         setAmenitiesData([...amenitiesData, newAmenity]);
     }
 
+    function handleDeleteAmenity(index) {
+        const updatedAmenties = JSON.parse(JSON.stringify(amenitiesData));
+        updatedAmenties.splice(index, 1);
+        setAmenitiesData(updatedAmenties);
+    }
+
     function handleQuantityToggle(index, value) {
         // setQuantityToggle(value);
 
@@ -154,37 +160,44 @@ function Amenities() {
                                     <span className="text-base text-dark ">Quantity</span>
                                 </label>
                             </div>
-                            <div className="w-[112px]">
-                                {amenity.type === "toggle" ? (
-                                    <Switch
-                                        id="toggle"
-                                        size="lg"
-                                        isChecked={amenity.quantity}
-                                        onChange={(event) => handleToggle(index, event.target.checked)}
-                                    />
-                                ) : (
-                                    <div className="w-[112px] rounded-lg justify-center items-center gap-2 flex">
-                                        <button className="w-4 h-4 p-2 rounded-full border border-error flex justify-center items-center gap-2.5">
-                                            <div
-                                                className="text-center text-error text-2xl font-normal  leading-[18px]"
-                                                onClick={() => decreaseQuantity(index)}>
-                                                -
+                            <div className="flex items-center">
+                                <div className="w-[112px]">
+                                    {amenity.type === "toggle" ? (
+                                        <Switch
+                                            id="toggle"
+                                            size="lg"
+                                            isChecked={amenity.quantity}
+                                            onChange={(event) => handleToggle(index, event.target.checked)}
+                                        />
+                                    ) : (
+                                        <div className="w-[112px] rounded-lg justify-center items-center gap-2 flex">
+                                            <button className="w-4 h-4 p-2 rounded-full border border-error flex justify-center items-center gap-2.5">
+                                                <div
+                                                    className="text-center text-error text-2xl font-normal  leading-[18px]"
+                                                    onClick={() => decreaseQuantity(index)}>
+                                                    -
+                                                </div>
+                                            </button>
+                                            <div className="py-1 px-2">
+                                                <div className="text-center text-dark text-2xl font-normal leading-[18px]">
+                                                    {amenity.quantity}
+                                                </div>
                                             </div>
-                                        </button>
-                                        <div className="py-1 px-2">
-                                            <div className="text-center text-dark text-2xl font-normal leading-[18px]">
-                                                {amenity.quantity}
-                                            </div>
+                                            <button
+                                                className="w-4 h-4 p-2 rounded-full border border-primary flex justify-center items-center gap-2.5"
+                                                onClick={() => increaseQuantity(index)}>
+                                                <div className="text-center text-primary text-2xl font-normal  leading-[18px]">
+                                                    +
+                                                </div>
+                                            </button>
                                         </div>
-                                        <button
-                                            className="w-4 h-4 p-2 rounded-full border border-primary flex justify-center items-center gap-2.5"
-                                            onClick={() => increaseQuantity(index)}>
-                                            <div className="text-center text-primary text-2xl font-normal  leading-[18px]">
-                                                +
-                                            </div>
-                                        </button>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
+                                <button
+                                    onClick={() => handleDeleteAmenity(index)}
+                                    className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                    <PlusIcon className="rotate-45 text-error" />
+                                </button>
                             </div>
                         </div>
                     );

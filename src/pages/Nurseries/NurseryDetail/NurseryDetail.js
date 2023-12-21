@@ -67,11 +67,11 @@ function NurseryDetails() {
                                 index === 0 ? (
                                     <div className="relative overflow-hidden rounded-2xl border col-span-3 row-span-2">
                                         <img alt="" src={picture} />
-                                        <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                        {/* <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
                                             <span className="text-dark text-xs">
                                                 SAR {nurseryData.ratesPerHour} / period
                                             </span>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 ) : (
                                     <div className="overflow-hidden border rounded-2xl">

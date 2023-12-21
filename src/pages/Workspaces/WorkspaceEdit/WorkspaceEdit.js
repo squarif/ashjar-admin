@@ -1,6 +1,7 @@
 import { Input } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
+import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
 
 import { Textarea } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -25,6 +26,7 @@ import WorkspaceRates from "../components/Rates";
 import PicturesGrid from "../../../components/PicturesGrid";
 import OpenDays from "../../../components/OpenDays";
 import { GET_BRANCHES } from "../../../queries/branchesQueries";
+import Loader from "../../../components/Loader";
 
 function WorkspaceNew() {
     const [editWorkspaceRequestPayload, setEditWorkspacePayload] = useRecoilState(editWorkspaceRequest);
@@ -44,6 +46,7 @@ function WorkspaceNew() {
         }
     }, [editWorkspaceRequestPayload]);
 
+    console.log(editWorkspaceRequestPayload.branch);
     const [selectedBranch, setSelectedBranch] = useState(editWorkspaceRequestPayload.branch);
     const [branchData, setBranchData] = useState([]);
     const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
@@ -53,7 +56,7 @@ function WorkspaceNew() {
         }
     }, [branchesLoading, branchesError, data]);
 
-    const [editWorkspace] = useMutation(EDIT_WORKSPACE);
+    const [editWorkspace, { createData, loading, error }] = useMutation(EDIT_WORKSPACE);
     async function handleEditWorkspace() {
         let customRatesPayload = customRates.map((rate) => ({
             ...rate,
@@ -67,11 +70,11 @@ function WorkspaceNew() {
             openDays: openDays.map(({ __typename, ...rest }) => rest),
             amenities: amenities.map(({ __typename, ...rest }) => rest),
             pictures: pictures,
-            branch: params.id,
+            branch: editWorkspaceRequestPayload.branch._id,
         };
 
-        if (payload.__typename) delete payload["__typename"];
-        if (payload.slotsBooked) delete payload["slotsBooked"];
+        if ("__typename" in payload) delete payload["__typename"];
+        if ("slotsBooked" in payload) delete payload["slotsBooked"];
 
         console.log("payload", payload);
         try {
@@ -186,12 +189,24 @@ function WorkspaceNew() {
 
             <PicturesGrid picturesState={workspacePicturesState} />
 
-            <div className="buttons  ">
+            <div className="buttons flex gap-6 w-full justify-end">
                 <button
-                    className="p-4 bg-primary flex justify-center items-center gap-4 flex-col rounded-xl"
-                    onClick={() => handleEditWorkspace()}>
-                    <span className="text-white text-xl">Edit Workspace </span>
+                    className="p-4 bg-errorLight flex justify-center items-center gap-2 flex-row rounded-xl"
+                    onClick={() => navigate(`/meeting-rooms`)}>
+                    <span className="text-mediumGray text-xl">Cancel </span>
+                    <CloseIcon className="text-error" />
                 </button>
+                {loading ? (
+                    <div className="h-11 w-[227px] bg-primary rounded-xl">
+                        <Loader color="#FFF" />
+                    </div>
+                ) : (
+                    <button
+                        className="p-4 bg-primary flex justify-center items-center gap-4 flex-col rounded-xl"
+                        onClick={() => handleEditWorkspace()}>
+                        <span className="text-white text-xl">Update Workspace </span>
+                    </button>
+                )}
             </div>
         </div>
     );

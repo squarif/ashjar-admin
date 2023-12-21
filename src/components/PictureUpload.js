@@ -71,7 +71,13 @@ function PicturesUpload(props) {
 
     return (
         <div>
-            <input type="file" id="fileInput" style={{ display: "none" }} onChange={handleFileChange} />
+            <input
+                type="file"
+                id="fileInput"
+                style={{ display: "none" }}
+                multiple
+                onChange={handleFileChange}
+            />
             {loading ? (
                 <div className="h-[124px] grid place-content-center w-[124px] rounded-xl bg-primary">
                     <CircularProgress value={uploadProgress} color="white" />

@@ -1,12 +1,8 @@
 import { Input, useToast } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { ReactComponent as MapsIcon } from "../../../assets/MapsIcon.svg";
-
-import client from "../../../apollo";
-
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
@@ -15,13 +11,16 @@ import { useRecoilState } from "recoil";
 import { branchesData } from "../../../stores/branches";
 import { useNavigate } from "react-router-dom";
 import { editNurseryData, nurseryPictures } from "../../../stores/nurseryStore";
+import Loader from "../../../components/Loader";
+import { GET_BRANCHES } from "../../../queries/branchesQueries";
+import PicturesGrid from "../../../components/PicturesGrid";
 
 function NurseryEdit() {
     const [nurseryData, setNurseryData] = useRecoilState(editNurseryData);
 
+    console.log("NUERSERY DATA", nurseryData);
     const [nurseryName, setNurseryName] = useState(nurseryData.name);
     const [totalSeats, setTotalSeats] = useState(nurseryData.seats);
-    const [ratePerHour, setRatePerHour] = useState(nurseryData.priceRatePerHour);
     const [selectedBranch, setSelectedBranch] = useState(nurseryData.branch);
 
     const navigate = useNavigate();
@@ -31,10 +30,18 @@ function NurseryEdit() {
 
     // console.log("SATEEE", state);
 
-    const [editNursery] = useMutation(EDIT_NURSERY);
+    const [editNursery, { updateData, loading, error }] = useMutation(EDIT_NURSERY);
 
+    // for branches selector
     const [branchData, setBranchData] = useRecoilState(branchesData);
+    const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
+    useEffect(() => {
+        if (!branchesLoading && !branchesError) {
+            setBranchData(data.branches);
+        }
+    }, [branchesLoading, branchesError, data]);
 
+    // selecting branch heandler
     function selectBranch(branch) {
         setSelectedBranch(branch);
     }
@@ -44,19 +51,16 @@ function NurseryEdit() {
 
     async function handleEditNursery() {
         try {
-            //  console.log("selectedBranch", selectedBranch._id);
-
             let payload = {
                 input: {
                     _id: nurseryData._id,
                     name: nurseryName,
                     branch: selectedBranch._id,
                     seats: parseInt(totalSeats),
-                    priceRatePerHour: parseInt(ratePerHour),
                 },
             };
 
-            //  console.log("EDIT NURSERY PYALOAD", payload);
+            console.log("EDIT NURSERY PYALOAD", payload);
             // // console.log("EDIT_NURSERY", EDIT_NURSERY);
             const { data } = await editNursery({
                 mutation: EDIT_NURSERY,
@@ -86,36 +90,22 @@ function NurseryEdit() {
                 <div className="flex justify-between">
                     <Breadcrumbs />
 
-                    <button
-                        onClick={handleEditNursery}
-                        className="flex h-14 justify-center items-center gap-2 py-5 px-6 rounded-xl bg-primary">
-                        <span className="text-white text-xl leading-6">Submit</span>
-                    </button>
+                    {loading ? (
+                        <div className="h-[56px] w-[106.38px] bg-primary rounded-xl">
+                            <Loader color="#FFF" />
+                        </div>
+                    ) : (
+                        <button
+                            onClick={handleEditNursery}
+                            className="flex h-14 justify-center items-center gap-2 py-5 px-6 rounded-xl bg-primary">
+                            <span className="text-white text-xl leading-6">Submit</span>
+                        </button>
+                    )}
                 </div>
                 {nurseryData ? (
                     <div className="relative shadow-md  border rounded-2xl px-8 py-12">
-                        <div className="pictures grid grid-cols-5 grid-rows-2 gap-6">
-                            {pictures.length ? (
-                                pictures.map((picture, index) =>
-                                    index === 0 ? (
-                                        <div className="relative overflow-hidden rounded-2xl border col-span-3 row-span-2">
-                                            <img alt="" src={picture} />
-                                        </div>
-                                    ) : (
-                                        <div className="overflow-hidden border rounded-2xl">
-                                            <img className="" alt="" src={picture} />
-                                        </div>
-                                    )
-                                )
-                            ) : (
-                                <img
-                                    className="object-contain opacity-25 mx-auto col-span-3 row-span-2"
-                                    src="https://cdn1.iconfinder.com/data/icons/business-company-1/500/image-512.png"
-                                    alt="workspace"
-                                />
-                            )}
-                        </div>
-                        <div className="flex gap-8 flex-col justify-between items-start w-[500px]">
+                        <PicturesGrid picturesState={nurseryPictures} />
+                        <div className="flex gap-8 flex-col justify-between items-start w-[500px] mt-8">
                             <div className="border rounded-xl border-light w-full px-4">
                                 <Input
                                     value={nurseryName}
@@ -130,11 +120,11 @@ function NurseryEdit() {
                                     <span className="text-sm text-mediumGray">Location</span>
                                     <MenuButton as="button" className="w-[500px]">
                                         <div className="flex items-center gap-4 border border-light py-5 px-2 rounded-xl">
-                                            <MapsIcon className=" h-5" />
-
-                                            <span className=" text-lg leading-none">
-                                                {selectedBranch.name}
-                                            </span>
+                                            {selectedBranch ? (
+                                                <span className="text-dark">{selectedBranch.name}</span>
+                                            ) : (
+                                                <span className="text-dark">Select a branch</span>
+                                            )}
                                         </div>
                                     </MenuButton>
                                 </div>
@@ -150,7 +140,7 @@ function NurseryEdit() {
                             <div className="relative grid grid-cols-8 gap-8 items-center">
                                 {/* <span className="text-[32px] text-dark">Location</span> */}
 
-                                <div className="col-span-4">
+                                {/* <div className="col-span-4">
                                     <span className="text-sm text-mediumGray">Rate / Hour</span>
                                     <div className="border max-w-[125px] col-span-2 rounded-xl border-light px-4">
                                         <Input
@@ -161,7 +151,7 @@ function NurseryEdit() {
                                             variant="unstyled"
                                         />
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className="col-span-4">
                                     <span className="text-sm text-mediumGray">Total Seats</span>
