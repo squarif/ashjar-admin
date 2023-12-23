@@ -6,10 +6,21 @@ import { Switch } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import { workspaceAmenitiesState } from "../../../stores/workspaceStore";
+import FontAwesomeIconPicker from "../../../components/IconPicker/IconPicker";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Amenities() {
-    const [searchQuery, setSearchQuery] = useState("");
-    // const [quantityToggle, setQuantityToggle] = useState("quantity");
+    const [icon, setIcon] = useState({
+        prefix: "fas",
+        icon: [
+            576,
+            512,
+            [],
+            "f302",
+            "M160 32c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H160zM396 138.7l96 144c4.9 7.4 5.4 16.8 1.2 24.6S480.9 320 472 320H328 280 200c-9.2 0-17.6-5.3-21.6-13.6s-2.9-18.2 2.9-25.4l64-80c4.6-5.7 11.4-9 18.7-9s14.2 3.3 18.7 9l17.3 21.6 56-84C360.5 132 368 128 376 128s15.5 4 20 10.7zM192 128a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120V344c0 75.1 60.9 136 136 136H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H136c-48.6 0-88-39.4-88-88V120z",
+        ],
+        iconName: "images",
+    });
 
     const [amenitiesData, setAmenitiesData] = useRecoilState(workspaceAmenitiesState);
 
@@ -102,6 +113,21 @@ function Amenities() {
         setAmenitiesData(updatedAmenities);
     }
 
+    function handleAmenityIcon(index, icon) {
+        // const updatedAmenities = [...amenitiesData];
+        const updatedAmenities = JSON.parse(JSON.stringify(amenitiesData));
+
+        console.log("updatedAmenities", updatedAmenities[index]);
+
+        updatedAmenities[index].picture = JSON.stringify(icon);
+
+        console.log("updatedAmenities", updatedAmenities);
+
+        setAmenitiesData(updatedAmenities);
+
+        setIcon(icon);
+    }
+
     return (
         <div className="flex gap-7 flex-col">
             <div className="text-left text-2xl">Amenities</div>
@@ -110,19 +136,19 @@ function Amenities() {
                 {amenitiesData.map((amenity, index) => {
                     return (
                         <div key={index} className="flex p-6 justify-between items-center">
-                            <div className="border rounded-2xl border-light px-4">
-                                <Input
-                                    id="svg"
-                                    variant="unstyled"
-                                    value={amenity.picture}
-                                    className="py-1.5 text-xl max-w-[125px]"
-                                    onChange={(event) => setSearchQuery(event.target.value)}
+                            <div className="border rounded-lg border-light px-4 flex items-center">
+                                <FontAwesomeIcon icon={icon} className="text-[#838481]" />
+                                <FontAwesomeIconPicker
+                                    value={icon.iconName}
+                                    onChange={(icon) => handleAmenityIcon(index, icon)}
                                 />
                             </div>
-                            <div className="border rounded-2xl border-light px-4">
+
+                            <div className="border rounded-lg border-light px-4">
                                 <Input
                                     id="title"
                                     variant="unstyled"
+                                    placeholder="Name"
                                     value={amenity.name}
                                     className="py-1.5 text-xl max-w-[125px]"
                                     onChange={(event) => handleAmenityTitle(index, event.target.value)}
