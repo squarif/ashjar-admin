@@ -228,7 +228,7 @@ function WorkshopCreatePost() {
                 <div className="text-left text-2xl">Timings</div>
 
                 {!selectedBranch.name ? (
-                    <div className="absolute top-0 bottom-0 right-0 left-0 flex justify-center items-center backdrop-blur-md">
+                    <div className="z-[1] absolute top-0 bottom-0 right-0 left-0 flex justify-center items-center backdrop-blur-md">
                         Please select a branch first
                     </div>
                 ) : (
