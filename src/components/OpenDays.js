@@ -1,13 +1,26 @@
 import { Input } from "@chakra-ui/react";
 
 import { ReactComponent as PlusIcon } from "../assets/PlusIcon.svg";
+import { ReactComponent as ChevronRight } from "../assets/ChevronRight.svg";
 
 import { useRecoilState } from "recoil";
 
 import { useState } from "react";
 
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+
 function OpenDays(props) {
     const [openDays, setOpenDays] = useRecoilState(props.state);
+
+    const [days, setDays] = useState([
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    ]);
 
     const [startAMPM, setStartAMPM] = useState("AM");
     const [endAMPM, setEndAMPM] = useState("AM");
@@ -15,25 +28,12 @@ function OpenDays(props) {
     function handleNewDay() {
         let newDay = {
             day: "",
-            startTime: "20:00",
+            startTime: "09:00",
             endTime: "20:00",
         };
 
         setOpenDays([...openDays, newDay]);
     }
-
-    // function getDate(value) {
-    //     if (typeof value === "string") {
-    //         if (value.includes("-")) {
-    //             return value;
-    //         } else {
-    //             const date = new Date(parseInt(value));
-    //             return date.toISOString().slice(0, 10);
-    //         }
-    //     } else {
-    //         return value;
-    //     }
-    // }
 
     function handleDeleteDay(index) {
         const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
@@ -44,8 +44,12 @@ function OpenDays(props) {
 
     function handleDayChange(dayIndex, value) {
         const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
+
+        console.log("updatedOpenDays", updatedOpenDays, dayIndex, value);
         updatedOpenDays[dayIndex].day = value;
         setOpenDays(updatedOpenDays);
+
+        setDays(days.filter((day) => day !== value));
     }
 
     const handleTimeChange = (dayIndex, field, value) => {
@@ -84,7 +88,7 @@ function OpenDays(props) {
             <div className="flex flex-col gap-4">
                 {openDays.map((day, index) => (
                     <div key={index} className="flex gap-4 justify-between items-center h-9">
-                        <div className="grid place-content-center">
+                        {/* <div className="grid place-content-center">
                             <Input
                                 id="day"
                                 variant="unstyled"
@@ -100,7 +104,30 @@ function OpenDays(props) {
                                 }
                                 onChange={(event) => handleDayChange(index, event.target.value)}
                             />
-                        </div>
+                        </div> */}
+
+                        <Menu autoSelect={false} closeOnBlur>
+                            <MenuButton as="button" className="h-fit rounded-xl  ">
+                                <div className="flex px-4 w-[312px] py-3 items-center justify-between">
+                                    {day.day ? (
+                                        <span className="text-dark">{day.day}</span>
+                                    ) : (
+                                        <span className="text-dark">Select a Day</span>
+                                    )}
+
+                                    <ChevronRight className="rotate-90 h-5 text-dark " />
+                                </div>
+                            </MenuButton>
+                            <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
+                                {days.map((day, dayIndex) => {
+                                    return (
+                                        <MenuItem key={dayIndex} onClick={() => handleDayChange(index, day)}>
+                                            {day}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </MenuList>
+                        </Menu>
 
                         <div className="flex items-center">
                             <div className="timeSelector flex items-center w-fit gap-9">

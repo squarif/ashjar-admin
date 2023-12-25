@@ -175,6 +175,7 @@ function DatePicker() {
                     <span className="block mb-1.5 text-sm text-mediumGray">Number of Days</span>
                     <div className="border rounded-2xl border-light px-4">
                         <Input
+                            min={0}
                             id="numberOfDays"
                             variant="unstyled"
                             type="number"
@@ -368,7 +369,10 @@ function DatePicker() {
                         <Loader />
                     </div>
                 ) : (
-                    <div className="p-6 text-mediumGray"> Select date and time to view availability</div>
+                    <div className="p-6 text-mediumGray w-full h-[350px] flex justify-center items-center">
+                        {" "}
+                        Select date and time to view availability
+                    </div>
                 )}
             </div>
         </div>

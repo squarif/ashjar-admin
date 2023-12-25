@@ -81,7 +81,7 @@ function WorkshopRequests() {
     }
 
     const listItems = requestList.map((request, index) => {
-        if (request)
+        if (request.approvalStatus.includes("pending"))
             return (
                 <button
                     key={index}

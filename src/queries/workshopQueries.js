@@ -20,10 +20,70 @@ const GET_WORKSHOP_REQUESTS = gql`
                     seats
                 }
             }
+            description
+            amenities {
+                name
+                picture
+                quantity
+                type
+            }
+            categories
+            approvalStatus
+            draft
+            separateBooking
+            remainingSeats {
+                date
+                remainingNumberOfSeats
+            }
+            rejectionReason
+            username
+            email
+            phone
+            company
+            socialMediaAccount
+            gender
+            ageGroup {
+                min
+                max
+            }
+            comments
+        }
+    }
+`;
+
+const GET_WORKSHOP_REQUEST = gql`
+    query Query($id: ID!) {
+        workshopRequest(_id: $id) {
+            _id
+            name
+            pricePerSeat
+            seats
+            bookings {
+                date
+                startTime
+                endTime
+                nurseryBookings {
+                    nursery
+                    seats
+                }
+                workspaceBookings {
+                    workspace
+                    seats
+                }
+            }
+            bookingByCustomers {
+                date
+                userId {
+                    name
+                }
+                noOfSeats
+                _id
+            }
             branch {
                 _id
                 name
                 location
+                address
             }
             description
             amenities {
@@ -35,45 +95,23 @@ const GET_WORKSHOP_REQUESTS = gql`
             categories
             approvalStatus
             draft
+            separateBooking
+            remainingSeats {
+                date
+                remainingNumberOfSeats
+            }
             rejectionReason
             username
             email
             phone
             company
-        }
-    }
-`;
-
-const GET_WORKSHOP_REQUEST = gql`
-    query WorkSpaces($id: ID!) {
-        workshopRequest(_id: $id) {
-            _id
-            name
-            timing {
-                date
-                startTime
-                endTime
+            socialMediaAccount
+            gender
+            ageGroup {
+                min
+                max
             }
-            branch {
-                _id
-                name
-                location
-                meetingRooms
-                workspaces
-            }
-            nursery {
-                _id
-                name
-            }
-            workspace {
-                _id
-                name
-            }
-            description
-            categories
-            approvalStatus
-            draft
-            rejectionReason
+            comments
         }
     }
 `;

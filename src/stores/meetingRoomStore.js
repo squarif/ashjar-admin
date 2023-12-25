@@ -34,41 +34,41 @@ const editMeetingRoomRequest = atom({
 const meetingRoomOpenDaysState = atom({
     key: "openDays",
     default: [
-        {
-            day: "Monday",
-            startTime: "09:00",
-            endTime: "21:00",
-        },
-        {
-            day: "Tuesday",
-            startTime: "09:00",
-            endTime: "21:00",
-        },
-        {
-            day: "Wednesday",
-            startTime: "09:00",
-            endTime: "21:00",
-        },
-        {
-            day: "Thursday",
-            startTime: "09:00",
-            endTime: "21:00",
-        },
-        {
-            day: "Friday",
-            startTime: "09:00",
-            endTime: "21:00",
-        },
-        {
-            day: "Saturday",
-            startTime: "09:00",
-            endTime: "21:00",
-        },
-        {
-            day: "Sunday",
-            startTime: "09:00",
-            endTime: "21:00",
-        },
+        // {
+        //     day: "Monday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Tuesday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Wednesday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Thursday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Friday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Saturday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Sunday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
     ],
 });
 

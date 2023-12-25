@@ -18,6 +18,7 @@ import { GET_WORKSPACE } from "../../../queries/workspaceQueries";
 import { useEffect } from "react";
 import Loader from "../../../components/Loader";
 import Maps from "../../../components/Maps";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function WorkspaceDetail() {
     // const [workspaceData, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
@@ -58,6 +59,19 @@ function WorkspaceDetail() {
             setEditWorkspacePayload(workspaceData);
         }
     }, [workspaceLoading, workspaceError, data]);
+
+    function getDate(value) {
+        if (typeof value === "string") {
+            if (value.includes("-")) {
+                return value;
+            } else {
+                const date = new Date(parseInt(value));
+                return date.toISOString().slice(0, 10);
+            }
+        } else {
+            return value;
+        }
+    }
 
     if (workspaceLoading)
         return (
@@ -118,9 +132,15 @@ function WorkspaceDetail() {
 
                     <div className="flex gap-12 items-center">
                         {workspaceData.amenities.map((amenity) => (
-                            <span className="capitalize text-sm text-dark font-normal leading-6">
-                                {amenity.name}
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <FontAwesomeIcon
+                                    icon={JSON.parse(amenity.picture)}
+                                    className="text-[#838481]"
+                                />
+                                <span className="capitalize text-sm text-dark font-normal leading-6">
+                                    {amenity.name}
+                                </span>
+                            </div>
                         ))}
                     </div>
 
@@ -143,10 +163,39 @@ function WorkspaceDetail() {
                     <div className="flex flex-col gap-4">
                         {workspaceData.baseRates.map((rate, index) => (
                             <div key={index} className="flex justify-between">
-                                <span className="text-dark text-lg leading-normal">
+                                <span className="text-mediumGray text-lg leading-normal">
                                     {rate.startTime} - {rate.endTime}
                                 </span>
-                                <span className="text-dark text-lg leading-normal">SAR {rate.rate}</span>
+                                <span className="text-mediumGray text-lg leading-normal">
+                                    SAR {rate.rate}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="flex flex-col gap-6">
+                    <div className="time-left flex gap-4 items-center justify-between  w-full">
+                        <span className="text-xl leading-6 text-dark">Custom Rates</span>
+                    </div>
+                    <div className="w-full h-[1px] border-t border-borderColor"></div>
+                    <div className="flex flex-col gap-4">
+                        {workspaceData.customRates.map((rate, index) => (
+                            <div key={index} className="flex justify-between flex-col gap-6">
+                                <span className="text-dark text-lg leading-normal">
+                                    From {getDate(rate.startDate)} to {getDate(rate.endDate)}
+                                </span>
+                                <div key={index} className="flex flex-col gap-4">
+                                    {rate.ratesInSlot.map((rate, index) => (
+                                        <div key={index} className="flex justify-between">
+                                            <span className="text-mediumGray text-lg leading-normal">
+                                                {rate.startTime} - {rate.endTime}
+                                            </span>
+                                            <span className="text-mediumGray text-lg leading-normal">
+                                                SAR {rate.rate}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -160,8 +209,8 @@ function WorkspaceDetail() {
                     <div className="flex flex-col gap-4">
                         {workspaceData.openDays.map((day, index) => (
                             <div key={index} className="flex justify-between">
-                                <span className="text-dark text-lg leading-normal">{day.day}</span>
-                                <span className="text-dark text-lg leading-normal">
+                                <span className="text-mediumGray text-lg leading-normal">{day.day}</span>
+                                <span className="text-mediumGray text-lg leading-normal">
                                     {day.startTime} - {day.endTime}
                                 </span>
                             </div>

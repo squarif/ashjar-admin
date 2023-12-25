@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
@@ -20,8 +20,16 @@ import Loader from "../../../components/Loader";
 function WorkshopListing() {
     const [searchQuery, setSearchQuery] = useState("");
     const [upcomingFilter, setUpcomingFilter] = useState(true);
+    const [requestList, setRequestList] = useState([]);
 
-    let { loading, error, data } = useQuery(GET_WORKSHOP_REQUESTS);
+    let { loading: requestsLoading, error: requestsError, data } = useQuery(GET_WORKSHOP_REQUESTS);
+    useEffect(() => {
+        //  console.log(requestsLoading, requestsError, data);
+        if (!requestsLoading && !requestsError) {
+            console.log("askjdnasjdnj", data);
+            setRequestList(data.workshopRequests);
+        }
+    }, [requestsLoading, requestsError, data]);
 
     //  console.log("WorkshopListing data", data);
 
@@ -52,421 +60,20 @@ function WorkshopListing() {
         }
     }
 
-    // let requestList = data?.workshopRequests;
-    // let requestList = [
-    //     {
-    //         id: 1234,
-    //         status: "pending",
-    //         title: "Pottery Class",
-    //         requestee: {
-    //             name: "Adnan",
-    //             email: "user2@gmail.com",
-    //             phone: "+92318549669",
-    //             company: "Bridglinx",
-    //         },
-    //         description:
-    //             "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-    //         numberOfSeats: "20",
-    //         cost: "12.0",
-    //         gender: ["Male", "Female"],
-    //         ageGroup: "12+",
-    //         duration: {
-    //             hours: "2",
-    //             minutes: "30",
-    //         },
-    //     },
-    //     {
-    //         id: 1234,
-    //         status: "approved",
-    //         title: "Potions Class",
-    //         requestee: {
-    //             name: "Adnan",
-    //             email: "user2@gmail.com",
-    //             phone: "+92318549669",
-    //             company: "Bridglinx",
-    //         },
-    //         description:
-    //             "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-    //         numberOfSeats: "20",
-    //         cost: "12.0",
-    //         gender: ["Male", "Female"],
-    //         ageGroup: "12+",
-    //         duration: {
-    //             hours: "2",
-    //             minutes: "30",
-    //         },
-    //     },
-    //     {
-    //         id: 1234,
-    //         status: "approved",
-    //         title: "Witchcart Class",
-    //         requestee: {
-    //             name: "Adnan",
-    //             email: "mohid@gmail.com",
-    //             phone: "+92318549669",
-    //             company: "Bridglinx",
-    //         },
-    //         description:
-    //             "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-    //         numberOfSeats: "20",
-    //         cost: "12.0",
-    //         gender: ["Male", "Female"],
-    //         ageGroup: "12+",
-    //         duration: {
-    //             hours: "2",
-    //             minutes: "30",
-    //         },
-    //     },
-    //     {
-    //         id: 1234,
-    //         status: "rejected",
-    //         title: "Session Class",
-    //         requestee: {
-    //             name: "Adnan",
-    //             email: "adil@gmail.com",
-    //             phone: "+92318549669",
-    //             company: "Bridglinx",
-    //         },
-    //         description:
-    //             "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione ..",
-    //         numberOfSeats: "20",
-    //         cost: "12.0",
-    //         gender: ["Male", "Female"],
-    //         ageGroup: "12+",
-    //         duration: {
-    //             hours: "2",
-    //             minutes: "30",
-    //         },
-    //     },
-    // ];
+    function getDate(value) {
+        if (typeof value === "string") {
+            if (value.includes("-")) {
+                return value.split("T")[0];
+            } else {
+                const date = new Date(parseInt(value));
+                return date.toISOString().slice(0, 10);
+            }
+        } else {
+            return value;
+        }
+    }
 
-    let requestList = [
-        {
-            _id: "653d7b712f2d99434c7e4c22",
-            name: "Finance Workshop Edited",
-            timing: [
-                {
-                    date: null,
-                    startTime: "9.00 a.m",
-                    endTime: "12.00 p.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "653cf6c9192631467c2f0648",
-                name: "Nursery 2",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "approved",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Branch1",
-                location: "Islamabad",
-                _id: "6537572cefdb213c0c319113",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "653d9bf853787238d89464ff",
-            name: "Sports Workshop",
-            timing: [
-                {
-                    date: null,
-                    startTime: "12.00 p.m",
-                    endTime: "9.00 a.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "653d9b2e53787238d89464fc",
-                name: "Brand New Nursery",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "pending",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Branch1",
-                location: "Islamabad",
-                _id: "6537572cefdb213c0c319113",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "653d9cda53787238d8946505",
-            name: "E-Sports Workshop",
-            timing: [
-                {
-                    date: null,
-                    startTime: "12.00 p.m",
-                    endTime: "9.00 a.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "653d9b2e53787238d89464fc",
-                name: "Brand New Nursery",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "rejected",
-            draft: false,
-            rejectionReason: "Unavailable",
-            branch: {
-                name: "Branch1",
-                location: "Islamabad",
-                _id: "6537572cefdb213c0c319113",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "653da62ceaaae456c42c2d61",
-            name: "Testing Workshop",
-            timing: [
-                {
-                    date: null,
-                    startTime: "9.00 a.m",
-                    endTime: "12.00 p.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "653cf6c9192631467c2f0648",
-                name: "Nursery 2",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "pending",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Branch1",
-                location: "Islamabad",
-                _id: "6537572cefdb213c0c319113",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "653daa7beaaae456c42c2d6d",
-            name: "Testing Workshop",
-            timing: [
-                {
-                    date: null,
-                    startTime: "9.00 a.m",
-                    endTime: "12.00 p.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "653d1311c024721d80bc1bf0",
-                name: "Nursery 3",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "pending",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Branch1",
-                location: "Islamabad",
-                _id: "6537572cefdb213c0c319113",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "653daadceaaae456c42c2d75",
-            name: "Testing Workshop 2",
-            timing: [
-                {
-                    date: null,
-                    startTime: "9.00 a.m",
-                    endTime: "12.00 p.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "653cf6c9192631467c2f0648",
-                name: "Nursery 2",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "approved",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Branch1",
-                location: "Islamabad",
-                _id: "6537572cefdb213c0c319113",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "654554c943c1804664faec08",
-            name: "Austria Workshop",
-            timing: [
-                {
-                    date: null,
-                    startTime: "9.00 a.m",
-                    endTime: "10.00 a.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "6545519eaad1963490a2f8e5",
-                name: "Austria Nursery",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "approved",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Austria Collabs",
-                location: "Austria",
-                _id: "65455144aad1963490a2f8e3",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "6545573676ffc35e08dccc2a",
-            name: "Austria Workshop 2222",
-            timing: [
-                {
-                    date: null,
-                    startTime: "9.00 a.m",
-                    endTime: "10.00 a.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "6545519eaad1963490a2f8e5",
-                name: "Austria Nursery",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "pending",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Austria Collabs",
-                location: "Austria",
-                _id: "65455144aad1963490a2f8e3",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "654557c3a642614c486c0394",
-            name: "Austria Workshop 9999",
-            timing: [
-                {
-                    date: null,
-                    startTime: "9.00 a.m",
-                    endTime: "10.00 a.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "6545519eaad1963490a2f8e5",
-                name: "Austria Nursery",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "pending",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Austria Collabs",
-                location: "Austria",
-                _id: "65455144aad1963490a2f8e3",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "654557daa642614c486c0397",
-            name: "Austria Workshop 9",
-            timing: [
-                {
-                    date: null,
-                    startTime: "9.00 a.m",
-                    endTime: "10.00 a.m",
-                    __typename: "Timing",
-                },
-            ],
-            nursery: {
-                _id: "6545519eaad1963490a2f8e5",
-                name: "Austria Nursery",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "approved",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Austria Collabs",
-                location: "Austria",
-                _id: "65455144aad1963490a2f8e3",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-        {
-            _id: "654576e8d076443dec8c97d8",
-            name: "Portugal Workshop",
-            timing: [],
-            nursery: {
-                _id: "654572e9b6f2bf0a9c590687",
-                name: "Portugal Nursery",
-                __typename: "NurseryData",
-            },
-            workspace: null,
-            description: null,
-            categories: [],
-            approvalStatus: "pending",
-            draft: false,
-            rejectionReason: null,
-            branch: {
-                name: "Portugal Branch",
-                location: "Portugal",
-                _id: "654572beb6f2bf0a9c590685",
-                __typename: "BranchData",
-            },
-            __typename: "WorkshopRequest",
-        },
-    ];
-
-    if (loading)
+    if (requestsLoading)
         return (
             <div className="h-[400px]">
                 <Loader />
@@ -538,15 +145,9 @@ function WorkshopListing() {
                             {requestList.map((request, index) => (
                                 <Tr key={index}>
                                     <Td>{request.name}</Td>
-                                    <Td>
-                                        name
-                                        {/* {request.requestee.name}  */}
-                                    </Td>
-                                    <Td>
-                                        numberOfSeats
-                                        {/* {request.numberOfSeats} */}
-                                    </Td>
-                                    <Td>date enter karwao </Td>
+                                    <Td>{request.username}</Td>
+                                    <Td>{request.seats}</Td>
+                                    <Td>{getDate(request.bookings[0]?.date)}</Td>
 
                                     <Td> {statusBadge(request.approvalStatus)}</Td>
 

@@ -58,7 +58,7 @@ function WorkshopCreatePost() {
 
     const [updateWorkshopRequest] = useMutation(UPDATE_WORKSHOP_REQUEST);
     async function handleUpdateRequest() {
-        if (parseInt(requestPayload.seats) === totalBookings) {
+        if (parseInt(requestPayload.seats) >= totalBookings) {
             try {
                 let payload = {};
 
@@ -195,7 +195,7 @@ function WorkshopCreatePost() {
                 </div>
             </div>
 
-            <div className="location border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
+            <div className="z-[2] location border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
                 <div className="text-left text-2xl">Location</div>
 
                 <div className="rounded-xl border  w-fit  flex justify-start">
@@ -224,19 +224,18 @@ function WorkshopCreatePost() {
                 </div>
             </div>
 
-            <div className="timings flex flex-col justify-between border rounded-2xl border-light px-8 py-12 gap-6">
+            <div className="timings relative flex flex-col justify-between border rounded-2xl border-light px-8 py-12 gap-6">
                 <div className="text-left text-2xl">Timings</div>
 
-                {requestPayload.seats}
-
-                {typeof requestPayload.seats}
-                {totalBookings}
-
-                {typeof totalBookings}
+                {!selectedBranch.name ? (
+                    <div className="absolute top-0 bottom-0 right-0 left-0 flex justify-center items-center backdrop-blur-md">
+                        Please select a branch first
+                    </div>
+                ) : (
+                    ""
+                )}
                 <DatePicker />
-
                 {/* <div className="border-r border-borderColor w-[1px] h-full"></div> */}
-
                 {/* <div className="">
                     <div className="text-left text-2xl">Branches</div>
                 </div> */}

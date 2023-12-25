@@ -104,11 +104,11 @@ function Amenities() {
         // const updatedAmenities = [...amenitiesData];
         const updatedAmenities = JSON.parse(JSON.stringify(amenitiesData));
 
-        console.log("updatedAmenities", updatedAmenities[index]);
+        // console.log("updatedAmenities", updatedAmenities[index]);
 
         updatedAmenities[index].name = value;
 
-        console.log("updatedAmenities", updatedAmenities);
+        // console.log("updatedAmenities", updatedAmenities);
 
         setAmenitiesData(updatedAmenities);
     }
@@ -117,11 +117,11 @@ function Amenities() {
         // const updatedAmenities = [...amenitiesData];
         const updatedAmenities = JSON.parse(JSON.stringify(amenitiesData));
 
-        console.log("updatedAmenities", updatedAmenities[index]);
+        // console.log("updatedAmenities", updatedAmenities[index]);
 
         updatedAmenities[index].picture = JSON.stringify(icon);
 
-        console.log("updatedAmenities", updatedAmenities);
+        // console.log("updatedAmenities", updatedAmenities);
 
         setAmenitiesData(updatedAmenities);
 
@@ -137,9 +137,17 @@ function Amenities() {
                     return (
                         <div key={index} className="flex p-6 justify-between items-center">
                             <div className="border rounded-lg border-light px-4">
-                                <FontAwesomeIcon icon={icon} className="text-[#838481]" />
+                                {amenity.picture.length ? (
+                                    <FontAwesomeIcon
+                                        icon={JSON.parse(amenity.picture)}
+                                        className="text-[#838481]"
+                                    />
+                                ) : (
+                                    ""
+                                )}
+
                                 <FontAwesomeIconPicker
-                                    value={icon.iconName}
+                                    value={icon}
                                     onChange={(icon) => handleAmenityIcon(index, icon)}
                                 />
                             </div>
@@ -184,7 +192,6 @@ function Amenities() {
                                     <span className="text-base text-dark ">Quantity</span>
                                 </label>
                             </div>
-
                             <div className="flex items-center">
                                 <div className="w-[112px]">
                                     {amenity.type === "toggle" ? (

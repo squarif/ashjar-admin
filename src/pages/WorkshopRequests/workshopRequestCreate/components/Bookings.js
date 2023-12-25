@@ -21,6 +21,8 @@ function BookingRow(props) {
     const [workshopBookings, setWorkshopBookings] = useRecoilState(workshopBookingsPayload);
     const [nurseryBookings, setNurseryBookings] = useState({});
     const [workspaceBookings, setWorkspaceBookings] = useState({});
+    const totalBookings = useRecoilValue(totalBookingsSelector);
+    const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
 
     const [selectedSeats, setSelectedSeats] = useState(0);
 
@@ -31,7 +33,7 @@ function BookingRow(props) {
     let index = props.index;
 
     function decreaseSelectedSeats(id) {
-        if (selectedSeats > 0) {
+        if (selectedSeats > 0 && parseInt(requestPayload.seats) <= totalBookings) {
             setSelectedSeats((prevSeats) => prevSeats - 1);
 
             if (type === "nursery") {
