@@ -15,7 +15,7 @@ import { atom } from "recoil";
 // workspaces:654779151acccb002b94051f
 // 654779571acccb002b94052f
 
-const newWorkspaceRequest = atom({
+export const newWorkspaceRequest = atom({
     key: "newWorkspaceRequest",
     default: {
         name: "",
@@ -27,7 +27,7 @@ const newWorkspaceRequest = atom({
     },
 });
 
-const editWorkspaceRequest = atom({
+export const editWorkspaceRequest = atom({
     key: "editWorkspaceRequest",
     default: {
         //     _id: "6542b0fd839cde2fec295cdb",
@@ -67,7 +67,7 @@ const editWorkspaceRequest = atom({
     },
 });
 
-const workspaceOpenDaysState = atom({
+export const workspaceOpenDaysState = atom({
     key: "workspaceOpenDaysState",
     default: [
         // {
@@ -108,7 +108,48 @@ const workspaceOpenDaysState = atom({
     ],
 });
 
-const workspaceBaseRatesState = atom({
+export const workspaceCustomOpenHoursState = atom({
+    key: "workspaceCustomOpenHoursState",
+    default: [
+        // {
+        //     day: "Monday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Tuesday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Wednesday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Thursday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Friday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Saturday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+        // {
+        //     day: "Sunday",
+        //     startTime: "09:00",
+        //     endTime: "21:00",
+        // },
+    ],
+});
+
+export const workspaceBaseRatesState = atom({
     key: "workspaceBaseRatesState",
     default: [
         // {
@@ -134,7 +175,7 @@ const workspaceBaseRatesState = atom({
     ],
 });
 
-const workspaceCustomRatesState = atom({
+export const workspaceCustomRatesState = atom({
     key: "workspaceCustomRatesState",
     default: [
         // {
@@ -192,12 +233,12 @@ const workspaceCustomRatesState = atom({
     ],
 });
 
-const workspaceAmenitiesState = atom({
+export const workspaceAmenitiesState = atom({
     key: "workspaceAmenitiesState",
     default: [],
 });
 
-const workspacePicturesState = atom({
+export const workspacePicturesState = atom({
     key: "workspacePicturesState",
     default: [
         // "https://images.inc.com/uploaded_files/image/1920x1080/getty_517610514_353435.jpg",
@@ -205,13 +246,3 @@ const workspacePicturesState = atom({
         // "https://images.inc.com/uploaded_files/image/1920x1080/getty_517610514_353435.jpg",
     ],
 });
-
-export {
-    newWorkspaceRequest,
-    editWorkspaceRequest,
-    workspaceOpenDaysState,
-    workspaceBaseRatesState,
-    workspaceCustomRatesState,
-    workspaceAmenitiesState,
-    workspacePicturesState,
-};

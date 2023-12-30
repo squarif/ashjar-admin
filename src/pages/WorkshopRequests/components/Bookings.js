@@ -11,8 +11,8 @@ import {
     workshopRequestPayload,
     workshopSelectedBranch,
     workspaceBookingsPayload,
-} from "../../../../stores/workshopStore";
-import Loader from "../../../../components/Loader";
+} from "../../../stores/workshopStore";
+import Loader from "../../../components/Loader";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";

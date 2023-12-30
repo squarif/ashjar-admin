@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import { generateDate, months } from "./util/calendar";
 import cn from "./util/cn";
 
-import { ReactComponent as ChevronRight } from "../../../../../assets/ChevronRight.svg";
-import { ReactComponent as ArrowIcon } from "../../../../../assets/ArrowIcon.svg";
-import { ReactComponent as CloseIcon } from "../../../../../assets/CloseIcon.svg";
+import { ReactComponent as ChevronRight } from "../../../../assets/ChevronRight.svg";
+import { ReactComponent as ArrowIcon } from "../../../../assets/ArrowIcon.svg";
+import { ReactComponent as CloseIcon } from "../../../../assets/CloseIcon.svg";
 
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -14,18 +14,18 @@ import {
     workshopRequestPayload,
     workshopSelectedBranch,
     workspaceBookingsPayload,
-} from "../../../../../stores/workshopStore";
+} from "../../../../stores/workshopStore";
 
 import { Switch, useToast } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
-import { workshopBookingsPayload } from "../../../../../stores/workshopStore";
+import { workshopBookingsPayload } from "../../../../stores/workshopStore";
 
 import { useNavigate } from "react-router-dom";
-import { GET_AVAILABLE_SLOTS } from "../../../../../queries/workshopQueries";
+import { GET_AVAILABLE_SLOTS } from "../../../../queries/workshopQueries";
 import { useMutation } from "@apollo/client";
-import client from "../../../../../apollo";
+import client from "../../../../apollo";
 import Bookings from "../Bookings";
-import Loader from "../../../../../components/Loader";
+import Loader from "../../../../components/Loader";
 
 function DatePicker() {
     // stores

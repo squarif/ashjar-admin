@@ -31,10 +31,6 @@ const GET_WORKSHOP_REQUESTS = gql`
             approvalStatus
             draft
             separateBooking
-            remainingSeats {
-                date
-                remainingNumberOfSeats
-            }
             rejectionReason
             username
             email
@@ -42,17 +38,13 @@ const GET_WORKSHOP_REQUESTS = gql`
             company
             socialMediaAccount
             gender
-            ageGroup {
-                min
-                max
-            }
             comments
         }
     }
 `;
 
 const GET_WORKSHOP_REQUEST = gql`
-    query Query($id: ID!) {
+    query WorkshopRequest($id: ID!) {
         workshopRequest(_id: $id) {
             _id
             name

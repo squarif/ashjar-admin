@@ -8,6 +8,7 @@ import { useRecoilState } from "recoil";
 import {
     editMeetingRoomRequest,
     meetingRoomAmenitiesState,
+    meetingRoomCustomOpenHoursState,
     meetingRoomOpenDaysState,
     meetingRoomPicturesState,
     meetingRoomRatesState,
@@ -16,6 +17,7 @@ import { useEffect } from "react";
 import Loader from "../../../components/Loader";
 import Maps from "../../../components/Maps";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getDate } from "../../../util/helpers";
 
 function MeetingRoomDetails() {
     const { id } = useParams();
@@ -24,6 +26,7 @@ function MeetingRoomDetails() {
     let [openDays, setOpenDays] = useRecoilState(meetingRoomOpenDaysState);
     let [pictures, setPictures] = useRecoilState(meetingRoomPicturesState);
     let [editMeetingRoom, setEditMeetingRoomPayload] = useRecoilState(editMeetingRoomRequest);
+    let [customOpenHours, setCustomOpenHours] = useRecoilState(meetingRoomCustomOpenHoursState);
 
     const {
         loading: meetingRoomLoading,
@@ -49,6 +52,7 @@ function MeetingRoomDetails() {
             setAmenitiesData(meetingRoomData.amenities);
             setRatesData(meetingRoomData.customRates);
             setOpenDays(meetingRoomData.openDays);
+            setCustomOpenHours(meetingRoomData.customOpenHours);
             setPictures(meetingRoomData.pictures);
             setEditMeetingRoomPayload(meetingRoomData);
 
@@ -143,25 +147,51 @@ function MeetingRoomDetails() {
 
                                 <div className="text-left text-2xl">Location</div>
                                 <div className="h-[300px] w-full rounded-2xl overflow-hidden">
-                                    <Maps center={JSON.parse(meetingRoomData.branch.location).location} />
+                                    {meetingRoomData.branch && (
+                                        <Maps center={JSON.parse(meetingRoomData.branch.location).location} />
+                                    )}
                                 </div>
                             </div>
                         </div>
-                        <div className="col-span-3 px-8 flex flex-col gap-6 ">
-                            <div className="time-left flex gap-4 items-center justify-between  w-full py-3">
-                                <span className=" text-xl leading-6 text-dark">Opening Timings</span>
-                                <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
+                        <div className="col-span-3 px-8 flex flex-col gap-12">
+                            <div className=" flex flex-col gap-6 ">
+                                <div className="time-left flex gap-4 items-center justify-between  w-full py-3">
+                                    <span className=" text-xl leading-6 text-dark">Opening Timings</span>
+                                    <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
+                                </div>
+                                <div className="w-full h-[1px] border-t border-borderColor"></div>
+                                <div className="flex flex-col gap-4">
+                                    {meetingRoomData.openDays.map((day, index) => (
+                                        <div key={index} className="flex justify-between gap-5">
+                                            <span className="text-dark text-lg leading-normal">
+                                                {day.day}
+                                            </span>
+                                            <span className="text-dark text-lg leading-normal">
+                                                {day.startTime} - {day.endTime}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="w-full h-[1px] border-t border-borderColor"></div>
-                            <div className="flex flex-col gap-4">
-                                {meetingRoomData.openDays.map((day, index) => (
-                                    <div key={index} className="flex justify-between gap-5">
-                                        <span className="text-dark text-lg leading-normal">{day.day}</span>
-                                        <span className="text-dark text-lg leading-normal">
-                                            {day.startTime} - {day.endTime}
-                                        </span>
-                                    </div>
-                                ))}
+
+                            <div className=" flex flex-col gap-6">
+                                <div className="time-left flex gap-4 items-center justify-between  w-full py-3">
+                                    <span className=" text-xl leading-6 text-dark">Opening Hours</span>
+                                    <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
+                                </div>
+                                <div className="w-full h-[1px] border-t border-borderColor"></div>
+                                <div className="flex flex-col gap-4">
+                                    {meetingRoomData.customOpenHours.map((day, index) => (
+                                        <div key={index} className="flex justify-between gap-5">
+                                            <span className="text-mediumGray text-lg leading-normal">
+                                                {getDate(day.startDate)} - {getDate(day.endDate)}
+                                            </span>
+                                            <span className="text-mediumGray text-lg leading-normal">
+                                                {day.startTime} - {day.endTime}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>

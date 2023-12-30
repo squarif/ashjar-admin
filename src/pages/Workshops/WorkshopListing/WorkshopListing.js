@@ -13,20 +13,24 @@ import { useQuery } from "@apollo/client";
 import { GET_WORKSHOP_REQUESTS } from "../../../queries/workshopQueries";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import Loader from "../../../components/Loader";
+import { Pagination } from "antd";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
 
 function WorkshopListing() {
+    const itemsPerPage = 7;
     const [searchQuery, setSearchQuery] = useState("");
     const [upcomingFilter, setUpcomingFilter] = useState(true);
     const [requestList, setRequestList] = useState([]);
+    const [pageNumber, setPageNumber] = useState(1);
 
     let { loading: requestsLoading, error: requestsError, data } = useQuery(GET_WORKSHOP_REQUESTS);
     useEffect(() => {
         //  console.log(requestsLoading, requestsError, data);
         if (!requestsLoading && !requestsError) {
             console.log("askjdnasjdnj", data);
+
             setRequestList(data.workshopRequests);
         }
     }, [requestsLoading, requestsError, data]);
@@ -73,6 +77,17 @@ function WorkshopListing() {
         }
     }
 
+    function filteredList(items) {
+        return items.filter((item) => item.name.toLowerCase().includes(searchQuery));
+    }
+
+    function paginatedList(items) {
+        const startIndex = (pageNumber - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        return filteredList(items.slice(startIndex, endIndex));
+    }
+
     if (requestsLoading)
         return (
             <div className="h-[400px]">
@@ -81,7 +96,7 @@ function WorkshopListing() {
         );
 
     return (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 h-full">
             <Breadcrumbs />
 
             <div className="flex gap-6 max-h-12">
@@ -128,8 +143,8 @@ function WorkshopListing() {
                 </label>
             </div>
 
-            <div className="border rounded-xl">
-                <TableContainer>
+            <div className="border rounded-xl flex items-center flex-col w-full h-full justify-between">
+                <TableContainer className="w-full">
                     <Table variant="simple">
                         <Thead className="h-[60px]">
                             <Tr>
@@ -142,7 +157,7 @@ function WorkshopListing() {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {requestList.map((request, index) => (
+                            {paginatedList(requestList).map((request, index) => (
                                 <Tr key={index}>
                                     <Td>{request.name}</Td>
                                     <Td>{request.username}</Td>
@@ -161,6 +176,14 @@ function WorkshopListing() {
                         </Tbody>
                     </Table>
                 </TableContainer>
+
+                <Pagination
+                    className="p-4"
+                    defaultCurrent={pageNumber}
+                    total={requestList.length}
+                    pageSize={itemsPerPage}
+                    onChange={(x) => setPageNumber(x)}
+                />
             </div>
 
             <div className=""></div>

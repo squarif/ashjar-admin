@@ -14,6 +14,12 @@ const CREATE_WORKSPACE = gql`
                 startTime
                 endTime
             }
+            customOpenHours {
+                startDate
+                endDate
+                startTime
+                endTime
+            }
             totalSeats
             baseRates {
                 startTime
@@ -54,6 +60,12 @@ const GET_WORKSPACE = gql`
             }
             openDays {
                 day
+                startTime
+                endTime
+            }
+            customOpenHours {
+                startDate
+                endDate
                 startTime
                 endTime
             }
@@ -113,6 +125,12 @@ const EDIT_WORKSPACE = gql`
             }
             openDays {
                 day
+                startTime
+                endTime
+            }
+            customOpenHours {
+                startDate
+                endDate
                 startTime
                 endTime
             }

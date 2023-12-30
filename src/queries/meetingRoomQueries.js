@@ -15,6 +15,12 @@ const CREATE_MEETING_ROOM = gql`
                 startTime
                 endTime
             }
+            customOpenHours {
+                startDate
+                endDate
+                startTime
+                endTime
+            }
             totalSeats
             ratesPerHour
             customRates {
@@ -81,6 +87,12 @@ const GET_MEETING_ROOM = gql`
                 startTime
                 endTime
             }
+            customOpenHours {
+                startDate
+                endDate
+                startTime
+                endTime
+            }
             slotsBooked {
                 date
                 slotsInDay {
@@ -122,6 +134,12 @@ const EDIT_MEETING_ROOM = gql`
             }
             openDays {
                 day
+                startTime
+                endTime
+            }
+            customOpenHours {
+                startDate
+                endDate
                 startTime
                 endTime
             }

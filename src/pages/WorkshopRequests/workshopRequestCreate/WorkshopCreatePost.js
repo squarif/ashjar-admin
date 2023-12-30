@@ -5,7 +5,7 @@ import { ReactComponent as EqualIcon } from "../../../assets/EqualIcon.svg";
 import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 
 import { Textarea } from "@chakra-ui/react";
-import DatePicker from "./components/DatePicker/DatePicker";
+import DatePicker from "../components/DatePicker/DatePicker";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
     totalBookingsSelector,
@@ -15,7 +15,7 @@ import {
     workshopRequestPayload,
     workshopSelectedBranch,
 } from "../../../stores/workshopStore";
-import Branches from "./components/Bookings";
+import Branches from "../components/Bookings";
 import Amenities from "../components/Amenities";
 
 import Categories from "../components/Categories";

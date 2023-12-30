@@ -11,6 +11,7 @@ import { EDIT_USER, GET_USERS } from "../../queries/userQueries";
 import { useMutation, useQuery } from "@apollo/client";
 import client from "../../apollo";
 import Loader from "../../components/Loader";
+import { Pagination } from "antd";
 
 function UserRow(props) {
     let user = props.user;
@@ -109,9 +110,12 @@ function UserRow(props) {
 }
 
 function Users() {
+    const itemsPerPage = 8;
     const [searchQuery, setSearchQuery] = useState("");
     const [userData, setUserData] = useState([]);
     const { loading: usersLoading, error: usersError, data } = useQuery(GET_USERS);
+    const [itemsLength, setItemsLength] = useState(0);
+    const [pageNumber, setPageNumber] = useState(1);
 
     useEffect(() => {
         if (!usersLoading && !usersError) {
@@ -123,6 +127,22 @@ function Users() {
         }
     }, [usersLoading, usersError, data]);
 
+    function filteredList(items) {
+        return items.filter(
+            (item) =>
+                item.name.toLowerCase().includes(searchQuery) ||
+                item._id.toLowerCase().includes(searchQuery) ||
+                item.phoneNumber.includes(searchQuery)
+        );
+    }
+
+    function paginatedList(items) {
+        const startIndex = (pageNumber - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        return filteredList(items.slice(startIndex, endIndex));
+    }
+
     if (usersLoading)
         return (
             <div className="h-[400px]">
@@ -130,14 +150,14 @@ function Users() {
             </div>
         );
     return (
-        <div>
+        <div className="h-full">
             <div className="flex justify-between">
                 <Breadcrumbs />
             </div>
 
             {!usersLoading ? (
                 userData ? (
-                    <div className="flex flex-col gap-8">
+                    <div className="flex flex-col gap-8 h-[90%]">
                         <div className="Search rounded-xl border overflow-hidden px-4 shadow-md ">
                             <Input
                                 variant="unstyled"
@@ -150,7 +170,7 @@ function Users() {
                             <div className="Filter"></div>
                         </div>
 
-                        <div className="border rounded-xl">
+                        <div className="border rounded-xl h-full flex flex-col items-center justify-between w-full">
                             <TableContainer>
                                 <Table variant="simple">
                                     <Thead className="h-[60px]">
@@ -176,12 +196,20 @@ function Users() {
                                         </Tr>
                                     </Thead>
                                     <Tbody>
-                                        {userData.map((user, index) => (
+                                        {paginatedList(userData).map((user, index) => (
                                             <UserRow user={user} key={index} />
                                         ))}
                                     </Tbody>
                                 </Table>
                             </TableContainer>
+
+                            <Pagination
+                                className="p-4"
+                                defaultCurrent={pageNumber}
+                                total={userData.length}
+                                pageSize={itemsPerPage}
+                                onChange={(x) => setPageNumber(x)}
+                            />
                         </div>
                     </div>
                 ) : (

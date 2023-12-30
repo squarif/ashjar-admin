@@ -6,12 +6,12 @@ import { useRecoilState, useRecoilValue } from "recoil";
 // import { workshopRequestPayload } from "../../../../stores/workshopStore";
 
 // import { useState } from "react";
-import { meetingRoomRatesState, newMeetingRoomRequest } from "../../../stores/meetingRoomStore";
+import { meetingRoomRatesState } from "../../../stores/meetingRoomStore";
 
-function MeetingRoomRates() {
+function MeetingRoomRates(props) {
     // const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
 
-    const [requestPayload, setNewMeetingRoomPayload] = useRecoilState(newMeetingRoomRequest);
+    const [requestPayload, setMeetingRoomPayload] = useRecoilState(props.state);
 
     console.log("request payload", requestPayload);
     const [rates, setRates] = useRecoilState(meetingRoomRatesState);
@@ -32,12 +32,18 @@ function MeetingRoomRates() {
         });
     }
 
+    function handleDeleteRate(index) {
+        let updatedRates = JSON.parse(JSON.stringify(rates));
+        updatedRates.splice(index, 1);
+        setRates(updatedRates);
+    }
+
     function handleBaseRateChange(value) {
         let updatedRequest = { ...requestPayload };
 
         updatedRequest.ratesPerHour = value;
 
-        setNewMeetingRoomPayload(updatedRequest);
+        setMeetingRoomPayload(updatedRequest);
     }
 
     function handleCustomDateChange(customDateIndex, field, value) {
@@ -134,19 +140,30 @@ function MeetingRoomRates() {
                                 {/* min={customRate.startDate} */}
                             </div>
                         </div>
-                        <div className="rate flex gap-2.5 items-baseline">
-                            <span className="">SAR</span>
-                            <div className="title rounded-xl border overflow-hidden px-3 max-w-[70px]">
-                                <Input
-                                    variant="unstyled"
-                                    value={rate.rate}
-                                    placeholder="Rate"
-                                    type="number"
-                                    className="py-2 text-xl text-primary leading-6 text-center"
-                                    onChange={(event) => handleCustomRateChange(index, event.target.value)}
-                                />
+
+                        <div className="flex items-center gap-6">
+                            <div className="rate flex gap-2.5 items-baseline">
+                                <span className="">SAR</span>
+                                <div className="title rounded-xl border overflow-hidden px-3 max-w-[70px]">
+                                    <Input
+                                        variant="unstyled"
+                                        value={rate.rate}
+                                        placeholder="Rate"
+                                        type="number"
+                                        className="py-2 text-xl text-primary leading-6 text-center"
+                                        onChange={(event) =>
+                                            handleCustomRateChange(index, event.target.value)
+                                        }
+                                    />
+                                </div>
+                                <span className="">/ hr</span>
                             </div>
-                            <span className="">/ hr</span>
+
+                            <button
+                                onClick={() => handleDeleteRate(index)}
+                                className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                <PlusIcon className="rotate-45 text-error" />
+                            </button>
                         </div>
                     </div>
                 ))}

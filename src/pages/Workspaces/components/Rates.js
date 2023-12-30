@@ -5,9 +5,9 @@ import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 import { useRecoilState, useRecoilValue } from "recoil";
 // import { workshopRequestPayload } from "../../../stores/workshopStore";
 
-// import { useState } from "react";
 import { workspaceBaseRatesState, workspaceCustomRatesState } from "../../../stores/workspaceStore";
-import { useState } from "react";
+
+import { getDate } from "../../../util/helpers";
 
 function WorkspaceRates() {
     const [baseRates, setBaseRates] = useRecoilState(workspaceBaseRatesState);
@@ -31,6 +31,14 @@ function WorkspaceRates() {
         setBaseRates(updatedRates);
     }
 
+    function handleDeleteBaseRate(index) {
+        let updatedBaseRates = JSON.parse(JSON.stringify(baseRates));
+
+        updatedBaseRates.splice(index, 1);
+
+        setBaseRates(updatedBaseRates);
+    }
+
     const handleBaseTimeChange = (dayIndex, field, value) => {
         const updatedBaseRates = JSON.parse(JSON.stringify(baseRates));
         updatedBaseRates[dayIndex][field] = value;
@@ -46,8 +54,7 @@ function WorkspaceRates() {
     }
 
     ////////////////////////// Custom Rates
-
-    function handleAddNewCustomDate() {
+    function handleNewCustomRate() {
         let date = new Date();
         let newDate = {
             startDate: date.getTime(),
@@ -65,15 +72,20 @@ function WorkspaceRates() {
 
         setCustomRates(updatedRates);
     }
+    function handleDeleteCustomRate(index) {
+        const updatedCustomRate = JSON.parse(JSON.stringify(customRates));
+        updatedCustomRate.splice(index, 1);
+        setCustomRates(updatedCustomRate);
+    }
+    function handleCustomDateChange(customRateIndex, field, value) {
+        const updatedCustomRate = JSON.parse(JSON.stringify(customRates));
+        updatedCustomRate[customRateIndex][field] = value;
 
-    function handleCustomDateChange(customDateIndex, field, value) {
-        const updatedCustomDate = JSON.parse(JSON.stringify(customRates));
-        updatedCustomDate[customDateIndex][field] = value;
-
-        setCustomRates(updatedCustomDate);
+        setCustomRates(updatedCustomRate);
     }
 
-    function handleNewCustomTime(index) {
+    // rate in slot
+    function handleNewCustomRateInSlot(index) {
         let newTime = {
             startTime: "",
             endTime: "",
@@ -85,31 +97,20 @@ function WorkspaceRates() {
         updatedRates[index].ratesInSlot.push(newTime);
         setCustomRates(updatedRates);
     }
-
-    const handleCustomTimeChange = (slotIndex, customDateIndex, field, value) => {
+    function handleDeleteCustomRateInSlot(customRateIndex, slotIndex) {
+        let updatedRates = JSON.parse(JSON.stringify(customRates));
+        updatedRates[customRateIndex].ratesInSlot.splice(slotIndex, 1);
+        setCustomRates(updatedRates);
+    }
+    const handleCustomTimeChange = (slotIndex, customRateIndex, field, value) => {
         const updatedCustomRates = JSON.parse(JSON.stringify(customRates));
-
-        updatedCustomRates[customDateIndex].ratesInSlot[slotIndex][field] = value;
+        updatedCustomRates[customRateIndex].ratesInSlot[slotIndex][field] = value;
         setCustomRates(updatedCustomRates);
     };
-
-    function handleCustomRateChange(slotIndex, customDateIndex, value) {
+    function handleCustomRateChange(slotIndex, customRateIndex, value) {
         const updatedCustomRates = JSON.parse(JSON.stringify(customRates));
-        updatedCustomRates[customDateIndex].ratesInSlot[slotIndex].rate = parseInt(value);
+        updatedCustomRates[customRateIndex].ratesInSlot[slotIndex].rate = parseInt(value);
         setCustomRates(updatedCustomRates);
-    }
-
-    function getDate(value) {
-        if (typeof value === "string") {
-            if (value.includes("-")) {
-                return value;
-            } else {
-                const date = new Date(parseInt(value));
-                return date.toISOString().slice(0, 10);
-            }
-        } else {
-            return value;
-        }
     }
 
     return (
@@ -118,7 +119,7 @@ function WorkspaceRates() {
                 <div className="text-left text-2xl">Base Rates</div>
                 <button
                     className="rounded-lg border border-borderColor px-6 py-4 bg-primaryLight flex items-center"
-                    onClick={() => handleAddNewCustomDate()}>
+                    onClick={() => handleNewCustomRate()}>
                     <span className="text-lg leading-normal">Add Custom Rate</span>
                     <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                 </button>
@@ -167,19 +168,29 @@ function WorkspaceRates() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="rate flex gap-2.5 items-baseline">
-                                <span className="">SAR</span>
-                                <div className="title rounded-xl border overflow-hidden px-3 max-w-[70px]">
-                                    <Input
-                                        variant="unstyled"
-                                        value={rate.rate}
-                                        placeholder="Rate"
-                                        type="number"
-                                        className="py-2 text-xl text-primary leading-6 text-center"
-                                        onChange={(event) => handleBaseRateChange(index, event.target.value)}
-                                    />
+                            <div className="flex items-center gap-6">
+                                <div className="rate flex gap-2.5 items-baseline">
+                                    <span className="">SAR</span>
+                                    <div className="title rounded-xl border overflow-hidden px-3 max-w-[70px]">
+                                        <Input
+                                            variant="unstyled"
+                                            value={rate.rate}
+                                            placeholder="Rate"
+                                            type="number"
+                                            className="py-2 text-xl text-primary leading-6 text-center"
+                                            onChange={(event) =>
+                                                handleBaseRateChange(index, event.target.value)
+                                            }
+                                        />
+                                    </div>
+                                    <span className="">/ hr</span>
                                 </div>
-                                <span className="">/ hr</span>
+
+                                <button
+                                    onClick={() => handleDeleteBaseRate(index)}
+                                    className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                    <PlusIcon className="rotate-45 text-error" />
+                                </button>
                             </div>
                         </div>
                     ))}
@@ -191,48 +202,60 @@ function WorkspaceRates() {
                     </button>
                 </div>
 
-                {customRates.map((customRate, customDateIndex) => (
-                    <div className="divide-y-[1px] divide-borderColor" key={customDateIndex}>
-                        <div className="custom-rate px-6 py-4 flex gap-2  items-baseline justify-between w-fit">
+                {customRates.map((customRate, customRateIndex) => (
+                    <div className="divide-y-[1px] divide-borderColor" key={customRateIndex}>
+                        <div className="custom-rate px-6 py-4 flex items-center justify-between">
                             {/* <span className="custom-rate text-lg text-dark">
                                 {customRate.startDate} - {customRate.endDate}
                             </span> */}
 
-                            <div className="border rounded border-mediumGray px-2">
-                                <Input
-                                    variant="unstyled"
-                                    type="date"
-                                    id="start"
-                                    name="date-start"
-                                    value={getDate(customRate.startDate)}
-                                    className="max-w-[200px] text-lg text-dark"
-                                    onChange={(event) =>
-                                        handleCustomDateChange(
-                                            customDateIndex,
-                                            "startDate",
-                                            event.target.value
-                                        )
-                                    }
-                                />
-                                {/* max={customRate.endDate} */}
+                            <div className="flex gap-2  items-baseline justify-between w-fit">
+                                <div className="border rounded border-mediumGray px-2">
+                                    <Input
+                                        variant="unstyled"
+                                        type="date"
+                                        id="start"
+                                        name="date-start"
+                                        value={getDate(customRate.startDate)}
+                                        className="max-w-[200px] text-lg text-dark"
+                                        onChange={(event) =>
+                                            handleCustomDateChange(
+                                                customRateIndex,
+                                                "startDate",
+                                                event.target.value
+                                            )
+                                        }
+                                    />
+                                    {/* max={customRate.endDate} */}
+                                </div>
+
+                                <span className="text-lg text-dark">-</span>
+
+                                <div className="border rounded border-mediumGray px-2">
+                                    <Input
+                                        variant="unstyled"
+                                        type="date"
+                                        id="end"
+                                        name="date-end"
+                                        value={getDate(customRate.endDate)}
+                                        className="max-w-[200px] text-lg text-dark"
+                                        onChange={(event) =>
+                                            handleCustomDateChange(
+                                                customRateIndex,
+                                                "endDate",
+                                                event.target.value
+                                            )
+                                        }
+                                    />
+                                    {/* min={customRate.startDate} */}
+                                </div>
                             </div>
 
-                            <span className="text-lg text-dark">-</span>
-
-                            <div className="border rounded border-mediumGray px-2">
-                                <Input
-                                    variant="unstyled"
-                                    type="date"
-                                    id="end"
-                                    name="date-end"
-                                    value={getDate(customRate.endDate)}
-                                    className="max-w-[200px] text-lg text-dark"
-                                    onChange={(event) =>
-                                        handleCustomDateChange(customDateIndex, "endDate", event.target.value)
-                                    }
-                                />
-                                {/* min={customRate.startDate} */}
-                            </div>
+                            <button
+                                onClick={() => handleDeleteCustomRate(customRateIndex)}
+                                className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                <PlusIcon className="rotate-45 text-error" />
+                            </button>
                         </div>
                         <div className="divide-y-[1px] divide-[#E3E3E3] px-6 py-4">
                             {customRate.ratesInSlot.map((slotRate, slotIndex) => (
@@ -251,7 +274,7 @@ function WorkspaceRates() {
                                                     onChange={(event) =>
                                                         handleCustomTimeChange(
                                                             slotIndex,
-                                                            customDateIndex,
+                                                            customRateIndex,
                                                             "startTime",
                                                             event.target.value
                                                         )
@@ -275,7 +298,7 @@ function WorkspaceRates() {
                                                     onChange={(event) =>
                                                         handleCustomTimeChange(
                                                             slotIndex,
-                                                            customDateIndex,
+                                                            customRateIndex,
                                                             "endTime",
                                                             event.target.value
                                                         )
@@ -286,32 +309,43 @@ function WorkspaceRates() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="slotRate flex gap-2.5 items-baseline">
-                                        <span className="">SAR</span>
-                                        <div className="title rounded-xl border overflow-hidden px-3 max-w-[70px]">
-                                            <Input
-                                                variant="unstyled"
-                                                value={slotRate.rate}
-                                                placeholder="Rate"
-                                                type="number"
-                                                className="py-2 text-xl text-primary leading-6 text-center"
-                                                onChange={(event) =>
-                                                    handleCustomRateChange(
-                                                        slotIndex,
-                                                        customDateIndex,
-                                                        event.target.value
-                                                    )
-                                                }
-                                            />
+
+                                    <div className="flex items-center gap-6">
+                                        <div className="slotRate flex gap-2.5 items-baseline">
+                                            <span className="">SAR</span>
+                                            <div className="title rounded-xl border overflow-hidden px-3 max-w-[70px]">
+                                                <Input
+                                                    variant="unstyled"
+                                                    value={slotRate.rate}
+                                                    placeholder="Rate"
+                                                    type="number"
+                                                    className="py-2 text-xl text-primary leading-6 text-center"
+                                                    onChange={(event) =>
+                                                        handleCustomRateChange(
+                                                            slotIndex,
+                                                            customRateIndex,
+                                                            event.target.value
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <span className="">/ hr</span>
                                         </div>
-                                        <span className="">/ hr</span>
+
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteCustomRateInSlot(customRateIndex, slotIndex)
+                                            }
+                                            className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                            <PlusIcon className="rotate-45 text-error" />
+                                        </button>
                                     </div>
                                 </div>
                             ))}
 
                             <button
                                 className="rounded-lg border border-borderColor gap-2 px-6 py-2 bg-primaryLight flex items-center"
-                                onClick={() => handleNewCustomTime(customDateIndex)}>
+                                onClick={() => handleNewCustomRateInSlot(customRateIndex)}>
                                 <span className="text-lg leading-normal">Add New Time</span>
                                 <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                             </button>

@@ -9,6 +9,7 @@ import {
     editWorkspaceRequest,
     workspaceAmenitiesState,
     workspaceBaseRatesState,
+    workspaceCustomOpenHoursState,
     workspaceCustomRatesState,
     workspaceOpenDaysState,
     workspacePicturesState,
@@ -28,6 +29,7 @@ function WorkspaceDetail() {
     let [baseRates, setBaseRates] = useRecoilState(workspaceBaseRatesState);
     let [customRates, setCustomRates] = useRecoilState(workspaceCustomRatesState);
     let [openDays, setOpenDays] = useRecoilState(workspaceOpenDaysState);
+    let [customOpenHours, setCustomOpenHours] = useRecoilState(workspaceCustomOpenHoursState);
     let [pictures, setPictures] = useRecoilState(workspacePicturesState);
     let [editworkspace, setEditWorkspacePayload] = useRecoilState(editWorkspaceRequest);
 
@@ -56,6 +58,7 @@ function WorkspaceDetail() {
             setCustomRates(workspaceData.customRates);
             setOpenDays(workspaceData.openDays);
             setPictures(workspaceData.pictures);
+            setCustomOpenHours(workspaceData.customOpenHours);
             setEditWorkspacePayload(workspaceData);
         }
     }, [workspaceLoading, workspaceError, data]);
@@ -173,48 +176,76 @@ function WorkspaceDetail() {
                         ))}
                     </div>
                 </div>
+
                 <div className="flex flex-col gap-6">
-                    <div className="time-left flex gap-4 items-center justify-between  w-full">
-                        <span className="text-xl leading-6 text-dark">Custom Rates</span>
-                    </div>
-                    <div className="w-full h-[1px] border-t border-borderColor"></div>
-                    <div className="flex flex-col gap-4">
-                        {workspaceData.customRates.map((rate, index) => (
-                            <div key={index} className="flex justify-between flex-col gap-6">
-                                <span className="text-dark text-lg leading-normal">
-                                    From {getDate(rate.startDate)} to {getDate(rate.endDate)}
-                                </span>
-                                <div key={index} className="flex flex-col gap-4">
-                                    {rate.ratesInSlot.map((rate, index) => (
-                                        <div key={index} className="flex justify-between">
-                                            <span className="text-mediumGray text-lg leading-normal">
-                                                {rate.startTime} - {rate.endTime}
-                                            </span>
-                                            <span className="text-mediumGray text-lg leading-normal">
-                                                SAR {rate.rate}
-                                            </span>
-                                        </div>
-                                    ))}
+                    <div className="flex flex-col gap-6">
+                        <div className="time-left flex gap-4 items-center justify-between  w-full">
+                            <span className="text-xl leading-6 text-dark">Custom Rates</span>
+                        </div>
+                        <div className="w-full h-[1px] border-t border-borderColor"></div>
+                        <div className="flex flex-col gap-4">
+                            {workspaceData.customRates.map((rate, index) => (
+                                <div key={index} className="flex justify-between flex-col gap-6">
+                                    <span className="text-dark text-lg leading-normal">
+                                        From {getDate(rate.startDate)} to {getDate(rate.endDate)}
+                                    </span>
+                                    <div key={index} className="flex flex-col gap-4">
+                                        {rate.ratesInSlot.map((rate, index) => (
+                                            <div key={index} className="flex justify-between">
+                                                <span className="text-mediumGray text-lg leading-normal">
+                                                    {rate.startTime} - {rate.endTime}
+                                                </span>
+                                                <span className="text-mediumGray text-lg leading-normal">
+                                                    SAR {rate.rate}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
-                <div className="flex flex-col gap-6">
-                    <div className="time-left flex gap-4 items-center justify-between  w-full">
-                        <span className=" text-xl leading-6 text-dark">Opening Timings</span>
-                        <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
-                    </div>
-                    <div className="w-full h-[1px] border-t border-borderColor"></div>
-                    <div className="flex flex-col gap-4">
-                        {workspaceData.openDays.map((day, index) => (
-                            <div key={index} className="flex justify-between">
-                                <span className="text-mediumGray text-lg leading-normal">{day.day}</span>
-                                <span className="text-mediumGray text-lg leading-normal">
-                                    {day.startTime} - {day.endTime}
-                                </span>
+
+                    <div className="flex flex-col gap-12">
+                        <div className="flex flex-col gap-6">
+                            <div className="time-left flex gap-4 items-center justify-between  w-full">
+                                <span className=" text-xl leading-6 text-dark">Opening Timings</span>
+                                <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
                             </div>
-                        ))}
+                            <div className="w-full h-[1px] border-t border-borderColor"></div>
+                            <div className="flex flex-col gap-4">
+                                {workspaceData.openDays.map((day, index) => (
+                                    <div key={index} className="flex justify-between">
+                                        <span className="text-mediumGray text-lg leading-normal">
+                                            {day.day}
+                                        </span>
+                                        <span className="text-mediumGray text-lg leading-normal">
+                                            {day.startTime} - {day.endTime}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-6">
+                            <div className="time-left flex gap-4 items-center justify-between  w-full">
+                                <span className=" text-xl leading-6 text-dark">Opening Hours</span>
+                                <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
+                            </div>
+                            <div className="w-full h-[1px] border-t border-borderColor"></div>
+                            <div className="flex flex-col gap-4">
+                                {workspaceData.customOpenHours.map((day, index) => (
+                                    <div key={index} className="flex justify-between gap-5">
+                                        <span className="text-mediumGray text-lg leading-normal">
+                                            {getDate(day.startDate)} - {getDate(day.endDate)}
+                                        </span>
+                                        <span className="text-mediumGray text-lg leading-normal">
+                                            {day.startTime} - {day.endTime}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

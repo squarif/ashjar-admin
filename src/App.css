@@ -41,3 +41,41 @@
         transform: rotate(360deg);
     }
 }
+
+/* date range selector ki styling */
+.createDateRangePicker .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner {
+    background-color: #b0c478 !important;
+}
+
+.createDateRangePicker .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+    background-color: #b0c478 !important;
+}
+
+.createDateRangePicker .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    border-color: #c3c3bf !important;
+}
+
+.createDateRangePicker
+    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,
+.createDateRangePicker .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
+.createDateRangePicker
+    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before,
+.createDateRangePicker
+    .ant-picker-time-panel-column
+    > li.ant-picker-time-panel-cell-selected
+    .ant-picker-time-panel-cell-inner {
+    background: #f3f8ed !important;
+}
+
+.createDateRangePicker .ant-btn-primary {
+    background-color: #1f9643e5 !important;
+    border-color: #1f9643e5 !important;
+}
+
+.ant-picker-active-bar {
+    left: 0px;
+    width: 94px;
+    position: absolute;
+    background-color: #b0c478 !important;
+}
+/* ant-picker-cell ant-picker-cell-in-view ant-picker-cell-range-start ant-picker-cell-selected */

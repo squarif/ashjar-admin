@@ -19,6 +19,7 @@ import {
     meetingRoomOpenDaysState,
     meetingRoomRatesState,
     meetingRoomPicturesState,
+    meetingRoomCustomOpenHoursState,
 } from "../../../stores/meetingRoomStore";
 
 import { CREATE_MEETING_ROOM } from "../../../queries/meetingRoomQueries";
@@ -36,6 +37,7 @@ function MeetingRoomNew() {
     const pictures = useRecoilValue(meetingRoomPicturesState);
     const rates = useRecoilValue(meetingRoomRatesState);
     const amenities = useRecoilValue(meetingRoomAmenitiesState);
+    const customOpenHours = useRecoilValue(meetingRoomCustomOpenHoursState);
 
     const toast = useToast();
 
@@ -128,6 +130,7 @@ function MeetingRoomNew() {
             ...newMeetingRoomRequestPayload,
             customRates: rates.map(({ __typename, ...rest }) => rest),
             openDays: openDays.map(({ __typename, ...rest }) => rest),
+            customOpenHours: customOpenHours.map(({ __typename, ...rest }) => rest),
             amenities: amenities.map(({ __typename, ...rest }) => rest),
             pictures: pictures,
             branch: selectedBranch._id,
@@ -257,11 +260,14 @@ function MeetingRoomNew() {
                 </div>
 
                 <div className="timings border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
-                    <OpenDays state={meetingRoomOpenDaysState} />
+                    <OpenDays
+                        openDaysState={meetingRoomOpenDaysState}
+                        customOpenHoursState={meetingRoomCustomOpenHoursState}
+                    />
                 </div>
 
                 <div className="rates border rounded-2xl border-light px-8 py-12 ">
-                    <MeetingRoomRates />
+                    <MeetingRoomRates state={newMeetingRoomRequest} />
                 </div>
                 <div className="amenities border rounded-2xl border-light px-8 py-12 ">
                     <Amenities />

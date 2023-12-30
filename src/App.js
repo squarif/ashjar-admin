@@ -38,6 +38,8 @@ import { useRecoilStateCallback } from "./hooks";
 import { userAtom } from "./recoil/atoms";
 import BranchEdit from "./pages/Branches/BranchEdit";
 import CouponsPage from "./pages/Coupons/CouponsPage";
+import Bookings from "./pages/BookingsPage/BookingsPage";
+import WorkshopEditPost from "./pages/Workshops/WorkshopEdit/WorkshopEdit";
 
 function App() {
     const [userA, setUserAtom] = useRecoilStateCallback(userAtom);
@@ -74,7 +76,7 @@ function App() {
             <div className="app-container grid grid-cols-7 font-Adam">
                 {userA ? <NavBar /> : ""}
 
-                <div className="body col-span-6 p-12 h-fit">
+                <div className="body col-span-6 p-12 h-[calc(100vh-80px)] ">
                     <Routes>
                         <Route path="/login" element={<SignIn />} />
 
@@ -166,6 +168,15 @@ function App() {
                             element={
                                 <PrivateRoute redirect="/login">
                                     <WorkshopDetails />
+                                </PrivateRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/workshops/:id/edit"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <WorkshopEditPost />
                                 </PrivateRoute>
                             }
                         />
@@ -320,6 +331,14 @@ function App() {
                             }
                         />
 
+                        <Route
+                            path="/dashboard/bookings"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <Bookings />
+                                </PrivateRoute>
+                            }
+                        />
                         <Route
                             path="/"
                             element={

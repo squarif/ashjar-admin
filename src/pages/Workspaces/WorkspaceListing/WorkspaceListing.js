@@ -17,8 +17,8 @@ function WorkspaceListing() {
     const [allBranchesFilter, setAllBranchesFilter] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [branchData, setBranchData] = useState([]);
-    const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
 
+    const { loading: branchesLoading, error: branchesError, data, refetch } = useQuery(GET_BRANCHES);
     useEffect(() => {
         if (!branchesLoading && !branchesError) {
             // Set the branches data
@@ -26,6 +26,10 @@ function WorkspaceListing() {
             setBranchData(data.branches);
         }
     }, [branchesLoading, branchesError, data]);
+
+    useEffect(() => {
+        refetch(); // Refetch data when the component mounts
+    }, [refetch]);
 
     function handleSelectBranch(selectedBranch) {
         setAllBranchesFilter(false);

@@ -17,6 +17,7 @@ import {
     workspacePicturesState,
     workspaceBaseRatesState,
     workspaceCustomRatesState,
+    workspaceCustomOpenHoursState,
 } from "../../../stores/workspaceStore";
 
 import { EDIT_WORKSPACE } from "../../../queries/workspaceQueries";
@@ -31,6 +32,7 @@ import Loader from "../../../components/Loader";
 function WorkspaceNew() {
     const [editWorkspaceRequestPayload, setEditWorkspacePayload] = useRecoilState(editWorkspaceRequest);
     const openDays = useRecoilValue(workspaceOpenDaysState);
+    const customOpenHours = useRecoilValue(workspaceCustomOpenHoursState);
     const pictures = useRecoilValue(workspacePicturesState);
 
     const baseRates = useRecoilValue(workspaceBaseRatesState);
@@ -68,6 +70,7 @@ function WorkspaceNew() {
             baseRates: baseRates.map(({ __typename, ...rest }) => rest),
             customRates: customRatesPayload.map(({ __typename, ...rest }) => rest),
             openDays: openDays.map(({ __typename, ...rest }) => rest),
+            customOpenHours: customOpenHours.map(({ __typename, ...rest }) => rest),
             amenities: amenities.map(({ __typename, ...rest }) => rest),
             pictures: pictures,
             branch: editWorkspaceRequestPayload.branch._id,
@@ -177,7 +180,10 @@ function WorkspaceNew() {
             </div>
 
             <div className="timings border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
-                <OpenDays state={workspaceOpenDaysState} />
+                <OpenDays
+                    openDaysState={workspaceOpenDaysState}
+                    customOpenHoursState={workspaceCustomOpenHoursState}
+                />
             </div>
 
             <div className="rates border rounded-2xl border-light px-8 py-12 ">

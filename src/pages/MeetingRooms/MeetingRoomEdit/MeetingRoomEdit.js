@@ -14,6 +14,7 @@ import {
     meetingRoomRatesState,
     editMeetingRoomRequest,
     meetingRoomPicturesState,
+    meetingRoomCustomOpenHoursState,
 } from "../../../stores/meetingRoomStore";
 
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
@@ -34,12 +35,14 @@ function MeetingRoomEdit() {
     const pictures = useRecoilValue(meetingRoomPicturesState);
     const rates = useRecoilValue(meetingRoomRatesState);
     const amenities = useRecoilValue(meetingRoomAmenitiesState);
+    const customOpenHours = useRecoilValue(meetingRoomCustomOpenHoursState);
 
     const navigate = useNavigate();
     const params = useParams();
     const toast = useToast();
 
     useEffect(() => {
+        console.log("jsndf;lksand", editMeetingRoomRequestPayload);
         if (!Object.keys(editMeetingRoomRequestPayload).length) {
             navigate(`/meeting-rooms/${params.id}`);
         }
@@ -132,6 +135,7 @@ function MeetingRoomEdit() {
             ...editMeetingRoomRequestPayload,
             customRates: rates.map(({ __typename, ...rest }) => rest),
             openDays: openDays.map(({ __typename, ...rest }) => rest),
+            customOpenHours: customOpenHours.map(({ __typename, ...rest }) => rest),
             amenities: amenities.map(({ __typename, ...rest }) => rest),
             pictures: pictures,
             branch: editMeetingRoomRequestPayload.branch._id,
@@ -215,7 +219,7 @@ function MeetingRoomEdit() {
                             <Menu autoSelect={false} closeOnBlur>
                                 <MenuButton as="button" className="h-fit rounded-xl  ">
                                     <div className="flex px-4 w-[312px] py-3 items-center justify-between">
-                                        {selectedBranch.name ? (
+                                        {selectedBranch ? (
                                             <span className="text-dark">{selectedBranch.name}</span>
                                         ) : (
                                             <span className="text-dark">Select a branch</span>
@@ -256,11 +260,14 @@ function MeetingRoomEdit() {
             </div>
 
             <div className="timings border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
-                <OpenDays state={meetingRoomOpenDaysState} />
+                <OpenDays
+                    customOpenHoursState={meetingRoomCustomOpenHoursState}
+                    openDaysState={meetingRoomOpenDaysState}
+                />
             </div>
 
             <div className="rates border rounded-2xl border-light px-8 py-12 ">
-                <MeetingRoomRates />
+                <MeetingRoomRates state={editMeetingRoomRequest} />
             </div>
             <div className="amenities border rounded-2xl border-light px-8 py-12 ">
                 <Amenities />

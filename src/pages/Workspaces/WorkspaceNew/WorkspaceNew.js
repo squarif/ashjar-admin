@@ -19,6 +19,7 @@ import {
     workspaceOpenDaysState,
     workspaceBaseRatesState,
     workspaceCustomRatesState,
+    workspaceCustomOpenHoursState,
 } from "../../../stores/workspaceStore";
 
 import { CREATE_WORKSPACE } from "../../../queries/workspaceQueries";
@@ -35,10 +36,12 @@ import Loader from "../../../components/Loader";
 function WorkspaceNew() {
     const [newWorkspaceRequestPayload, setNewWorkspacePayload] = useRecoilState(newWorkspaceRequest);
 
-    const [pictures, setPictures] = useRecoilState(workspacePicturesState);
-    const [openDays, setOpenDays] = useRecoilState(workspaceOpenDaysState);
-    const [baseRates, setBaseRates] = useRecoilState(workspaceBaseRatesState);
-    const [customRates, setCustomRates] = useRecoilState(workspaceCustomRatesState);
+    const pictures = useRecoilValue(workspacePicturesState);
+    const openDays = useRecoilValue(workspaceOpenDaysState);
+    const baseRates = useRecoilValue(workspaceBaseRatesState);
+    const customRates = useRecoilValue(workspaceCustomRatesState);
+    const customHours = useRecoilValue(workspaceCustomOpenHoursState);
+
     const amenities = useRecoilValue(workspaceAmenitiesState);
 
     const navigate = useNavigate();
@@ -59,6 +62,7 @@ function WorkspaceNew() {
         // "name"
         // "description"
         // "openDays"
+        // "customOpenHours"
         // "branch"
         // "totalSeats"
         // "ratePerInterval"
@@ -67,15 +71,17 @@ function WorkspaceNew() {
         // "amenities"
         // "pictures"
         // "slotsInterval"
+        //
 
         let payload = {
             ...newWorkspaceRequestPayload,
-            openDays: openDays.map(({ __typename, ...rest }) => rest),
+            openDays: openDays,
             branch: selectedBranch._id,
             baseRates: baseRates,
             customRates: customRates,
             amenities: amenities,
             pictures: pictures,
+            customOpenHours: customHours,
         };
 
         console.log("payload", payload);
@@ -183,7 +189,10 @@ function WorkspaceNew() {
             </div>
 
             <div className="timings border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
-                <OpenDays state={workspaceOpenDaysState} />
+                <OpenDays
+                    openDaysState={workspaceOpenDaysState}
+                    customOpenHoursState={workspaceCustomOpenHoursState}
+                />
             </div>
 
             <div className="rates border rounded-2xl border-light px-8 py-12 ">
