@@ -36,10 +36,11 @@ function WorkshopRequests() {
         if (!requestsLoading && !requestsError) {
             console.log("workshopRequests", data);
             // setRequestList(data.workshopRequests);
-            let list = data.workshopRequests.filter((item) => item.approvalStatus.includes("pending"));
+            let list = data.workshopRequests.filter(
+                (item) => item.approvalStatus.includes("pending") || item.draft === true
+            );
 
             setItemsLength(list.length);
-
             setRequestList(list);
         }
     }, [requestsLoading, requestsError, data]);
@@ -93,8 +94,6 @@ function WorkshopRequests() {
         const endIndex = startIndex + itemsPerPage;
 
         let items = requestList.filter((request) => request.name.toLowerCase().includes(searchQuery));
-
-        console.log("ITEMS", items);
 
         items = items.slice(startIndex, endIndex);
 
