@@ -23,7 +23,7 @@ function NurseryNew() {
     const [nurseryName, setNurseryName] = useState("");
 
     const [totalSeats, setTotalSeats] = useState(23);
-    const [selectedBranch, setSelectedBranch] = useState();
+    const [selectedBranch, setSelectedBranch] = useState(null);
     const navigate = useNavigate();
     const toast = useToast();
 
