@@ -13,11 +13,11 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 
 // import { EDIT_USER, GET_COUPONS } from "../../queries/couponQueries";
 import { useMutation, useQuery } from "@apollo/client";
-import client from "../../apollo";
 import Loader from "../../components/Loader";
 import { CREATE_COUPON, EDIT_COUPON, GET_COUPONS } from "../../queries/couponsQueries";
 import { useRecoilState } from "recoil";
-import { couponData, couponDataState, couponsDataState } from "../../stores/couponsStore";
+import { couponDataState, couponsDataState } from "../../stores/couponsStore";
+import SendCouponsComponent from "./components/SendCouponsComponent";
 
 function getDate(value) {
     if (typeof value === "string") {
@@ -604,6 +604,7 @@ function CouponsPage() {
     const [couponsData, setCouponsData] = useRecoilState(couponsDataState);
     const [addCoupon, setAddCoupon] = useState(false);
     const [editCoupon, setEditCoupon] = useState(false);
+    const [sendCoupon, setSendCoupon] = useState(true);
 
     const { loading: couponsLoading, error: couponsError, data } = useQuery(GET_COUPONS);
 
@@ -694,6 +695,7 @@ function CouponsPage() {
 
             {addCoupon && <AddCoupon setAddCoupon={() => setAddCoupon(false)} />}
             {editCoupon && <EditCoupon setEditCoupon={() => setEditCoupon(false)} />}
+            {sendCoupon && <SendCouponsComponent setSendCoupon={() => setSendCoupon(false)} />}
         </div>
     );
 }
