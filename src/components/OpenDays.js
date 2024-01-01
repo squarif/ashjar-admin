@@ -411,7 +411,7 @@ function OpenDays(props) {
     return (
         <div className="timings border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
             <div className="flex justify-between items-center">
-                <div className="text-left text-2xl">Opening Timings haye</div>
+                <div className="text-left text-2xl">Opening Timings</div>
 
                 <div className="flex gap-4">
                     <button
