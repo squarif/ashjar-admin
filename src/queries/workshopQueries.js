@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-const GET_WORKSHOP_REQUESTS = gql`
+export const GET_WORKSHOP_REQUESTS = gql`
     query Query {
         workshopRequests {
             _id
@@ -43,7 +43,7 @@ const GET_WORKSHOP_REQUESTS = gql`
     }
 `;
 
-const GET_WORKSHOP_REQUEST = gql`
+export const GET_WORKSHOP_REQUEST = gql`
     query WorkshopRequest($id: ID!) {
         workshopRequest(_id: $id) {
             _id
@@ -108,7 +108,7 @@ const GET_WORKSHOP_REQUEST = gql`
     }
 `;
 
-const UPDATE_WORKSHOP_REQUEST = gql`
+export const UPDATE_WORKSHOP_REQUEST = gql`
     mutation Mutation($input: WorkshopRequestUpdateByAdminInput!) {
         updateWorkshopRequestByAdmin(input: $input) {
             _id
@@ -152,7 +152,7 @@ const UPDATE_WORKSHOP_REQUEST = gql`
     }
 `;
 
-const GET_AVAILABLE_SLOTS = gql`
+export const GET_AVAILABLE_SLOTS = gql`
     query GetBranchWithWorkspacesAndNurseries(
         $branchId: ID!
         $date: String!
@@ -183,4 +183,328 @@ const GET_AVAILABLE_SLOTS = gql`
     }
 `;
 
-export { GET_WORKSHOP_REQUESTS, GET_WORKSHOP_REQUEST, UPDATE_WORKSHOP_REQUEST, GET_AVAILABLE_SLOTS };
+export const ACCEPT_WORKSHOP_REQUEST = gql`
+    mutation AcceptWorkshopRequest($input: WorkshopRequestStatusUpdate!) {
+        acceptWorkshopRequest(input: $input) {
+            _id
+            name
+            pricePerSeat
+            seats
+            bookings {
+                date
+                startTime
+                endTime
+                nurseryBookings {
+                    nursery
+                    seats
+                }
+                workspaceBookings {
+                    workspace
+                    seats
+                }
+            }
+            bookingByCustomers {
+                date
+                userId {
+                    _id
+                    name
+                    phoneNumber
+                    password
+                    email
+                    role
+                    gender
+                    age
+                    createdAt
+                    isBlocked
+                    tapTokenId
+                    numberOfBookings
+                    meetingRoomBookings {
+                        meetingRoomId
+                        meetingRoomObjectId
+                        bookingSchemaId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    workspaceBookings {
+                        workspaceId
+                        workspaceObjectId
+                        bookingSchemaId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    workshopBookings {
+                        workshopId
+                        bookingSchemaId
+                        workshopObjectId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    cancelledMeetingRoomBookings {
+                        meetingRoomId
+                        meetingRoomObjectId
+                        bookingSchemaId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    cancelledWorkspaceBookings {
+                        workspaceId
+                        workspaceObjectId
+                        bookingSchemaId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    cancelledWorkshopBookings {
+                        workshopId
+                        bookingSchemaId
+                        workshopObjectId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                }
+                noOfSeats
+                _id
+                discountedPrice
+                couponCode
+                chargeId
+            }
+            branch {
+                _id
+                name
+                location
+                address
+            }
+            description
+            amenities {
+                name
+                picture
+                quantity
+                type
+            }
+            categories
+            approvalStatus
+            draft
+            separateBooking
+            remainingSeats {
+                date
+                remainingNumberOfSeats
+            }
+            rejectionReason
+            username
+            email
+            phone
+            company
+            socialMediaAccount
+            gender
+            ageGroup {
+                min
+                max
+            }
+            comments
+        }
+    }
+`;
+
+export const REJECT_WORKSHOP_REQUEST = gql`
+    mutation RejectWorkshopRequest($input: WorkshopRequestStatusUpdate!) {
+        rejectWorkshopRequest(input: $input) {
+            _id
+            name
+            pricePerSeat
+            seats
+            bookings {
+                date
+                startTime
+                endTime
+                nurseryBookings {
+                    nursery
+                    seats
+                }
+                workspaceBookings {
+                    workspace
+                    seats
+                }
+            }
+            bookingByCustomers {
+                date
+                userId {
+                    _id
+                    name
+                    phoneNumber
+                    password
+                    email
+                    role
+                    gender
+                    age
+                    createdAt
+                    isBlocked
+                    tapTokenId
+                    numberOfBookings
+                    meetingRoomBookings {
+                        meetingRoomId
+                        meetingRoomObjectId
+                        bookingSchemaId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    workspaceBookings {
+                        workspaceId
+                        workspaceObjectId
+                        bookingSchemaId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    workshopBookings {
+                        workshopId
+                        bookingSchemaId
+                        workshopObjectId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    cancelledMeetingRoomBookings {
+                        meetingRoomId
+                        meetingRoomObjectId
+                        bookingSchemaId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    cancelledWorkspaceBookings {
+                        workspaceId
+                        workspaceObjectId
+                        bookingSchemaId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                    cancelledWorkshopBookings {
+                        workshopId
+                        bookingSchemaId
+                        workshopObjectId
+                        rates
+                        seats
+                        date
+                        startTime
+                        endTime
+                        _id
+                        couponCode
+                        discountedPrice
+                        chargeId
+                    }
+                }
+                noOfSeats
+                _id
+                discountedPrice
+                couponCode
+                chargeId
+            }
+            branch {
+                _id
+                name
+                location
+                address
+            }
+            description
+            amenities {
+                name
+                picture
+                quantity
+                type
+            }
+            categories
+            approvalStatus
+            draft
+            separateBooking
+            remainingSeats {
+                date
+                remainingNumberOfSeats
+            }
+            rejectionReason
+            username
+            email
+            phone
+            company
+            socialMediaAccount
+            gender
+            ageGroup {
+                min
+                max
+            }
+            comments
+        }
+    }
+`;
