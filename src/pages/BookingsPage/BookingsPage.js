@@ -223,6 +223,8 @@ function BookingRow(props) {
             <Td>{booking._id}</Td>
             <Td>{booking.userId.name}</Td>
             <Td>{getDate(booking.bookingDate)}</Td>
+            <Td>{booking.startTime}</Td>
+            <Td>{booking.endTime}</Td>
             <Td className="text-primary text-lg">{booking.seats}</Td>
             <Td className="text-primary text-lg">SAR {booking.rate}</Td>
             {/* <Td className="relative">
@@ -408,6 +410,13 @@ function Bookings() {
                                         <Th>
                                             <span className="text-light"> Booking Date</span>
                                         </Th>
+                                        <Th>
+                                            <span className="text-light">Start Time</span>
+                                        </Th>
+                                        <Th>
+                                            <span className="text-light"> End Time</span>
+                                        </Th>
+
                                         <Th>
                                             <span className="text-light"> Seats</span>
                                         </Th>

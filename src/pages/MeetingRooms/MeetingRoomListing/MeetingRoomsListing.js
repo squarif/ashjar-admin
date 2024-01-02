@@ -186,7 +186,7 @@ function MeetingRoomListing() {
                                                             alt="meeting room"
                                                         />
 
-                                                        <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                        <div className="flex items-center justify-center bg-white h-[30px] w-fit px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
                                                             <span className="text-dark text-xs">
                                                                 SAR {meetingRoom.ratesPerHour} / period
                                                             </span>
@@ -220,7 +220,7 @@ function MeetingRoomListing() {
                                                       alt="meeting room"
                                                   />
 
-                                                  <div className="bg-white h-[30px] w-[164px] absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                  <div className="flex items-center justify-center  bg-white h-[30px] w-fit px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
                                                       <span className="text-dark text-xs">
                                                           SAR {meetingRoom.ratesPerHour} / period
                                                       </span>

@@ -51,6 +51,8 @@ export const GET_ADVANCE_SEARCH_BOOKINGS = gql`
                 bookingDate
                 seats
                 rate
+                startTime
+                endTime
                 userId {
                     _id
                     name

@@ -91,15 +91,17 @@ function SendCouponsComponent() {
     };
     function handleSendCoupon(user) {
         // Regex expression to remove all characters which are NOT alphanumeric
-        let number = user.phoneNumber.replace(/[^\w\s]/gi, "").replace(/ /g, "");
+        // let number = user.phoneNumber.replace(/[^\w\s]/gi, "").replace(/ /g, "");
 
         // Appending the phone number to the URL
-        // let url = `https://web.whatsapp.com/send?phone=${number}`;
-        let url = `https://web.whatsapp.com/send?phone=${number}`;
+        // let url = `https://web.whatsapp.com/send?phone=${+923318549269}`;
+        let url = `https://web.whatsapp.com/send?phone=${user.phoneNumber}`;
 
+        // console.log("coupon", sendCoupon.couponCode);
         // Appending the message to the URL by encoding it
-        url += `&text=${encodeURI(sendCoupon.code)}&app_absent=0`;
+        url += `&text=${encodeURI(sendCoupon.couponCode)}&app_absent=0`;
 
+        // console.log("URL", url);
         // Open our newly created URL in a new tab to send the message
         window.open(url);
     }
