@@ -26,6 +26,8 @@ function MeetingRoomListing() {
     const [allBranchesFilter, setAllBranchesFilter] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [branchData, setBranchData] = useState([]);
+    const itemsPerPage = 8;
+    const [pageNumber, setPageNumber] = useState(1);
 
     const { loading: branchesLoading, error: branchesError, data } = useQuery(GET_BRANCHES);
     useEffect(() => {
@@ -63,6 +65,17 @@ function MeetingRoomListing() {
             }
         });
         setSelectedBranch(result[0]);
+    }
+
+    function filteredList(items) {
+        return items.filter((item) => item.name.toLowerCase().includes(searchQuery));
+    }
+
+    function paginatedList(items) {
+        const startIndex = (pageNumber - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        return filteredList(items.slice(startIndex, endIndex));
     }
 
     if (branchesLoading)
@@ -176,7 +189,7 @@ function MeetingRoomListing() {
                         {allBranchesFilter
                             ? branchData.map((branch) =>
                                   branch.workspaces.length
-                                      ? branch.meetingRooms.map((meetingRoom) => (
+                                      ? paginatedList(branch.meetingRooms).map((meetingRoom) => (
                                             <Link to={`/meeting-rooms/${meetingRoom._id}`}>
                                                 <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
                                                     <div className="relative h-[134px] overflow-hidden ">
@@ -209,7 +222,7 @@ function MeetingRoomListing() {
                                       : ""
                               )
                             : selectedBranch
-                            ? selectedBranch.meetingRooms?.length
+                            ? paginatedList(selectedBranch.meetingRooms)?.length
                                 ? selectedBranch.meetingRooms.map((meetingRoom) => (
                                       <Link to={`/meeting-rooms/${meetingRoom._id}`}>
                                           <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
