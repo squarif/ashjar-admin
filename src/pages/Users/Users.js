@@ -158,7 +158,7 @@ function Users() {
             {!usersLoading ? (
                 userData ? (
                     <div className="flex flex-col gap-8 h-[90%]">
-                        <div className="Search rounded-xl border overflow-hidden px-4 shadow-md ">
+                        <div className="Search rounded-xl border overflow-hidden px-4 shadow-md shrink-0">
                             <Input
                                 variant="unstyled"
                                 value={searchQuery}
