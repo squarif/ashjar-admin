@@ -50,7 +50,7 @@ function RevenuePieCharts({ dates, selectedBranch }) {
 
     useEffect(() => {
         fetchBranchesData();
-    }, [selectedBranch]);
+    }, [selectedBranch, dates]);
 
     function fetchBranchesData() {
         const params = selectedBranch
@@ -239,6 +239,7 @@ function RevenueGraph({ dates, selectedBranch }) {
             : {
                   n: 12,
               };
+
         client
             .query({
                 query: selectedBranch ? GET_BRANCH_REVENUE_FOR_N_MONTHS : GET_BRANCHES_REVENUE_FOR_N_MONTHS,

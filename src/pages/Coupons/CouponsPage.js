@@ -10,13 +10,13 @@ import { ReactComponent as ChevronRight } from "../../assets/ChevronRight.svg";
 import { ReactComponent as VerticalDots } from "../../assets/VerticalDots.svg";
 import { ReactComponent as SendIcon } from "../../assets/SendIcon.svg";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 // import { EDIT_USER, GET_COUPONS } from "../../queries/couponQueries";
 import { useMutation, useQuery } from "@apollo/client";
 import Loader from "../../components/Loader";
 import { CREATE_COUPON, EDIT_COUPON, GET_COUPONS } from "../../queries/couponsQueries";
-import { useRecoilState } from "recoil";
-import { couponDataState, couponsDataState } from "../../stores/couponsStore";
+import { couponDataState, couponsDataState, sendCouponState } from "../../stores/couponsStore";
 import SendCouponsComponent from "./components/SendCouponsComponent";
 
 function getDate(value) {
@@ -486,6 +486,8 @@ function CouponRow(props) {
 
     const [couponData, setCouponData] = useRecoilState(couponDataState);
 
+    const [sendCoupon, setSendCoupon] = useRecoilState(sendCouponState);
+
     const [editCoupon] = useMutation(EDIT_COUPON);
     async function handleChangeCouponStatus() {
         let payload = {
@@ -525,7 +527,9 @@ function CouponRow(props) {
     }
 
     function handleSendToUsers() {
-        console.log("HADNDLE SEND TO USERS");
+        console.log("HADNDLE SEND TO USERS", props.coupon);
+        setSendCoupon(props.coupon);
+        setShowOptions(false);
     }
 
     function handleEditCoupon() {
@@ -559,7 +563,7 @@ function CouponRow(props) {
             <Td>{coupon.discountPercentage}</Td>
             <Td>{getDate(coupon.expiryDate)}</Td>
             <Td>{statusBadge(coupon.isActive)}</Td>
-            <Td className="relative">
+            <Td className="relative group">
                 <button onClick={() => setShowOptions(!showOptions)}>
                     <VerticalDots />
                 </button>
@@ -604,7 +608,8 @@ function CouponsPage() {
     const [couponsData, setCouponsData] = useRecoilState(couponsDataState);
     const [addCoupon, setAddCoupon] = useState(false);
     const [editCoupon, setEditCoupon] = useState(false);
-    const [sendCoupon, setSendCoupon] = useState(true);
+
+    const sendCoupon = useRecoilValue(sendCouponState);
 
     const { loading: couponsLoading, error: couponsError, data } = useQuery(GET_COUPONS);
 
@@ -635,6 +640,7 @@ function CouponsPage() {
                     <span className="text-white text-xl font-medium">Add Coupon</span>
                 </button>
             </div>
+
             {couponsData ? (
                 <div className="flex flex-col gap-8">
                     <div className="Search rounded-xl border overflow-hidden px-4 shadow-md ">
@@ -692,10 +698,9 @@ function CouponsPage() {
             ) : (
                 "No Coupons"
             )}
-
             {addCoupon && <AddCoupon setAddCoupon={() => setAddCoupon(false)} />}
             {editCoupon && <EditCoupon setEditCoupon={() => setEditCoupon(false)} />}
-            {sendCoupon && <SendCouponsComponent setSendCoupon={() => setSendCoupon(false)} />}
+            {sendCoupon && <SendCouponsComponent />}
         </div>
     );
 }

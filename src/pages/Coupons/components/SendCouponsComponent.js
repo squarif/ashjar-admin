@@ -6,8 +6,11 @@ import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from "@chakra-ui/reac
 import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 import { useQuery } from "@apollo/client";
 import { QRCodeSVG } from "qrcode.react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { sendCouponState } from "../../../stores/couponsStore";
 
-function SendCouponsComponent({ setSendCoupon, coupon }) {
+function SendCouponsComponent() {
+    const [sendCoupon, setSendCoupon] = useRecoilState(sendCouponState);
     const [searchQuery, setSearchQuery] = useState("");
     const [pageNumber, setPageNumber] = useState(1);
     const itemsPerPage = 8;
@@ -95,7 +98,7 @@ function SendCouponsComponent({ setSendCoupon, coupon }) {
         let url = `https://web.whatsapp.com/send?phone=${number}`;
 
         // Appending the message to the URL by encoding it
-        url += `&text=${encodeURI(coupon.code)}&app_absent=0`;
+        url += `&text=${encodeURI(sendCoupon.code)}&app_absent=0`;
 
         // Open our newly created URL in a new tab to send the message
         window.open(url);
@@ -104,14 +107,14 @@ function SendCouponsComponent({ setSendCoupon, coupon }) {
     return (
         <div className="">
             <div
-                onClick={() => setSendCoupon(false)}
+                onClick={() => setSendCoupon(null)}
                 className="fixed bg-dark bg-opacity-50 top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] backdrop-blur-sm"></div>
 
             <div className="top-0 bottom-0 left-0 right-0 p-8 mx-auto my-auto gap-12 shadow-lg flex w-fit h-fit absolute bg-white z-10 flex-col rounded-lg text-mediumGray text-sm text-center border border-borderColor">
                 <span className="text-[32px] text-mediumGray text-left">Add New Coupon</span>
 
                 <div className="grid grid-cols-12 gap-4">
-                    <div className="col-span-7 ">
+                    <div className="col-span-12 flex flex-col gap-4">
                         <div className="Search rounded-xl border overflow-hidden px-4 shadow-md ">
                             <Input
                                 variant="unstyled"
@@ -197,7 +200,7 @@ function SendCouponsComponent({ setSendCoupon, coupon }) {
 
                 <div className="flex justify-end gap-6">
                     <button
-                        onClick={() => setSendCoupon(false)}
+                        onClick={() => setSendCoupon(null)}
                         className="py-2.5 px-3 flex justify-center items-center gap-2 rounded-lg border border-error">
                         <span className="text-mediumGray text-sm font-medium">Cancel</span>
                     </button>

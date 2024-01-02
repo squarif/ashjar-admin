@@ -60,5 +60,9 @@
     },
     "devDependencies": {
         "tailwindcss": "^3.3.5"
+    },
+    "peerDependencies": {
+        "react": ">=16.8.0",
+        "react-dom": ">=16.8.0"
     }
 }

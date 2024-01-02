@@ -1,13 +1,16 @@
 import { atom } from "recoil";
 
-const couponsDataState = atom({
+export const couponsDataState = atom({
     key: "couponsDataState",
     default: [],
 });
 
-const couponDataState = atom({
+export const couponDataState = atom({
     key: "couponDataState",
     default: {},
 });
 
-export { couponsDataState, couponDataState };
+export const sendCouponState = atom({
+    key: "sendCouponState",
+    default: null,
+});
