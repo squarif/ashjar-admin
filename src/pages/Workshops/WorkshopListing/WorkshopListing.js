@@ -37,30 +37,39 @@ function WorkshopListing() {
 
     //  console.log("WorkshopListing data", data);
 
-    function statusBadge(status) {
-        if (status.includes("pending")) {
+    function statusBadge(status, draft) {
+        if (draft) {
             return (
                 <div className="border rounded-xl bg-[#F0F0EE] border-light flex gap-2 py-1.5 px-3 items-center ">
                     <ClockIcon className="h-4 w-4" />
-                    <span className="text-sm leading-4 text-gray-600"> Pending</span>
+                    <span className="text-sm leading-4 text-gray-600"> Draft</span>
                 </div>
             );
-        }
-        if (status.includes("approved")) {
-            return (
-                <div className="border rounded-xl bg-primaryLight border-light flex gap-2 py-1.5 px-3 items-center ">
-                    <TickIcon className="h-4 w-4" />
-                    <span className="text-sm leading-4 text-gray-600"> Approved</span>
-                </div>
-            );
-        }
-        if (status.includes("rejected")) {
-            return (
-                <div className="border rounded-xl bg-errorLight border-light flex gap-2 py-1.5 px-3 items-center ">
-                    <CloseIcon className="h-4 w-4" />
-                    <span className="text-sm leading-4 text-gray-600"> Rejected</span>
-                </div>
-            );
+        } else {
+            if (status.includes("pending")) {
+                return (
+                    <div className="border rounded-xl bg-[#F0F0EE] border-light flex gap-2 py-1.5 px-3 items-center ">
+                        <ClockIcon className="h-4 w-4" />
+                        <span className="text-sm leading-4 text-gray-600"> Pending</span>
+                    </div>
+                );
+            }
+            if (status.includes("approved")) {
+                return (
+                    <div className="border rounded-xl bg-primaryLight border-light flex gap-2 py-1.5 px-3 items-center ">
+                        <TickIcon className="h-4 w-4" />
+                        <span className="text-sm leading-4 text-gray-600"> Approved</span>
+                    </div>
+                );
+            }
+            if (status.includes("rejected")) {
+                return (
+                    <div className="border rounded-xl bg-errorLight border-light flex gap-2 py-1.5 px-3 items-center ">
+                        <CloseIcon className="h-4 w-4" />
+                        <span className="text-sm leading-4 text-gray-600"> Rejected</span>
+                    </div>
+                );
+            }
         }
     }
 
@@ -164,7 +173,7 @@ function WorkshopListing() {
                                     <Td>{request.seats}</Td>
                                     <Td>{getDate(request.bookings[0]?.date)}</Td>
 
-                                    <Td> {statusBadge(request.approvalStatus)}</Td>
+                                    <Td> {statusBadge(request.approvalStatus, request.draft)}</Td>
 
                                     <Td>
                                         <Link to={`/workshops/${request._id}`}>
