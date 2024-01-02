@@ -18,6 +18,7 @@ import Loader from "../../components/Loader";
 import { CREATE_COUPON, EDIT_COUPON, GET_COUPONS } from "../../queries/couponsQueries";
 import { couponDataState, couponsDataState, sendCouponState } from "../../stores/couponsStore";
 import SendCouponsComponent from "./components/SendCouponsComponent";
+import { Pagination } from "antd";
 
 function getDate(value) {
     if (typeof value === "string") {
@@ -608,6 +609,8 @@ function CouponsPage() {
     const [couponsData, setCouponsData] = useRecoilState(couponsDataState);
     const [addCoupon, setAddCoupon] = useState(false);
     const [editCoupon, setEditCoupon] = useState(false);
+    const itemsPerPage = 8;
+    const [pageNumber, setPageNumber] = useState(1);
 
     const sendCoupon = useRecoilValue(sendCouponState);
 
@@ -622,6 +625,17 @@ function CouponsPage() {
             //  console.log("ERRRRR", couponsError, couponsLoading, data);
         }
     }, [couponsLoading, couponsError, data]);
+
+    function filteredList(items) {
+        return items.filter((item) => item.couponCode.toLowerCase().includes(searchQuery));
+    }
+
+    function paginatedList(items) {
+        const startIndex = (pageNumber - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        return filteredList(items.slice(startIndex, endIndex));
+    }
 
     if (couponsLoading)
         return (
@@ -655,7 +669,7 @@ function CouponsPage() {
                         <div className="Filter"></div>
                     </div>
 
-                    <div className="border rounded-xl">
+                    <div className="border rounded-xl  h-full flex flex-col items-center justify-between w-full">
                         {/* <TableContainer> */}
                         <TableContainer className="!overflow-visible !overflow-x-visible !overflow-y-visible">
                             <Table variant="simple">
@@ -682,7 +696,7 @@ function CouponsPage() {
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {couponsData.map((coupon, index) => (
+                                    {paginatedList(couponsData).map((coupon, index) => (
                                         <CouponRow
                                             coupon={coupon}
                                             index={index}
@@ -693,6 +707,14 @@ function CouponsPage() {
                                 </Tbody>
                             </Table>
                         </TableContainer>
+
+                        <Pagination
+                            className="p-4"
+                            defaultCurrent={pageNumber}
+                            total={couponsData.length}
+                            pageSize={itemsPerPage}
+                            onChange={(x) => setPageNumber(x)}
+                        />
                     </div>
                 </div>
             ) : (
