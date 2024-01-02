@@ -60,12 +60,18 @@ function WorkshopCreatePost() {
         if (parseInt(requestPayload.seats) >= totalBookings) {
             try {
                 let payload = {};
+                let ageGroupPayload = requestPayload.ageGroup;
+                if ("__typename" in requestPayload.ageGroup) {
+                    const { __typename, ...temp } = requestPayload.ageGroup;
+                    ageGroupPayload = temp;
+                }
 
                 payload = {
                     ...requestPayload,
                     bookings: workshopBookings.map(({ __typename, ...rest }) => rest),
                     amenities: amenities.map(({ __typename, ...rest }) => rest),
                     categories: categories.map(({ __typename, ...rest }) => rest),
+                    ageGroup: ageGroupPayload,
                     approvalStatus: "approved",
                     pricePerSeat: requestPayload.pricePerSeat,
                     seats: parseInt(requestPayload.seats),
@@ -78,6 +84,8 @@ function WorkshopCreatePost() {
                 if ("email" in payload) delete payload["email"];
                 if ("phone" in payload) delete payload["phone"];
                 if ("company" in payload) delete payload["company"];
+                if ("bookingByCustomers" in payload) delete payload["bookingByCustomers"];
+                if ("remainingSeats" in payload) delete payload["remainingSeats"];
 
                 console.log("PAYLOAD", payload);
                 const { data } = await updateWorkshopRequest({
