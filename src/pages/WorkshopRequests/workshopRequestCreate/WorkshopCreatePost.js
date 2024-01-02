@@ -15,13 +15,12 @@ import {
     workshopRequestPayload,
     workshopSelectedBranch,
 } from "../../../stores/workshopStore";
-import Branches from "../components/Bookings";
 import Amenities from "../components/Amenities";
 
 import Categories from "../components/Categories";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
-import { UPDATE_WORKSHOP_REQUEST } from "../../../queries/workshopQueries";
+import { ACCEPT_WORKSHOP_REQUEST, UPDATE_WORKSHOP_REQUEST } from "../../../queries/workshopQueries";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
 import { useEffect, useState } from "react";
@@ -56,8 +55,53 @@ function WorkshopCreatePost() {
         }
     }, [requestPayload]);
 
+    const [acceptWorkshopRequest] = useMutation(ACCEPT_WORKSHOP_REQUEST);
+    async function handleAcceptRequest() {
+        if (parseInt(requestPayload.seats) >= totalBookings) {
+            try {
+                let payload = {};
+
+                payload = {
+                    workshopRequestID: requestPayload._id,
+                };
+
+                console.log("PAYLOAD", payload);
+                const { data } = await acceptWorkshopRequest({
+                    mutation: ACCEPT_WORKSHOP_REQUEST,
+                    variables: {
+                        input: payload,
+                    },
+                    // client: client,
+                });
+                if (data) {
+                    toast({
+                        title: "Workshop Request Accepted!",
+                        status: "success",
+                    });
+
+                    navigate("/workshops/requests");
+                }
+                if (data) {
+                }
+            } catch (error) {
+                console.log(error);
+                toast({
+                    title: "Error",
+                    description: error.message,
+                    status: "error",
+                });
+            }
+        } else {
+            toast({
+                title: "Error",
+                description: `You need to select ${requestPayload.seats} seats on all days to continue`,
+                status: "error",
+            });
+        }
+    }
+
     const [updateWorkshopRequest] = useMutation(UPDATE_WORKSHOP_REQUEST);
-    async function handleUpdateRequest() {
+    async function handleUpdateRequest(draft) {
         if (parseInt(requestPayload.seats) >= totalBookings) {
             try {
                 let payload = {};
@@ -67,14 +111,13 @@ function WorkshopCreatePost() {
                     bookings: workshopBookings.map(({ __typename, ...rest }) => rest),
                     amenities: amenities.map(({ __typename, ...rest }) => rest),
                     categories: categories.map(({ __typename, ...rest }) => rest),
-                    approvalStatus: "approved",
                     pricePerSeat: requestPayload.pricePerSeat,
                     seats: parseInt(requestPayload.seats),
                     branch: selectedBranch._id,
+                    draft: draft,
                 };
 
                 if ("__typename" in payload) delete payload["__typename"];
-                if ("draft" in payload) delete payload["draft"];
                 if ("username" in payload) delete payload["username"];
                 if ("email" in payload) delete payload["email"];
                 if ("phone" in payload) delete payload["phone"];
@@ -89,12 +132,15 @@ function WorkshopCreatePost() {
                     // client: client,
                 });
                 if (data) {
-                    toast({
-                        title: "Workshop Posted!",
-                        status: "success",
-                    });
-
-                    navigate("/workshops/requests");
+                    if (draft) {
+                        toast({
+                            title: "Workshop Posted!",
+                            status: "success",
+                        });
+                        navigate("/workshops/requests");
+                    } else {
+                        handleAcceptRequest();
+                    }
                 }
             } catch (error) {
                 console.log(error);
@@ -256,12 +302,12 @@ function WorkshopCreatePost() {
                 </button>
                 <button
                     className="py-2 px-3 bg-primaryLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
-                    onClick={() => handleUpdateRequest()}>
+                    onClick={() => handleUpdateRequest(true)}>
                     <span className="text-mediumGray text-xl">Save as Draft </span>
                 </button>
                 <button
                     className="py-2 px-3 bg-primary flex justify-center items-center gap-2 flex-row rounded-xl"
-                    onClick={() => handleUpdateRequest(true)}>
+                    onClick={() => handleUpdateRequest(false)}>
                     <span className="text-white text-xl leading-none">Create Post </span>
                     <PlusIcon className="text-white" />
                 </button>
