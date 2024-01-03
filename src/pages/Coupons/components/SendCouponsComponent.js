@@ -8,6 +8,7 @@ import { useQuery } from "@apollo/client";
 import { QRCodeSVG } from "qrcode.react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { sendCouponState } from "../../../stores/couponsStore";
+import { Pagination } from "antd";
 
 function SendCouponsComponent() {
     const [sendCoupon, setSendCoupon] = useRecoilState(sendCouponState);
@@ -125,11 +126,9 @@ function SendCouponsComponent() {
                                 className=" py-3 px-6 w-[430px] "
                                 onChange={(event) => setSearchQuery(event.target.value)}
                             />
-
-                            <div className="Filter"></div>
                         </div>
 
-                        <div className="rounded-xl border overflow-hidden px-4 shadow-md ">
+                        <div className="rounded-xl border overflow-hidden px-4 shadow-md">
                             <TableContainer className="!overflow-visible !overflow-x-visible !overflow-y-visible">
                                 <Table variant="simple">
                                     <Thead className="h-[60px]">
@@ -182,6 +181,13 @@ function SendCouponsComponent() {
                                 </Table>
                             </TableContainer>
                         </div>
+                        <Pagination
+                            className="p-4"
+                            defaultCurrent={pageNumber}
+                            total={userData.length}
+                            pageSize={itemsPerPage}
+                            onChange={(x) => setPageNumber(x)}
+                        />
                     </div>
                     {/* <div className="col-span-5 rounded-xl border overflow-hidden py-6 shadow-md divide-y divide-borderColor ">
                         <div className="text-base text-mediumGray leading-none mb-4">Selected Users</div>

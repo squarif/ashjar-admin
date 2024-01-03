@@ -342,7 +342,7 @@ function App() {
                         />
 
                         <Route
-                            path="/dashboard/bookings/user/:id"
+                            path="/dashboard/bookings/users/:id"
                             element={
                                 <PrivateRoute redirect="/login">
                                     <UserBookingsPage />

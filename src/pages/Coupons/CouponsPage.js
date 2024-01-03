@@ -572,7 +572,8 @@ function CouponRow(props) {
                     <div className="">
                         <div
                             onClick={() => setShowOptions(false)}
-                            className="fixed top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] "></div>
+                            className="fixed top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] "
+                        />
                         <div className="right-12 shadow-lg flex w-fit absolute bg-white z-10 flex-col rounded-lg text-mediumGray text-sm text-center border border-borderColor">
                             <button
                                 onClick={() => handleChangeCouponStatus()}

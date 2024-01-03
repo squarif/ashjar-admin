@@ -36,7 +36,7 @@ function WorkshopCreatePost() {
     const toast = useToast();
     const navigate = useNavigate();
 
-    console.log("requestPayload", requestPayload);
+    console.log("requestPayload", requestPayload.bookings);
 
     const [selectedBranch, setSelectedBranch] = useRecoilState(workshopSelectedBranch);
     const [branchData, setBranchData] = useState([]);
@@ -112,8 +112,6 @@ function WorkshopCreatePost() {
         if (parseInt(requestPayload.seats) >= totalBookings) {
             try {
                 let payload = {};
-
-                console.log("categoires", categories);
 
                 payload = {
                     ...requestPayload,

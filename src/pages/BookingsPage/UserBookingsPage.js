@@ -220,13 +220,14 @@ function BookingRow(props) {
     return (
         <Tr>
             <Td>{booking._id}</Td>
-
+            <Td>{booking.bookingType}</Td>
             <Td>{getDate(booking.bookingDate)}</Td>
             <Td>{booking.startTime}</Td>
             <Td>{booking.endTime}</Td>
             <Td className="text-primary text-lg">{booking.seats}</Td>
             <Td className="text-primary text-lg">SAR {booking.rate}</Td>
             <Td className="text-primary text-lg">{booking.isCancelled ? "True" : "False"}</Td>
+            <Td className="">{getDate(booking.createdAt)}</Td>
 
             {/* <Td className="relative">
                 <button onClick={() => setshowOptions(!showOptions)}>
@@ -300,7 +301,7 @@ function UserBookingsPage() {
             (item) =>
                 item.userId.name.toLowerCase().includes(searchQuery) ||
                 item._id.toLowerCase().includes(searchQuery) ||
-                item.phoneNumber.includes(searchQuery)
+                item.userId.phoneNumber.includes(searchQuery)
         );
     }
 
@@ -399,10 +400,14 @@ function UserBookingsPage() {
                                         <Th>
                                             <span className="text-light"> Booking ID</span>
                                         </Th>
+                                        <Th>
+                                            <span className="text-light"> Booking Type</span>
+                                        </Th>
 
                                         <Th>
                                             <span className="text-light"> Booking Date</span>
                                         </Th>
+
                                         <Th>
                                             <span className="text-light">Start Time</span>
                                         </Th>
@@ -418,6 +423,9 @@ function UserBookingsPage() {
                                         </Th>
                                         <Th>
                                             <span className="text-light"> Cancelled</span>
+                                        </Th>
+                                        <Th>
+                                            <span className="text-light"> Created At</span>
                                         </Th>
                                     </Tr>
                                 </Thead>

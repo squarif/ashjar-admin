@@ -58,7 +58,7 @@ function DatePicker() {
     // console.log("avalabelslots", availableSlots);
 
     function handleSelectedDate(date, val) {
-        // console.log("handleSelectedDate", val);
+        console.log("handleSelectedDate", date);
         setSelectedDate(date);
 
         if (showTimeSelector) {
@@ -69,8 +69,15 @@ function DatePicker() {
     }
 
     function handleSelectTime() {
+        let date = new Date(selectedDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+        const day = String(date.getDate()).padStart(2, "0");
+
+        const formattedDate = `${year}-${month}-${day}`;
+
         let value = {
-            date: selectedDate.toISOString(),
+            date: formattedDate,
             startTime: startTime,
             endTime: endTime,
             nurseryBookings: [],
@@ -98,7 +105,10 @@ function DatePicker() {
     }
 
     function returnDate(val) {
+        console.log("returnDate", val);
         let date = new Date(val);
+        console.log("date", date);
+
         date = date.toDateString().split(" ");
         return `${date[1]} ${date[2]}`;
     }

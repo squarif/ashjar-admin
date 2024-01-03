@@ -220,11 +220,13 @@ function BookingRow(props) {
         <Tr>
             <Td>{booking._id}</Td>
             <Td>{booking.userId.name}</Td>
+            <Td>{booking.bookingType}</Td>
             <Td>{getDate(booking.bookingDate)}</Td>
             <Td>{booking.startTime}</Td>
             <Td>{booking.endTime}</Td>
             <Td className="text-primary text-lg">{booking.seats}</Td>
             <Td className="text-primary text-lg">SAR {booking.rate}</Td>
+            <Td className=""> {getDate(booking.createdAt)}</Td>
             {/* <Td className="relative">
                 <button onClick={() => setshowOptions(!showOptions)}>
                     <VerticalDots />
@@ -406,6 +408,9 @@ function AllBookingsPage() {
                                             <span className="text-light"> User</span>
                                         </Th>
                                         <Th>
+                                            <span className="text-light"> Booking Type</span>
+                                        </Th>
+                                        <Th>
                                             <span className="text-light"> Booking Date</span>
                                         </Th>
                                         <Th>
@@ -420,6 +425,9 @@ function AllBookingsPage() {
                                         </Th>
                                         <Th>
                                             <span className="text-light"> Amount</span>
+                                        </Th>
+                                        <Th>
+                                            <span className="text-light"> Created At</span>
                                         </Th>
                                     </Tr>
                                 </Thead>

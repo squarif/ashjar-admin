@@ -13,6 +13,24 @@ const GET_USERS = gql`
             createdAt
             isBlocked
             numberOfBookings
+            workshopBookings {
+                _id
+            }
+            workspaceBookings {
+                _id
+            }
+            meetingRoomBookings {
+                _id
+            }
+            cancelledMeetingRoomBookings {
+                _id
+            }
+            cancelledWorkshopBookings {
+                _id
+            }
+            cancelledWorkspaceBookings {
+                _id
+            }
         }
     }
 `;

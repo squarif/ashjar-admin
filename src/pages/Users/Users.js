@@ -70,16 +70,25 @@ function UserRow(props) {
         }
     }
 
+    function numberOfBookings() {
+        return (
+            user.workshopBookings.length +
+            user.workspaceBookings.length +
+            user.meetingRoomBookings.length +
+            user.cancelledMeetingRoomBookings.length +
+            user.cancelledWorkshopBookings.length +
+            user.cancelledWorkspaceBookings.length
+        );
+    }
+
     return (
         <Tr>
             <Td>{user._id}</Td>
             <Td>{user.name}</Td>
-            <Td>{user.numberOfBookings}</Td>
-            <Td>
-                {user.phoneNumber} l{showOptions}
-            </Td>
+            <Td>{numberOfBookings()}</Td>
+            <Td>{user.phoneNumber}</Td>
             <Td>{statusBadge(user.isBlocked)}</Td>
-            <Td className="relative">
+            <Td className="">
                 <button onClick={() => setshowOptions(!showOptions)}>
                     <VerticalDots />
                 </button>
@@ -90,7 +99,7 @@ function UserRow(props) {
                             className="fixed top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] "></div>
                         <div className="right-12 shadow-lg flex w-fit absolute bg-white z-10 flex-col rounded-lg text-dark text-sm text-center border border-borderColor">
                             <Link
-                                to={`/dashboard/bookings/user/${user._id}`}
+                                to={`/dashboard/bookings/users/${user._id}`}
                                 className="p-3 pb-2.5 gap-2 flex justify-between items-center">
                                 <span>View History</span>
                                 <ClockIcon />
