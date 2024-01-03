@@ -256,7 +256,9 @@ function WorkshopRequests() {
         }
     }, [requestsLoading, requestsError, data]);
 
-    function selectRequest(index) {
+    function selectRequest(id) {
+        let index = requestList.findIndex((obj) => obj._id === id);
+
         if (selectedRequest === index) {
             setSelectedRequest();
         } else {
@@ -284,7 +286,7 @@ function WorkshopRequests() {
             return (
                 <button
                     key={index}
-                    onClick={() => selectRequest(index)}
+                    onClick={() => selectRequest(request._id)}
                     className={
                         index === selectedRequest
                             ? "flex p-6 w-full justify-between items-center rounded-xl border-[0.5px] border-primary shadow-sm shadow-primaryLight gap-4"
@@ -292,7 +294,7 @@ function WorkshopRequests() {
                     }>
                     <div className="flex flex-col justify-start gap-4 w-full">
                         <div className="flex gap-6 items-center justify-between">
-                            <div className="text-base text-dark leading-5 text-left">R-{request.name}</div>
+                            <div className="text-base text-dark leading-5 text-left">{request.name}</div>
                             {statusBadge(request.approvalStatus, request.draft)}
                         </div>
                         <div className="text-left text-xs text-light">

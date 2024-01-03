@@ -12,6 +12,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import client from "../../apollo";
 import Loader from "../../components/Loader";
 import { Pagination } from "antd";
+import { Link } from "react-router-dom";
 
 function UserRow(props) {
     let user = props.user;
@@ -88,17 +89,20 @@ function UserRow(props) {
                             onClick={() => setshowOptions(false)}
                             className="fixed top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] "></div>
                         <div className="right-12 shadow-lg flex w-fit absolute bg-white z-10 flex-col rounded-lg text-dark text-sm text-center border border-borderColor">
-                            <button className="p-3 pb-2.5 gap-2 flex justify-between items-center">
+                            <Link
+                                to={`/dashboard/bookings/user/${user._id}`}
+                                className="p-3 pb-2.5 gap-2 flex justify-between items-center">
                                 <span>View History</span>
                                 <ClockIcon />
-                            </button>
+                            </Link>
                             <div className="border-b h-[1px] mx-3"></div>
                             <button
                                 onClick={() => handleChangeUserStatus()}
                                 className="p-3 pt-2.5 gap-2 flex justify-between items-center">
                                 {user.isBlocked ? <span>Unblock User</span> : <span>Block User</span>}
-                                <ClockIcon />
+                                <CloseIcon className="h-4 w-4 text-error" />
                             </button>
+                            <div className="border-b h-[1px] mx-3"></div>
                         </div>
                     </div>
                 ) : (

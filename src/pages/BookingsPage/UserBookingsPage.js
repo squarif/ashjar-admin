@@ -17,7 +17,8 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import { userBookingsFilters } from "../../stores/dashboardStores";
 import client from "../../apollo";
-import { getDate } from "../../util/helpers";
+import { getDate, getTime12Hour } from "../../util/helpers";
+import { useParams } from "react-router-dom";
 
 function FiltersModal({ setFiltersModal, bookingsData, handleApplyFilters }) {
     const [selectedFilter, setSelectedFilter] = useState("");
@@ -58,8 +59,6 @@ function FiltersModal({ setFiltersModal, bookingsData, handleApplyFilters }) {
                 className="fixed bg-dark bg-opacity-50 top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] backdrop-blur-sm"></div>
 
             <div className="top-0 bottom-0 left-0 right-0 p-8 mx-auto my-auto gap-12 shadow-lg flex w-[70%] h-[547px] absolute bg-white z-10 flex-col rounded-lg text-mediumGray text-sm text-center border border-borderColor">
-                <span className="text-[32px] text-mediumGray text-left">Add New Coupon</span>
-
                 <div className="flex gap-6 h-14">
                     <div className="border rounded-xl border-light flex items-center">
                         <Menu autoSelect={false} closeOnBlur>
@@ -221,12 +220,14 @@ function BookingRow(props) {
     return (
         <Tr>
             <Td>{booking._id}</Td>
-            <Td>{booking.userId.name}</Td>
+
             <Td>{getDate(booking.bookingDate)}</Td>
             <Td>{booking.startTime}</Td>
             <Td>{booking.endTime}</Td>
             <Td className="text-primary text-lg">{booking.seats}</Td>
             <Td className="text-primary text-lg">SAR {booking.rate}</Td>
+            <Td className="text-primary text-lg">{booking.isCancelled ? "True" : "False"}</Td>
+
             {/* <Td className="relative">
                 <button onClick={() => setshowOptions(!showOptions)}>
                     <VerticalDots />
@@ -258,7 +259,7 @@ function BookingRow(props) {
     );
 }
 
-function Bookings() {
+function UserBookingsPage() {
     const itemsPerPage = 8;
     const [searchQuery, setSearchQuery] = useState("");
     const [userBookingsData, setUserBookingsData] = useState([]);
@@ -267,6 +268,10 @@ function Bookings() {
 
     const [pageNumber, setPageNumber] = useState(1);
 
+    let { id } = useParams();
+
+    console.log("params", id);
+
     const {
         loading: userBookingsLoading,
         error: userBookingsError,
@@ -274,16 +279,7 @@ function Bookings() {
     } = useQuery(GET_ADVANCE_SEARCH_BOOKINGS, {
         variables: {
             params: {
-                bookingType: null,
-                bookingId: null,
-                branch: null,
-                startTime: null,
-                bookingDate: null,
-                endTime: null,
-                seats: null,
-                rate: null,
-                isCancelled: null,
-                createdAt: null,
+                userId: id,
             },
             pagination: {
                 pageNo: 0,
@@ -405,9 +401,6 @@ function Bookings() {
                                         </Th>
 
                                         <Th>
-                                            <span className="text-light"> User</span>
-                                        </Th>
-                                        <Th>
                                             <span className="text-light"> Booking Date</span>
                                         </Th>
                                         <Th>
@@ -422,6 +415,9 @@ function Bookings() {
                                         </Th>
                                         <Th>
                                             <span className="text-light"> Amount</span>
+                                        </Th>
+                                        <Th>
+                                            <span className="text-light"> Cancelled</span>
                                         </Th>
                                     </Tr>
                                 </Thead>
@@ -463,4 +459,4 @@ function Bookings() {
     );
 }
 
-export default Bookings;
+export default UserBookingsPage;

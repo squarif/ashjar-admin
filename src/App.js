@@ -38,8 +38,9 @@ import { useRecoilStateCallback } from "./hooks";
 import { userAtom } from "./recoil/atoms";
 import BranchEdit from "./pages/Branches/BranchEdit";
 import CouponsPage from "./pages/Coupons/CouponsPage";
-import Bookings from "./pages/BookingsPage/BookingsPage";
 import WorkshopEditPost from "./pages/Workshops/WorkshopEdit/WorkshopEdit";
+import UserBookingsPage from "./pages/BookingsPage/UserBookingsPage";
+import AllBookingsPage from "./pages/BookingsPage/AllBookingsPage";
 
 function App() {
     const [userA, setUserAtom] = useRecoilStateCallback(userAtom);
@@ -335,10 +336,20 @@ function App() {
                             path="/dashboard/bookings"
                             element={
                                 <PrivateRoute redirect="/login">
-                                    <Bookings />
+                                    <AllBookingsPage />
                                 </PrivateRoute>
                             }
                         />
+
+                        <Route
+                            path="/dashboard/bookings/user/:id"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <UserBookingsPage />
+                                </PrivateRoute>
+                            }
+                        />
+
                         <Route
                             path="/"
                             element={

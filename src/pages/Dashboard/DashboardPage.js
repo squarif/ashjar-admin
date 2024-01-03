@@ -1,29 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Breadcrumbs from "../../components/Breadcrumbs";
-import { ReactComponent as FilterIcon } from "../../assets/FilterIcon.svg";
-import { ReactComponent as PlusIcon } from "../../assets/PlusIcon.svg";
 import { ReactComponent as ChevronRight } from "../../assets/ChevronRight.svg";
-import { ReactComponent as CalendarIcon } from "../../assets/CalendarIcon.svg";
-import { ReactComponent as CloseIcon } from "../../assets/CloseIcon.svg";
-import { Menu, MenuButton, MenuList, MenuItem, Input } from "@chakra-ui/react";
-import { DatePicker, Space } from "antd";
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { DatePicker } from "antd";
 
 import {
     PieChart,
     Pie,
-    Sector,
     Cell,
     ResponsiveContainer,
     BarChart,
-    CartesianGrid,
     Bar,
-    Rectangle,
     XAxis,
     YAxis,
     Tooltip,
     Legend,
 } from "recharts";
-import { Link } from "react-router-dom";
 import {
     GET_ADVANCE_SEARCH_BOOKINGS,
     GET_BRANCHES_REVENUE,
@@ -32,8 +24,7 @@ import {
     GET_BRANCH_REVENUE_FOR_N_MONTHS,
 } from "../../queries/dashBoardQueries";
 import { useQuery } from "@apollo/client";
-import { getDate } from "../../util/helpers";
-import UserBookings from "../BookingsPage/UserBookings";
+import UsersBookings from "../BookingsPage/components/UsersBookingsList";
 import { useRecoilState } from "recoil";
 import { userBookingsFilters } from "../../stores/dashboardStores";
 import client from "../../apollo";
@@ -42,7 +33,6 @@ import { GET_BRANCHES } from "../../queries/branchesQueries";
 const COLORS = ["#E4E8EF", "#B0C478"];
 
 function RevenuePieCharts({ dates, selectedBranch }) {
-    console.log("RevenuePieCharts selectedBranch", selectedBranch);
     const [workspaceRevenueData, setWorkspaceRevenueData] = useState(500);
     const [roomRevenueData, setRoomRevenueData] = useState(500);
     const [workshopRevenueData, setWorkshopRevenueData] = useState(500);
@@ -491,7 +481,7 @@ function DashboardPage() {
 
             <RevenueGraph selectedBranch={selectedBranch} />
 
-            <UserBookings selectedBranch={selectedBranch} />
+            <UsersBookings selectedBranch={selectedBranch} />
         </div>
     );
 }

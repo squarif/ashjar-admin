@@ -1,25 +1,13 @@
 import { useState, useEffect } from "react";
-import Breadcrumbs from "../../components/Breadcrumbs";
-import { Input, useToast } from "@chakra-ui/react";
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from "@chakra-ui/react";
-import { ReactComponent as CloseIcon } from "../../assets/CloseIcon.svg";
-import { ReactComponent as TickIcon } from "../../assets/TickIcon.svg";
-import { ReactComponent as PlusIcon } from "../../assets/PlusIcon.svg";
-import { ReactComponent as ClockIcon } from "../../assets/ClockIcon.svg";
-import { ReactComponent as ChevronRight } from "../../assets/ChevronRight.svg";
-import { ReactComponent as VerticalDots } from "../../assets/VerticalDots.svg";
-import { useMutation, useQuery } from "@apollo/client";
+import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
+import { useQuery } from "@apollo/client";
 
-import Loader from "../../components/Loader";
-import { Pagination } from "antd";
-import { GET_ADVANCE_SEARCH_BOOKINGS } from "../../queries/dashBoardQueries";
-import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
-import { useRecoilState } from "recoil";
-import { userBookingsFilters } from "../../stores/dashboardStores";
+import { GET_ADVANCE_SEARCH_BOOKINGS } from "../../../queries/dashBoardQueries";
 import { Link } from "react-router-dom";
-import { getDate } from "../../util/helpers";
+import { getDate } from "../../../util/helpers";
 
-function UserBookings() {
+function UsersBookingsList() {
     const [userBookingsData, setUserBookingsData] = useState([]);
 
     const {
@@ -48,6 +36,7 @@ function UserBookings() {
             },
         },
     });
+
     useEffect(() => {
         if (!userBookingsLoading && !userBookingsError) {
             // Set the branches data
@@ -100,4 +89,4 @@ function UserBookings() {
     );
 }
 
-export default UserBookings;
+export default UsersBookingsList;

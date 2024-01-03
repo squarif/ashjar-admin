@@ -102,15 +102,24 @@ function WorkshopCreatePost() {
 
     const [updateWorkshopRequest] = useMutation(UPDATE_WORKSHOP_REQUEST);
     async function handleUpdateRequest(draft) {
+        if (!draft && totalBookings === 0) {
+            toast({
+                title: "Error",
+                description: "Please select bookings first",
+                status: "error",
+            });
+        }
         if (parseInt(requestPayload.seats) >= totalBookings) {
             try {
                 let payload = {};
+
+                console.log("categoires", categories);
 
                 payload = {
                     ...requestPayload,
                     bookings: workshopBookings.map(({ __typename, ...rest }) => rest),
                     amenities: amenities.map(({ __typename, ...rest }) => rest),
-                    categories: categories.map(({ __typename, ...rest }) => rest),
+                    categories: categories,
                     pricePerSeat: requestPayload.pricePerSeat,
                     seats: parseInt(requestPayload.seats),
                     branch: selectedBranch._id,
