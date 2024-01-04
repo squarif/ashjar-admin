@@ -50,6 +50,9 @@ export const GET_WORKSHOP_REQUEST = gql`
             name
             pricePerSeat
             seats
+            bookingByCustomers {
+                _id
+            }
             bookings {
                 date
                 startTime
