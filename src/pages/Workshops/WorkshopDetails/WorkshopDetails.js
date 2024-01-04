@@ -9,21 +9,26 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { workshopRequestPayload } from "../../../stores/workshopStore";
 
 import { workshopAmenities } from "../../../stores/workshopStore";
-import { GET_WORKSHOP_REQUEST } from "../../../queries/workshopQueries";
-import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { GET_WORKSHOP_REQUEST, REJECT_WORKSHOP_REQUEST } from "../../../queries/workshopQueries";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery } from "@apollo/client";
 import Loader from "../../../components/Loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Maps from "../../../components/Maps";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Textarea, useToast } from "@chakra-ui/react";
 
 function WorkshopDetails() {
     // const [workshopRequest, setWorkShopRequest] = useRecoilState(workshopRequestPayload);
     const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
-
+    const [showCancelPrompt, setShowCancelPrompt] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState("");
+    const toast = useToast();
     const amenities = useRecoilValue(workshopAmenities);
+
+    const navigate = useNavigate();
 
     const params = useParams();
     let id = params.id;
@@ -87,6 +92,46 @@ function WorkshopDetails() {
 
     console.log("workshopRequest", workshopRequest);
 
+    const [rejectWorkshopRequest] = useMutation(REJECT_WORKSHOP_REQUEST);
+    async function handleCancelRequest() {
+        try {
+            let payload = {};
+
+            payload = {
+                rejectionReason: rejectionReason,
+                workshopRequestID: workshopRequest._id,
+            };
+
+            console.log("PAYLOAD", payload);
+            const { data } = await rejectWorkshopRequest({
+                mutation: REJECT_WORKSHOP_REQUEST,
+                variables: {
+                    input: payload,
+                },
+                // client: client,
+            });
+            if (data) {
+                toast({
+                    title: "Workshop Request Rejected!",
+                    status: "info",
+                });
+
+                setShowCancelPrompt(false);
+            }
+            navigate("/workshops/all");
+        } catch (error) {
+            console.log(error);
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
+
+            setShowCancelPrompt(false);
+            navigate("/workshops/all");
+        }
+    }
+
     if (workshopLoading) {
         return (
             <div className="h-[400px]">
@@ -128,9 +173,13 @@ function WorkshopDetails() {
                         </Link>
                     </div>
 
-                    <button className="rounded-xl font-sm font-medium text-error border border-error bg-errorLight px-3 py-2">
-                        Cancel Workshop
-                    </button>
+                    {workshopRequest.bookingByCustomers.length === 0 && (
+                        <button
+                            onClick={() => setShowCancelPrompt(true)}
+                            className="rounded-xl font-sm font-medium text-error border border-error bg-errorLight px-3 py-2">
+                            Cancel Workshop
+                        </button>
+                    )}
                 </div>
 
                 <div className="h-[1px] w-full border-t border-borderColor"></div>
@@ -230,6 +279,49 @@ function WorkshopDetails() {
                     ))}
                 </div>
             </div>
+
+            {showCancelPrompt && (
+                <div className="">
+                    <div
+                        onClick={() => setShowCancelPrompt(false)}
+                        className="fixed bg-dark bg-opacity-50 top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] backdrop-blur-sm"
+                    />
+
+                    <div className="fixed top-[32%] left-[28%]">
+                        <div className="w-[50vw] p-8 mx-auto my-auto gap-7 shadow-lg flex h-fit absolute bg-white z-10 flex-col rounded-lg text-mediumGray text-sm text-center border border-borderColor">
+                            <span className="text-[32px] text-mediumGray text-left">
+                                Reject Request {workshopRequest.name}?
+                            </span>
+
+                            <div className="flex flex-col gap-4">
+                                <span className="text-ld text-mediumGray text-left">
+                                    Enter reason for rejection
+                                </span>
+                                <div className="rounded-xl border overflow-hidden  shadow-md shrink-0 pl-4">
+                                    <Textarea
+                                        variant="unstyled"
+                                        value={rejectionReason}
+                                        size="lg"
+                                        onChange={(event) => setRejectionReason(event.target.value)}
+                                    />
+                                </div>
+                                <div className="requestActions flex w-full justify-end gap-6">
+                                    <button
+                                        onClick={() => setShowCancelPrompt(false)}
+                                        className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-errorLight">
+                                        <span className="text-sm font-medium text-mediumGray">Cancel</span>
+                                    </button>
+                                    <button
+                                        onClick={() => handleCancelRequest()}
+                                        className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-primary">
+                                        <span className="text-sm font-medium text-white">Reject</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
