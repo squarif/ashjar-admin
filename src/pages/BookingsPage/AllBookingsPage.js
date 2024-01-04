@@ -264,7 +264,6 @@ function AllBookingsPage() {
     const [userBookingsData, setUserBookingsData] = useState([]);
     const [showFilters, setShowFilters] = useState(false);
     const [filtersList, setFiltersList] = useRecoilState(userBookingsFilters);
-
     const [pageNumber, setPageNumber] = useState(1);
 
     const {
@@ -286,8 +285,8 @@ function AllBookingsPage() {
                 createdAt: null,
             },
             pagination: {
-                pageNo: 0,
-                itemsPerPage: 10,
+                pageNo: pageNumber - 1,
+                itemsPerPage: itemsPerPage,
             },
         },
     });
