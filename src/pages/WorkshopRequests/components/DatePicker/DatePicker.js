@@ -27,6 +27,15 @@ import client from "../../../../apollo";
 import Bookings from "../Bookings";
 import Loader from "../../../../components/Loader";
 
+function formattedDate(selectedDate) {
+    let date = new Date(selectedDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
 function DatePicker() {
     // stores
     const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
@@ -69,15 +78,8 @@ function DatePicker() {
     }
 
     function handleSelectTime() {
-        let date = new Date(selectedDate);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-        const day = String(date.getDate()).padStart(2, "0");
-
-        const formattedDate = `${year}-${month}-${day}`;
-
         let value = {
-            date: formattedDate,
+            date: formattedDate(selectedDate),
             startTime: startTime,
             endTime: endTime,
             nurseryBookings: [],
@@ -131,7 +133,7 @@ function DatePicker() {
 
     async function handleGetAvailableSlots() {
         try {
-            let date = selectedDate.toISOString().split("T")[0];
+            let date = formattedDate(selectedDate);
             let branchId = selectedBranch._id;
 
             if (!branchId) {
