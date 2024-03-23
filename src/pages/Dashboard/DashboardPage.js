@@ -287,10 +287,10 @@ function RevenueGraph({ dates, selectedBranch }) {
     return (
         <div className="total-revenue  border rounded-xl border-borderColor shadow-md py-6 px-4 flex flex-col">
             <span className="text-xl text-mediumGray">Total Revenue</span>
-            <div className="flex gap-5 items-center ">
+            {/* <div className="flex gap-5 items-center ">
                 <span className="text-xl text-dark">SAR 170.8K</span>
                 <span className="text-xs text-primary">5% than last month</span>
-            </div>
+            </div> */}
             <ResponsiveContainer width="100%" height={325}>
                 <BarChart
                     width={500}

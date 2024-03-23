@@ -12,6 +12,8 @@ import { useRecoilState } from "recoil";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_COMPLAINTS, UPDATE_COMPLAINT } from "../../queries/complaintQueries";
 import Loader from "../../components/Loader";
+import PicturesGrid from "../../components/PicturesGrid";
+import { complaintPictures } from "../../stores/complaintStore";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
@@ -20,7 +22,7 @@ function Complaints() {
     // let { loading, error, data } = useQuery(GET_BRANCHES);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedComplaint, setSelectedComplaint] = useState(null);
-    const [pictures, setPictures] = useState([]);
+    const [pictures, setPictures] = useRecoilState(complaintPictures);
     const [complaintsList, setComplaintsList] = useState([]);
 
     const toast = useToast();
@@ -37,6 +39,7 @@ function Complaints() {
             // console.log("data", data.informationManagementAll[0].termsAndConditions);
 
             setComplaintsList(data.complaints);
+
             // setEditInfoRequest(data.informationManagementAll[0]);
         }
     }, [complaintsLoading, complaintsError, data]);
@@ -136,6 +139,7 @@ function Complaints() {
             return <div>No Complaint Selected</div>;
         } else {
             let complaint = complaintsList[selectedComplaint];
+            setPictures(complaint.pictures);
 
             return (
                 <div className="grid grid-cols-6 gap-2.5 h-full">
@@ -148,28 +152,14 @@ function Complaints() {
                             <span className="description text-left text-base text-mediumGray">
                                 {complaint.complaintDescription}
                             </span>
-                            {complaint.pictures.length ? (
-                                <div>
-                                    <span className="text-left text-xl text-dark">Pictures</span>
-                                    <div className="pictures grid grid-cols-5 grid-rows-2 gap-6">
-                                        {pictures?.map((picture, index) =>
-                                            index === 0 ? (
-                                                <div className="relative overflow-hidden rounded-2xl border col-span-3 row-span-2">
-                                                    <img alt="" src={picture} />
-                                                </div>
-                                            ) : (
-                                                <div className="overflow-hidden border rounded-2xl">
-                                                    <img className="" alt="" src={picture} />
-                                                </div>
-                                            )
-                                        )}
-                                    </div>
-                                </div>
+
+                            {pictures?.length ? (
+                                <PicturesGrid picturesState={complaintPictures} />
                             ) : (
-                                ""
+                                "No pictures uploaded"
                             )}
                         </div>
-                        <div className="complaintActions flex w-full justify-end gap-6">
+                        <div className="complaintActions mt-6 flex w-full justify-end gap-6">
                             <button
                                 disabled={complaint.complaintStatus === "rejected"}
                                 onClick={() => handleUpdateComplaint("rejected")}

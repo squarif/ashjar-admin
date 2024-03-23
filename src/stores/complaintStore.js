@@ -1,8 +1,11 @@
 import { atom } from "recoil";
 
-const editComplaint = atom({
+export const editComplaint = atom({
     key: "editComplaint",
     default: {},
 });
 
-export { editComplaint };
+export const complaintPictures = atom({
+    key: "complaintPictures",
+    default: {},
+});

@@ -219,7 +219,7 @@ function BookingRow(props) {
     return (
         <Tr>
             <Td>{booking._id}</Td>
-            <Td>{booking.userId.name}</Td>
+            <Td>{booking.userId && booking.userId.name}</Td>
             <Td>{booking.bookingType}</Td>
             <Td>{getDate(booking.bookingDate)}</Td>
             <Td>{booking.startTime}</Td>
@@ -301,7 +301,7 @@ function AllBookingsPage() {
     function filteredList(items) {
         return items.filter(
             (item) =>
-                item.userId.name.toLowerCase().includes(searchQuery) ||
+                item.userId?.name.toLowerCase().includes(searchQuery) ||
                 item._id.toLowerCase().includes(searchQuery) ||
                 item.phoneNumber.includes(searchQuery)
         );

@@ -241,11 +241,11 @@ function WorkshopDetails() {
                 </div>
             </div>
             <div className="col-span-3 px-8 flex flex-col gap-11 ">
-                <div className="time-left flex gap-4 items-center justify-center border rounded-xl bg-errorLight w-full py-3">
+                {/* <div className="time-left flex gap-4 items-center justify-center border rounded-xl bg-errorLight w-full py-3">
                     <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
                     <span className=" text-2xl leading-6 text-mediumGray">2 hours left</span>
-                </div>
-                <div className="graph">
+                </div> */}
+                {/* <div className="graph">
                     <ResponsiveContainer width="50%" height="100%">
                         <PieChart>
                             <Pie
@@ -263,7 +263,7 @@ function WorkshopDetails() {
                             </Pie>
                         </PieChart>
                     </ResponsiveContainer>
-                </div>
+                </div> */}
                 <div className="border rounded-xl h-full">
                     <div className="flex px-6 py-11 border-b justify-between">
                         <span className="">User</span>

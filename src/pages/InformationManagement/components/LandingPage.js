@@ -15,6 +15,7 @@ import { useMutation } from "@apollo/client";
 import { EDIT_INFO } from "../../../queries/informationManagement";
 
 import PicturesUpload from "../../../components/PictureUpload";
+import PicturesGrid from "../../../components/PicturesGrid";
 
 function LandingPage(props) {
     const [edit, setEdit] = useState(false);
@@ -79,22 +80,7 @@ function LandingPage(props) {
             </div>
 
             {pictures.length ? (
-                <div className="pictures grid grid-cols-5 grid-rows-2 gap-6">
-                    {pictures?.map((picture, index) =>
-                        index === 0 ? (
-                            <div
-                                key={index}
-                                className="relative overflow-hidden rounded-2xl border col-span-3 row-span-2">
-                                <img alt="" src={picture} />
-                            </div>
-                        ) : (
-                            <div key={index} className="overflow-hidden border rounded-2xl">
-                                <img className="" alt="" src={picture} />
-                            </div>
-                        )
-                    )}
-                    {edit ? <PicturesUpload pictures={landingPagePictures} /> : ""}
-                </div>
+                <PicturesGrid picturesState={landingPagePictures} />
             ) : (
                 "No pictures uploaded yet"
             )}
