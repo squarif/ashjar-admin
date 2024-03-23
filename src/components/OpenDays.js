@@ -12,15 +12,11 @@ import { getDate } from "../util/helpers";
 
 function OpenDaysList(props) {
     const [openDays, setOpenDays] = useRecoilState(props.state);
-    const [days, setDays] = useState([
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-    ]);
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+    function filteredDays(toFilter) {
+        return days.filter((day) => day !== toFilter);
+    }
 
     const [startAMPM, setStartAMPM] = useState("AM");
     const [endAMPM, setEndAMPM] = useState("AM");
@@ -35,11 +31,8 @@ function OpenDaysList(props) {
     function handleDayChange(dayIndex, value) {
         const updatedOpenDays = JSON.parse(JSON.stringify(openDays));
 
-        // console.log("updatedOpenDays", updatedOpenDays, dayIndex, value);
         updatedOpenDays[dayIndex].day = value;
         setOpenDays(updatedOpenDays);
-
-        setDays(days.filter((day) => day !== value));
     }
 
     function handleTimeChange(dayIndex, field, value) {
@@ -96,7 +89,7 @@ function OpenDaysList(props) {
                     </div>
                 </MenuButton>
                 <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
-                    {days.map((day, dayIndex) => {
+                    {filteredDays(day.day).map((day, dayIndex) => {
                         return (
                             <MenuItem key={dayIndex} onClick={() => handleDayChange(index, day)}>
                                 {day}
