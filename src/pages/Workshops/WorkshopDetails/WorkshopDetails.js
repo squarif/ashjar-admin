@@ -219,9 +219,12 @@ function WorkshopDetails() {
                     <div className="flex gap-12 items-center">
                         {amenities.map((amenity) => (
                             <div className="flex items-center gap-2">
-                                <FontAwesomeIcon
-                                    icon={JSON.parse(amenity.picture)}
-                                    className="text-[#838481]"
+                                <img
+                                    className="object-cover"
+                                    height="24"
+                                    width="24"
+                                    alt=""
+                                    src={amenity.picture}
                                 />
                                 <span className="capitalize text-sm text-dark font-normal leading-6">
                                     {amenity}

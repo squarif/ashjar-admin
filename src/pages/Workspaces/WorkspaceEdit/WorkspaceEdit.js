@@ -8,7 +8,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 
-import Amenities from "../components/Amenities";
+import Amenities from "../../../components/Amenities";
 import { useEffect, useState } from "react";
 import {
     workspaceAmenitiesState,
@@ -190,7 +190,7 @@ function WorkspaceNew() {
                 <WorkspaceRates />
             </div>
             <div className="amenities border rounded-2xl border-light px-8 py-12 ">
-                <Amenities />
+                <Amenities state={workspaceAmenitiesState} />
             </div>
 
             <PicturesGrid picturesState={workspacePicturesState} />

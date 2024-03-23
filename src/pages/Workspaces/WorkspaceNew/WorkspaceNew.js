@@ -28,7 +28,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import PicturesGrid from "../../../components/PicturesGrid";
 import WorkspaceRates from "../components/Rates";
 
-import Amenities from "../components/Amenities";
+import Amenities from "../../../components/Amenities";
 import OpenDays from "../../../components/OpenDays";
 import { GET_BRANCHES } from "../../../queries/branchesQueries";
 import Loader from "../../../components/Loader";
@@ -199,7 +199,7 @@ function WorkspaceNew() {
                 <WorkspaceRates />
             </div>
             <div className="amenities border rounded-2xl border-light px-8 py-12 ">
-                <Amenities />
+                <Amenities state={workspaceAmenitiesState} />
             </div>
 
             <PicturesGrid picturesState={workspacePicturesState} />

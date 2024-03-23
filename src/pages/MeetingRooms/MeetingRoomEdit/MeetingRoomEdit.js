@@ -6,7 +6,7 @@ import { ReactComponent as CloseIcon } from "../../../assets/CloseIcon.svg";
 import { Textarea } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
-import Amenities from "../components/Amenities";
+import Amenities from "../../../components/Amenities";
 import { useEffect, useState } from "react";
 import {
     meetingRoomAmenitiesState,
@@ -270,7 +270,7 @@ function MeetingRoomEdit() {
                 <MeetingRoomRates state={editMeetingRoomRequest} />
             </div>
             <div className="amenities border rounded-2xl border-light px-8 py-12 ">
-                <Amenities />
+                <Amenities state={meetingRoomAmenitiesState} />
             </div>
 
             <PicturesGrid picturesState={meetingRoomPicturesState} />

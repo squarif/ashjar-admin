@@ -10,7 +10,8 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { Textarea } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
-import Amenities from "../components/Amenities";
+import Amenities from "../../../components/Amenities";
+
 import { useEffect, useState } from "react";
 import MeetingRoomRates from "../components/Rates";
 import {
@@ -270,7 +271,7 @@ function MeetingRoomNew() {
                     <MeetingRoomRates state={newMeetingRoomRequest} />
                 </div>
                 <div className="amenities border rounded-2xl border-light px-8 py-12 ">
-                    <Amenities />
+                    <Amenities state={meetingRoomAmenitiesState} />
                 </div>
 
                 <PicturesGrid picturesState={meetingRoomPicturesState} />

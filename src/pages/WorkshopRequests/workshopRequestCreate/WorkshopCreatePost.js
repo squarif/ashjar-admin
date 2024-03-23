@@ -15,7 +15,6 @@ import {
     workshopRequestPayload,
     workshopSelectedBranch,
 } from "../../../stores/workshopStore";
-import Amenities from "../components/Amenities";
 
 import Categories from "../components/Categories";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +24,7 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg";
 import { useEffect, useState } from "react";
 import { GET_BRANCHES } from "../../../queries/branchesQueries";
+import Amenities from "../../../components/Amenities";
 
 function WorkshopCreatePost() {
     const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
@@ -295,7 +295,7 @@ function WorkshopCreatePost() {
             </div>
 
             <div className="amenities border rounded-2xl border-light px-8 py-12 ">
-                <Amenities />
+                <Amenities state={workshopAmenities} />
             </div>
             <div className="categories border rounded-2xl border-light px-8 py-12 ">
                 <Categories />
