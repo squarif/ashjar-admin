@@ -141,14 +141,14 @@ function Amenity({ amenity, index, state }) {
 
     return (
         <div key={index} className="flex p-6 justify-between items-center">
-            <div className="border rounded-lg border-light px-4 h-11 min-w-[148px] flex items-center">
+            <div className="border rounded-lg border-light  h-11 min-w-[148px] flex items-center">
                 {/* <FontAwesomeIcon icon={icon} className="text-[#838481]" /> */}
                 {/* <FontAwesomeIconPicker
                     value={icon.iconName}
                     onChange={(icon) => handleAmenityIcon(index, icon)}
                 /> */}
                 {icon.length ? (
-                    <div className="flex gap-2 py-3">
+                    <div className="flex gap-2 py-3 px-4">
                         <img className="object-cover" height="24" width="24" alt="" src={icon} />
                         <span className="text-mediumGray text-base ">Uploaded</span>
                     </div>

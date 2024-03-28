@@ -81,7 +81,7 @@ function PicturesUpload({ propIcon, setPropIcon }) {
                 onChange={handleFileChange}
             />
             {loading ? (
-                <div className="h-6 grid place-content-center">
+                <div className="h-6 grid place-content-center px-4">
                     <CircularProgress
                         value={uploadProgress}
                         trackColor="#B0C478"
@@ -90,7 +90,7 @@ function PicturesUpload({ propIcon, setPropIcon }) {
                     />
                 </div>
             ) : (
-                <button onClick={handleOpenFileDialog} className="flex py-2  items-center gap-2">
+                <button onClick={handleOpenFileDialog} className="flex py-2  items-center gap-2 px-4">
                     <PlusIcon className="text-primary h-6 w-6" />
                     <span className="text-grey">Upload Icon</span>
                 </button>
