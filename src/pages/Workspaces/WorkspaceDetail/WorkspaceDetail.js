@@ -16,14 +16,27 @@ import {
 } from "../../../stores/workspaceStore";
 import { useQuery } from "@apollo/client";
 import { GET_WORKSPACE } from "../../../queries/workspaceQueries";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import Loader from "../../../components/Loader";
 import Maps from "../../../components/Maps";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { DeleteIcon } from "@chakra-ui/icons";
+import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+    AlertDialogCloseButton,
+    useDisclosure,
+    Button,
+} from "@chakra-ui/react";
 
 function WorkspaceDetail() {
     // const [workspaceData, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
-
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef();
     const { id } = useParams();
     let [amenities, setAmenitiesData] = useRecoilState(workspaceAmenitiesState);
     let [baseRates, setBaseRates] = useRecoilState(workspaceBaseRatesState);
@@ -107,19 +120,37 @@ function WorkspaceDetail() {
                 <div className="header flex flex-col gap-8">
                     <div className="flex justify-between items-center">
                         <div className="flex gap-5 items-center">
-                            <span className="py-4 text-[32px] leading-normal text-dark">
-                                {workspaceData.name}
-                            </span>
+                            <span className="py-4 text-[32px] leading-normal text-dark">{workspaceData.name}</span>
 
-                            <span className="py-4 text-[24px] text leading-normal text-dark">
-                                {workspaceData.totalSeats}
-                            </span>
+                            <span className="py-4 text-[24px] text leading-normal text-dark">{workspaceData.totalSeats}</span>
 
-                            <Link
-                                to={`/workspaces/${workspaceData._id}/edit`}
-                                className="edit-button text-primary">
+                            <Link to={`/workspaces/${workspaceData._id}/edit`} className="edit-button text-primary">
                                 <EditIcon className="text-primary" />
                             </Link>
+                            <Button className=" text-primaryLight" colorScheme="red" onClick={onOpen}>
+                                Delete Workspace
+                            </Button>
+
+                            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                                <AlertDialogOverlay>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                            Delete Workspace
+                                        </AlertDialogHeader>
+
+                                        <AlertDialogBody>Are you sure? You can't undo this action afterwards.</AlertDialogBody>
+
+                                        <AlertDialogFooter>
+                                            <Button ref={cancelRef} onClick={onClose}>
+                                                Cancel
+                                            </Button>
+                                            <Button colorScheme="red" onClick={onClose} ml={3}>
+                                                Delete
+                                            </Button>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialogOverlay>
+                            </AlertDialog>
                         </div>
                     </div>
                 </div>
@@ -136,16 +167,8 @@ function WorkspaceDetail() {
                     <div className="flex gap-12 items-center">
                         {workspaceData.amenities.map((amenity) => (
                             <div className="flex items-center gap-2">
-                                <img
-                                    className="object-cover"
-                                    height="24"
-                                    width="24"
-                                    alt=""
-                                    src={amenity.picture}
-                                />
-                                <span className="capitalize text-sm text-dark font-normal leading-6">
-                                    {amenity.name}
-                                </span>
+                                <img className="object-cover" height="24" width="24" alt="" src={amenity.picture} />
+                                <span className="capitalize text-sm text-dark font-normal leading-6">{amenity.name}</span>
                             </div>
                         ))}
                     </div>
@@ -172,9 +195,7 @@ function WorkspaceDetail() {
                                 <span className="text-mediumGray text-lg leading-normal">
                                     {rate.startTime} - {rate.endTime}
                                 </span>
-                                <span className="text-mediumGray text-lg leading-normal">
-                                    SAR {rate.rate}
-                                </span>
+                                <span className="text-mediumGray text-lg leading-normal">SAR {rate.rate}</span>
                             </div>
                         ))}
                     </div>
@@ -198,9 +219,7 @@ function WorkspaceDetail() {
                                                 <span className="text-mediumGray text-lg leading-normal">
                                                     {rate.startTime} - {rate.endTime}
                                                 </span>
-                                                <span className="text-mediumGray text-lg leading-normal">
-                                                    SAR {rate.rate}
-                                                </span>
+                                                <span className="text-mediumGray text-lg leading-normal">SAR {rate.rate}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -219,9 +238,7 @@ function WorkspaceDetail() {
                             <div className="flex flex-col gap-4">
                                 {workspaceData.openDays.map((day, index) => (
                                     <div key={index} className="flex justify-between">
-                                        <span className="text-mediumGray text-lg leading-normal">
-                                            {day.day}
-                                        </span>
+                                        <span className="text-mediumGray text-lg leading-normal">{day.day}</span>
                                         <span className="text-mediumGray text-lg leading-normal">
                                             {day.startTime} - {day.endTime}
                                         </span>

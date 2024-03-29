@@ -48,7 +48,7 @@ function WorkspaceRates() {
     function handleBaseRateChange(index, value) {
         let updatedRates = [...baseRates];
 
-        updatedRates[index] = { ...updatedRates[index], rate: parseInt(value) };
+        updatedRates[index] = { ...updatedRates[index], rate: parseFloat(value) };
 
         setBaseRates(updatedRates);
     }
@@ -119,7 +119,8 @@ function WorkspaceRates() {
                 <div className="text-left text-2xl">Base Rates</div>
                 <button
                     className="rounded-lg border border-borderColor px-6 py-4 bg-primaryLight flex items-center"
-                    onClick={() => handleNewCustomRate()}>
+                    onClick={() => handleNewCustomRate()}
+                >
                     <span className="text-lg leading-normal">Add Custom Rate</span>
                     <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                 </button>
@@ -140,9 +141,7 @@ function WorkspaceRates() {
                                             value={rate.startTime}
                                             className="text-xs 
 																						input text-mediumGray leading-[18px] h-5  mx-1 my-0.5 "
-                                            onChange={(event) =>
-                                                handleBaseTimeChange(index, "startTime", event.target.value)
-                                            }
+                                            onChange={(event) => handleBaseTimeChange(index, "startTime", event.target.value)}
                                             type="time"
                                         />
                                     </div>
@@ -159,9 +158,7 @@ function WorkspaceRates() {
                                             className="text-xs 
 																						input
 																						text-mediumGray leading-[18px] h-5 mx-1  my-0.5"
-                                            onChange={(event) =>
-                                                handleBaseTimeChange(index, "endTime", event.target.value)
-                                            }
+                                            onChange={(event) => handleBaseTimeChange(index, "endTime", event.target.value)}
                                             type="time"
                                             style={inputStyle}
                                         />
@@ -178,17 +175,13 @@ function WorkspaceRates() {
                                             placeholder="Rate"
                                             type="number"
                                             className="py-2 text-xl text-primary leading-6 text-center"
-                                            onChange={(event) =>
-                                                handleBaseRateChange(index, event.target.value)
-                                            }
+                                            onChange={(event) => handleBaseRateChange(index, event.target.value)}
                                         />
                                     </div>
                                     <span className="">/ hr</span>
                                 </div>
 
-                                <button
-                                    onClick={() => handleDeleteBaseRate(index)}
-                                    className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                <button onClick={() => handleDeleteBaseRate(index)} className="hover:bg-errorLight h-fit p-2 rounded-lg">
                                     <PlusIcon className="rotate-45 text-error" />
                                 </button>
                             </div>
@@ -196,7 +189,8 @@ function WorkspaceRates() {
                     ))}
                     <button
                         className="rounded-lg border border-borderColor gap-2 px-6 py-2 bg-primaryLight flex items-center"
-                        onClick={() => handleNewBaseRate()}>
+                        onClick={() => handleNewBaseRate()}
+                    >
                         <span className="text-lg leading-normal">Add New Time</span>
                         <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                     </button>
@@ -218,13 +212,7 @@ function WorkspaceRates() {
                                         name="date-start"
                                         value={getDate(customRate.startDate)}
                                         className="max-w-[200px] text-lg text-dark"
-                                        onChange={(event) =>
-                                            handleCustomDateChange(
-                                                customRateIndex,
-                                                "startDate",
-                                                event.target.value
-                                            )
-                                        }
+                                        onChange={(event) => handleCustomDateChange(customRateIndex, "startDate", event.target.value)}
                                     />
                                     {/* max={customRate.endDate} */}
                                 </div>
@@ -239,29 +227,19 @@ function WorkspaceRates() {
                                         name="date-end"
                                         value={getDate(customRate.endDate)}
                                         className="max-w-[200px] text-lg text-dark"
-                                        onChange={(event) =>
-                                            handleCustomDateChange(
-                                                customRateIndex,
-                                                "endDate",
-                                                event.target.value
-                                            )
-                                        }
+                                        onChange={(event) => handleCustomDateChange(customRateIndex, "endDate", event.target.value)}
                                     />
                                     {/* min={customRate.startDate} */}
                                 </div>
                             </div>
 
-                            <button
-                                onClick={() => handleDeleteCustomRate(customRateIndex)}
-                                className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                            <button onClick={() => handleDeleteCustomRate(customRateIndex)} className="hover:bg-errorLight h-fit p-2 rounded-lg">
                                 <PlusIcon className="rotate-45 text-error" />
                             </button>
                         </div>
                         <div className="divide-y-[1px] divide-[#E3E3E3] px-6 py-4">
                             {customRate.ratesInSlot.map((slotRate, slotIndex) => (
-                                <div
-                                    key={slotIndex}
-                                    className="custom-slotRate py-4 flex  items-baseline justify-between ">
+                                <div key={slotIndex} className="custom-slotRate py-4 flex  items-baseline justify-between ">
                                     <div className="timeSelector flex items-center w-fit">
                                         <div className="start-time flex py-2 px-4 items-center justify-center gap-3 w-full">
                                             <div className="border rounded border-mediumGray grid place-content-center">
@@ -272,12 +250,7 @@ function WorkspaceRates() {
                                                     className="text-xs 
 																						input text-mediumGray leading-[18px] h-5  mx-1 my-0.5 "
                                                     onChange={(event) =>
-                                                        handleCustomTimeChange(
-                                                            slotIndex,
-                                                            customRateIndex,
-                                                            "startTime",
-                                                            event.target.value
-                                                        )
+                                                        handleCustomTimeChange(slotIndex, customRateIndex, "startTime", event.target.value)
                                                     }
                                                     type="time"
                                                 />
@@ -296,12 +269,7 @@ function WorkspaceRates() {
 																						input
 																						text-mediumGray leading-[18px] h-5 mx-1  my-0.5"
                                                     onChange={(event) =>
-                                                        handleCustomTimeChange(
-                                                            slotIndex,
-                                                            customRateIndex,
-                                                            "endTime",
-                                                            event.target.value
-                                                        )
+                                                        handleCustomTimeChange(slotIndex, customRateIndex, "endTime", event.target.value)
                                                     }
                                                     type="time"
                                                     style={inputStyle}
@@ -320,23 +288,16 @@ function WorkspaceRates() {
                                                     placeholder="Rate"
                                                     type="number"
                                                     className="py-2 text-xl text-primary leading-6 text-center"
-                                                    onChange={(event) =>
-                                                        handleCustomRateChange(
-                                                            slotIndex,
-                                                            customRateIndex,
-                                                            event.target.value
-                                                        )
-                                                    }
+                                                    onChange={(event) => handleCustomRateChange(slotIndex, customRateIndex, event.target.value)}
                                                 />
                                             </div>
                                             <span className="">/ hr</span>
                                         </div>
 
                                         <button
-                                            onClick={() =>
-                                                handleDeleteCustomRateInSlot(customRateIndex, slotIndex)
-                                            }
-                                            className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                            onClick={() => handleDeleteCustomRateInSlot(customRateIndex, slotIndex)}
+                                            className="hover:bg-errorLight h-fit p-2 rounded-lg"
+                                        >
                                             <PlusIcon className="rotate-45 text-error" />
                                         </button>
                                     </div>
@@ -345,7 +306,8 @@ function WorkspaceRates() {
 
                             <button
                                 className="rounded-lg border border-borderColor gap-2 px-6 py-2 bg-primaryLight flex items-center"
-                                onClick={() => handleNewCustomRateInSlot(customRateIndex)}>
+                                onClick={() => handleNewCustomRateInSlot(customRateIndex)}
+                            >
                                 <span className="text-lg leading-normal">Add New Time</span>
                                 <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                             </button>

@@ -171,4 +171,60 @@ const EDIT_MEETING_ROOM = gql`
     }
 `;
 
-export { CREATE_MEETING_ROOM, GET_MEETING_ROOM, EDIT_MEETING_ROOM };
+const REMOVE_MEETING_ROOM = gql`
+    mutation RemoveMeetingRoom($input: MeetingRoomRemoval!) {
+        removeMeetingRoom(input: $input) {
+            _id
+            name
+            description
+            isArchived
+            branch {
+                _id
+                name
+                location
+            }
+            openDays {
+                day
+                startTime
+                endTime
+            }
+            customOpenHours {
+                startDate
+                endDate
+                startTime
+                endTime
+            }
+            slotsBooked {
+                date
+                slotsInDay {
+                    startTime
+                    endTime
+                    isBooked
+                    bookedBy
+                    ratePerHour
+                }
+            }
+            totalSeats
+            ratesPerHour
+            customRates {
+                startDate
+                endDate
+                rate
+            }
+            amenities {
+                name
+                picture
+                quantity
+                type
+            }
+            pictures
+        }
+    }
+`;
+
+export {
+    CREATE_MEETING_ROOM,
+    GET_MEETING_ROOM,
+    EDIT_MEETING_ROOM,
+    REMOVE_MEETING_ROOM,
+};
