@@ -11,21 +11,41 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import Loader from "../../components/Loader";
 import { useRecoilState } from "recoil";
 import { branchData } from "../../stores/branches";
+import React, { useEffect, useState } from "react";
+import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+    AlertDialogCloseButton,
+    useDisclosure,
+    Button,
+    useToast,
+} from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 function BranchDetail() {
     const { id } = useParams();
     const [branch, setBranchData] = useRecoilState(branchData);
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef();
+    const toast = useToast();
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
     let { loading, error, data } = useQuery(GET_BRANCH, {
         variables: { id },
     });
-    if (data) setBranchData(data.branch);
+    if (data) {
+        setBranchData(data.branch);
+    }
 
-    // useEffect(() => {
-    //     if (data) {
-    //         console.log("data", data.branch);
-    //     }
-    // }, [data]);
+    useEffect(() => {
+        if (data) {
+            console.log("data", data);
+        }
+    }, [data]);
 
     if (loading)
         return (
@@ -41,9 +61,52 @@ function BranchDetail() {
                 <Link
                     to={`/branches/${branch._id}/edit`}
                     state={branch}
-                    className="p-2 active:bg-primaryLight h-fit rounded-lg">
+                    className="p-2 active:bg-primaryLight h-fit rounded-lg"
+                >
                     <EditIcon className="text-primary" />
                 </Link>
+
+                {data?.branch?.meetingRooms?.filter(m => m.isArchived === false)?.length === 0 &&
+                    data?.branch?.workspaces?.filter(m => m.isArchived === false)?.length === 0 &&
+                    data?.branch?.nurseries?.length === 0 && (
+                        <Button
+                            className=" text-primaryLight"
+                            rightIcon={<DeleteIcon />}
+                            colorScheme="red"
+                            onClick={onOpen}
+                            isLoading={false}
+                        >
+                            <div className=" text-primaryLight">Delete Branch</div>
+                        </Button>
+                    )}
+
+                <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                Delete Branch
+                            </AlertDialogHeader>
+
+                            <AlertDialogBody>
+                                Are you sure? You can't undo this action afterwards.
+                            </AlertDialogBody>
+
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    colorScheme="red"
+                                    onClick={onclose}
+                                    ml={3}
+                                    isLoading={deleteLoading}
+                                >
+                                    Delete
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
             </div>
 
             <div className="body border  justify-start rounded-xl border-borderColor py-12 px-8 shadow-xl flex flex-col gap-12">
@@ -62,7 +125,8 @@ function BranchDetail() {
                             <Link
                                 to={`/meeting-rooms/new`}
                                 state={{ branch_id: branch._id }}
-                                className="flex justify-center items-center gap-2 p-3 rounded-xl bg-primary">
+                                className="flex justify-center items-center gap-2 p-3 rounded-xl bg-primary"
+                            >
                                 <PlusIcon className="h-6 w-6 text-white" />
                                 <span className="font-Adam mt-0.5 text-white font-medium text-xl leading-none">
                                     Add New
@@ -75,7 +139,8 @@ function BranchDetail() {
                                     <Link
                                         to={`/meeting-rooms/${meetingRoom._id}`}
                                         key={index}
-                                        className="rounded-xl h-fit border border-borderColor  min-w-[302px] overflow-hidden">
+                                        className="rounded-xl h-fit border border-borderColor  min-w-[302px] overflow-hidden"
+                                    >
                                         <div className="relative h-[134px] overflow-hidden ">
                                             <img
                                                 className="object-contain"
@@ -114,7 +179,8 @@ function BranchDetail() {
                             <Link
                                 to={`/workspaces/new`}
                                 state={{ branch_id: branch._id }}
-                                className="flex justify-center items-center gap-2 p-3 rounded-xl bg-primary">
+                                className="flex justify-center items-center gap-2 p-3 rounded-xl bg-primary"
+                            >
                                 <PlusIcon className="h-6 w-6 text-white" />
                                 <span className="font-Adam mt-0.5 text-white text-xl font-medium leading-none">
                                     Add New
@@ -127,7 +193,8 @@ function BranchDetail() {
                                     <Link
                                         to={`/workspaces/${workspace._id}`}
                                         key={index}
-                                        className="rounded-xl h-fit border border-borderColor  min-w-[302px] max-w-[302px]  overflow-hidden">
+                                        className="rounded-xl h-fit border border-borderColor  min-w-[302px] max-w-[302px]  overflow-hidden"
+                                    >
                                         <div className="relative h-[134px] overflow-hidden ">
                                             <img
                                                 className="object-contain"

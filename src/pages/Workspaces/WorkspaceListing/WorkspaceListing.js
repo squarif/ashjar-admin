@@ -18,7 +18,12 @@ function WorkspaceListing() {
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [branchData, setBranchData] = useState([]);
 
-    const { loading: branchesLoading, error: branchesError, data, refetch } = useQuery(GET_BRANCHES);
+    const {
+        loading: branchesLoading,
+        error: branchesError,
+        data,
+        refetch,
+    } = useQuery(GET_BRANCHES);
     useEffect(() => {
         if (!branchesLoading && !branchesError) {
             // Set the branches data
@@ -73,7 +78,8 @@ function WorkspaceListing() {
 
                 <Link
                     to="/workspaces/new"
-                    className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary">
+                    className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary"
+                >
                     <PlusIcon className="h-6 w-6 text-white" />
                     <span className="text-white text-xl leading-6">Add New</span>
                 </Link>
@@ -99,14 +105,19 @@ function WorkspaceListing() {
                                 !allBranchesFilter
                                     ? "rounded-xl h-fit bg-primary border"
                                     : "h-fit rounded-xl border "
-                            }>
+                            }
+                        >
                             <div className="flex px-4 w-[312px] py-3 items-center justify-between">
                                 {selectedBranch ? (
-                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
+                                    <span
+                                        className={!allBranchesFilter ? "text-white" : "text-dark"}
+                                    >
                                         {selectedBranch.name}
                                     </span>
                                 ) : (
-                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
+                                    <span
+                                        className={!allBranchesFilter ? "text-white" : "text-dark"}
+                                    >
                                         Select a branch
                                     </span>
                                 )}
@@ -123,7 +134,10 @@ function WorkspaceListing() {
                             {branchData.map((branch, index) => {
                                 // console.log("branch", branch);
                                 return (
-                                    <MenuItem key={index} onClick={() => handleSelectBranch(branch)}>
+                                    <MenuItem
+                                        key={index}
+                                        onClick={() => handleSelectBranch(branch)}
+                                    >
                                         {branch.name}
                                     </MenuItem>
                                 );
@@ -153,7 +167,8 @@ function WorkspaceListing() {
                             allBranchesFilter
                                 ? "rounded-xl bg-primary border h-fit"
                                 : "h-fit rounded-xl border "
-                        }>
+                        }
+                    >
                         <input
                             key={"quantity"}
                             type="radio"
@@ -162,7 +177,9 @@ function WorkspaceListing() {
                             checked={allBranchesFilter}
                             onChange={() => setAllBranchesFilter(true)}
                         />
-                        <span className="block text-lg leading-normal text-dark px-4 py-2.5">All</span>
+                        <span className="block text-lg leading-normal text-dark px-4 py-2.5">
+                            All
+                        </span>
                     </label>
                 </div>
 
@@ -171,70 +188,77 @@ function WorkspaceListing() {
                         {allBranchesFilter
                             ? branchData.map((branch) =>
                                   branch.workspaces.length
-                                      ? branch.workspaces.map((workspace) => (
-                                            <Link to={`/workspaces/${workspace._id}`}>
-                                                <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
-                                                    <div className="relative h-[134px] overflow-hidden ">
-                                                        <img
-                                                            className="object-contain"
-                                                            src={workspace.pictures[0]}
-                                                            alt="workspace"
-                                                        />
+                                      ? branch.workspaces
+                                            .filter?.((w) => w.isArchived === false)
+                                            ?.map((workspace) => (
+                                                <Link to={`/workspaces/${workspace._id}`}>
+                                                    <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
+                                                        <div className="relative h-[134px] overflow-hidden ">
+                                                            <img
+                                                                className="object-contain"
+                                                                src={workspace.pictures[0]}
+                                                                alt="workspace"
+                                                            />
 
-                                                        <div className="flex items-center justify-center bg-white h-[30px] w-fit px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
-                                                            <span className="text-dark text-xs text-center w-full">
-                                                                SAR {workspace.baseRates[0]?.rate} / period
+                                                            <div className="flex items-center justify-center bg-white h-[30px] w-fit px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                                <span className="text-dark text-xs text-center w-full">
+                                                                    SAR{" "}
+                                                                    {workspace.baseRates[0]?.rate} /
+                                                                    period
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="h-fit py-2.5 px-3 flex flex-col">
+                                                            <span className="w-fit text-lg text-dark">
+                                                                {workspace.name}
                                                             </span>
+                                                            <div className="w-fit">
+                                                                <span className="w-fit text-left text-sm text-light">
+                                                                    {workspace.totalSeats}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
-
-                                                    <div className="h-fit py-2.5 px-3 flex flex-col">
-                                                        <span className="w-fit text-lg text-dark">
-                                                            {workspace.name}
-                                                        </span>
-                                                        <div className="w-fit">
-                                                            <span className="w-fit text-left text-sm text-light">
-                                                                {workspace.totalSeats}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Link>
-                                        ))
+                                                </Link>
+                                            ))
                                       : ""
                               )
                             : selectedBranch
                             ? selectedBranch.workspaces.length
-                                ? selectedBranch.workspaces.map((workspace) => (
-                                      <Link to={`/workspaces/${workspace._id}`}>
-                                          <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
-                                              <div className="relative h-[134px] overflow-hidden ">
-                                                  <img
-                                                      className="object-contain"
-                                                      src={workspace.pictures[0]}
-                                                      alt="workspace"
-                                                  />
+                                ? selectedBranch.workspaces
+                                      .filter?.((w) => w.isArchived === false)
+                                      ?.map((workspace) => (
+                                          <Link to={`/workspaces/${workspace._id}`}>
+                                              <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
+                                                  <div className="relative h-[134px] overflow-hidden ">
+                                                      <img
+                                                          className="object-contain"
+                                                          src={workspace.pictures[0]}
+                                                          alt="workspace"
+                                                      />
 
-                                                  <div className="bg-white h-[30px] w-fit  px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
-                                                      <span className="text-dark text-xs">
-                                                          SAR {workspace.baseRates[0]?.rate} / period
+                                                      <div className="bg-white h-[30px] w-fit  px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                          <span className="text-dark text-xs">
+                                                              SAR {workspace.baseRates[0]?.rate} /
+                                                              period
+                                                          </span>
+                                                      </div>
+                                                  </div>
+
+                                                  <div className="h-fit py-2.5 px-3 flex flex-col">
+                                                      <span className="w-fit text-lg text-dark">
+                                                          {workspace.name}
                                                       </span>
+                                                      <div className="w-fit">
+                                                          <span className="w-fit text-left text-sm text-light">
+                                                              {workspace.totalSeats}
+                                                          </span>
+                                                      </div>
                                                   </div>
                                               </div>
-
-                                              <div className="h-fit py-2.5 px-3 flex flex-col">
-                                                  <span className="w-fit text-lg text-dark">
-                                                      {workspace.name}
-                                                  </span>
-                                                  <div className="w-fit">
-                                                      <span className="w-fit text-left text-sm text-light">
-                                                          {workspace.totalSeats}
-                                                      </span>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </Link>
-                                  ))
+                                          </Link>
+                                      ))
                                 : "No workspaces"
                             : "Select a branch"}
                     </div>

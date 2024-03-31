@@ -75,7 +75,8 @@ function MeetingRoomDetails() {
     }, [meetingRoomLoading, meetingRoomError, meetingRoomData, data]);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef();
-    const [removeMeetingRoom, { removeData, removalloading, remvalError }] = useMutation(REMOVE_MEETING_ROOM);
+    const [removeMeetingRoom, { removeData, removalloading, remvalError }] =
+        useMutation(REMOVE_MEETING_ROOM);
 
     const toast = useToast();
     const [deleteLoading, setDeleteLoading] = useState(false);
@@ -171,18 +172,28 @@ function MeetingRoomDetails() {
                                             onClick={onOpen}
                                             isLoading={false}
                                         >
-                                            <div className=" text-primaryLight">Delete Meeting Room</div>
+                                            <div className=" text-primaryLight">
+                                                Delete Meeting Room
+                                            </div>
                                         </Button>
 
-                                        <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                                        <AlertDialog
+                                            isOpen={isOpen}
+                                            leastDestructiveRef={cancelRef}
+                                            onClose={onClose}
+                                        >
                                             <AlertDialogOverlay>
                                                 <AlertDialogContent>
-                                                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                        Delete Workspace
+                                                    <AlertDialogHeader
+                                                        fontSize="lg"
+                                                        fontWeight="bold"
+                                                    >
+                                                        Delete Meeting Room
                                                     </AlertDialogHeader>
 
                                                     <AlertDialogBody>
-                                                        Are you sure? You can't undo this action afterwards.
+                                                        Are you sure? You can't undo this action
+                                                        afterwards.
                                                     </AlertDialogBody>
 
                                                     <AlertDialogFooter>
@@ -212,7 +223,9 @@ function MeetingRoomDetails() {
                             <div className="h-[1px] w-full border-t border-borderColor"></div>
 
                             <div className="body flex gap-8 flex-col">
-                                <div className="text-left text-mediumGray text-lg">{meetingRoomData?.description}</div>
+                                <div className="text-left text-mediumGray text-lg">
+                                    {meetingRoomData?.description}
+                                </div>
 
                                 <div className="h-[1px] w-full border-t border-borderColor"></div>
 
@@ -244,7 +257,12 @@ function MeetingRoomDetails() {
                                 <div className="text-left text-2xl">Location</div>
                                 <div className="h-[300px] w-full rounded-2xl overflow-hidden">
                                     {meetingRoomData?.branch && (
-                                        <Maps center={JSON.parse(meetingRoomData?.branch?.location)?.location} />
+                                        <Maps
+                                            center={
+                                                JSON.parse(meetingRoomData?.branch?.location)
+                                                    ?.location
+                                            }
+                                        />
                                     )}
                                 </div>
                             </div>
@@ -252,14 +270,18 @@ function MeetingRoomDetails() {
                         <div className="col-span-3 px-8 flex flex-col gap-12">
                             <div className=" flex flex-col gap-6 ">
                                 <div className="time-left flex gap-4 items-center justify-between  w-full py-3">
-                                    <span className=" text-xl leading-6 text-dark">Opening Timings</span>
+                                    <span className=" text-xl leading-6 text-dark">
+                                        Opening Timings
+                                    </span>
                                     <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
                                 </div>
                                 <div className="w-full h-[1px] border-t border-borderColor"></div>
                                 <div className="flex flex-col gap-4">
                                     {meetingRoomData?.openDays?.map((day, index) => (
                                         <div key={index} className="flex justify-between gap-5">
-                                            <span className="text-dark text-lg leading-normal">{day.day}</span>
+                                            <span className="text-dark text-lg leading-normal">
+                                                {day.day}
+                                            </span>
                                             <span className="text-dark text-lg leading-normal">
                                                 {day.startTime} - {day.endTime}
                                             </span>
@@ -270,7 +292,9 @@ function MeetingRoomDetails() {
 
                             <div className=" flex flex-col gap-6">
                                 <div className="time-left flex gap-4 items-center justify-between  w-full py-3">
-                                    <span className=" text-xl leading-6 text-dark">Opening Hours</span>
+                                    <span className=" text-xl leading-6 text-dark">
+                                        Opening Hours
+                                    </span>
                                     <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
                                 </div>
                                 <div className="w-full h-[1px] border-t border-borderColor"></div>

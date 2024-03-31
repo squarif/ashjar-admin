@@ -14,12 +14,14 @@ export const GET_BRANCH = gql`
                 totalSeats
                 ratesPerHour
                 pictures
+                isArchived
             }
             workspaces {
                 _id
                 name
                 totalSeats
                 pictures
+                isArchived
             }
             nurseries {
                 _id
@@ -39,6 +41,7 @@ export const GET_BRANCHES = gql`
                 totalSeats
                 pictures
                 ratesPerHour
+                isArchived
             }
             name
             workspaces {
@@ -49,6 +52,7 @@ export const GET_BRANCHES = gql`
                 baseRates {
                     rate
                 }
+                isArchived
             }
             _id
             nurseries {

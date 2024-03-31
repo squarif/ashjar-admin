@@ -3,7 +3,7 @@ import { ReactComponent as EditIcon } from "../../../assets/EditIcon.svg";
 
 import { useRecoilState } from "recoil";
 
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import {
     editWorkspaceRequest,
@@ -14,9 +14,9 @@ import {
     workspaceOpenDaysState,
     workspacePicturesState,
 } from "../../../stores/workspaceStore";
-import { useQuery } from "@apollo/client";
-import { GET_WORKSPACE } from "../../../queries/workspaceQueries";
-import React, { useEffect } from "react";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_WORKSPACE, REMOVE_WORKSPACE } from "../../../queries/workspaceQueries";
+import React, { useEffect, useState } from "react";
 import Loader from "../../../components/Loader";
 import Maps from "../../../components/Maps";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -31,6 +31,7 @@ import {
     AlertDialogCloseButton,
     useDisclosure,
     Button,
+    useToast,
 } from "@chakra-ui/react";
 
 function WorkspaceDetail() {
@@ -45,6 +46,8 @@ function WorkspaceDetail() {
     let [customOpenHours, setCustomOpenHours] = useRecoilState(workspaceCustomOpenHoursState);
     let [pictures, setPictures] = useRecoilState(workspacePicturesState);
     let [editworkspace, setEditWorkspacePayload] = useRecoilState(editWorkspaceRequest);
+    const [removeWorkSpace, {}] = useMutation(REMOVE_WORKSPACE);
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
     const {
         loading: workspaceLoading,
@@ -57,6 +60,39 @@ function WorkspaceDetail() {
     let workspaceData = data?.WorkSpace;
 
     console.log("workspaceData", workspaceData);
+    const toast = useToast();
+    const navigate = useNavigate();
+
+    async function deleteWorkspace() {
+        try {
+            setDeleteLoading(true);
+            console.log({
+                removeId: id,
+            });
+            const { data } = await removeWorkSpace({
+                mutation: REMOVE_WORKSPACE,
+                variables: {
+                    input: { _id: id },
+                },
+                // client: client,
+            });
+
+            setDeleteLoading(false);
+            toast({
+                title: "Worskpace Deleted!",
+                status: "success",
+            });
+
+            navigate("/branches");
+        } catch (error) {
+            console.log({ error });
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
+        }
+    }
 
     useEffect(() => {
         if (!workspaceLoading && !workspaceError) {
@@ -120,31 +156,53 @@ function WorkspaceDetail() {
                 <div className="header flex flex-col gap-8">
                     <div className="flex justify-between items-center">
                         <div className="flex gap-5 items-center">
-                            <span className="py-4 text-[32px] leading-normal text-dark">{workspaceData.name}</span>
+                            <span className="py-4 text-[32px] leading-normal text-dark">
+                                {workspaceData.name}
+                            </span>
 
-                            <span className="py-4 text-[24px] text leading-normal text-dark">{workspaceData.totalSeats}</span>
+                            <span className="py-4 text-[24px] text leading-normal text-dark">
+                                {workspaceData.totalSeats}
+                            </span>
 
-                            <Link to={`/workspaces/${workspaceData._id}/edit`} className="edit-button text-primary">
+                            <Link
+                                to={`/workspaces/${workspaceData._id}/edit`}
+                                className="edit-button text-primary"
+                            >
                                 <EditIcon className="text-primary" />
                             </Link>
-                            <Button className=" text-primaryLight" colorScheme="red" onClick={onOpen}>
+                            <Button
+                                className=" text-primaryLight"
+                                colorScheme="red"
+                                onClick={onOpen}
+                            >
                                 Delete Workspace
                             </Button>
 
-                            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                            <AlertDialog
+                                isOpen={isOpen}
+                                leastDestructiveRef={cancelRef}
+                                onClose={onClose}
+                            >
                                 <AlertDialogOverlay>
                                     <AlertDialogContent>
                                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
                                             Delete Workspace
                                         </AlertDialogHeader>
 
-                                        <AlertDialogBody>Are you sure? You can't undo this action afterwards.</AlertDialogBody>
+                                        <AlertDialogBody>
+                                            Are you sure? You can't undo this action afterwards.
+                                        </AlertDialogBody>
 
                                         <AlertDialogFooter>
                                             <Button ref={cancelRef} onClick={onClose}>
                                                 Cancel
                                             </Button>
-                                            <Button colorScheme="red" onClick={onClose} ml={3}>
+                                            <Button
+                                                colorScheme="red"
+                                                onClick={deleteWorkspace}
+                                                isLoading={deleteLoading}
+                                                ml={3}
+                                            >
                                                 Delete
                                             </Button>
                                         </AlertDialogFooter>
@@ -158,7 +216,9 @@ function WorkspaceDetail() {
                 <div className="h-[1px] w-full border-t border-borderColor"></div>
 
                 <div className="body flex gap-8 flex-col">
-                    <div className="text-left text-mediumGray text-lg">{workspaceData.description}</div>
+                    <div className="text-left text-mediumGray text-lg">
+                        {workspaceData.description}
+                    </div>
 
                     <div className="h-[1px] w-full border-t border-borderColor"></div>
 
@@ -167,8 +227,16 @@ function WorkspaceDetail() {
                     <div className="flex gap-12 items-center">
                         {workspaceData.amenities.map((amenity) => (
                             <div className="flex items-center gap-2">
-                                <img className="object-cover" height="24" width="24" alt="" src={amenity.picture} />
-                                <span className="capitalize text-sm text-dark font-normal leading-6">{amenity.name}</span>
+                                <img
+                                    className="object-cover"
+                                    height="24"
+                                    width="24"
+                                    alt=""
+                                    src={amenity.picture}
+                                />
+                                <span className="capitalize text-sm text-dark font-normal leading-6">
+                                    {amenity.name}
+                                </span>
                             </div>
                         ))}
                     </div>
@@ -195,7 +263,9 @@ function WorkspaceDetail() {
                                 <span className="text-mediumGray text-lg leading-normal">
                                     {rate.startTime} - {rate.endTime}
                                 </span>
-                                <span className="text-mediumGray text-lg leading-normal">SAR {rate.rate}</span>
+                                <span className="text-mediumGray text-lg leading-normal">
+                                    SAR {rate.rate}
+                                </span>
                             </div>
                         ))}
                     </div>
@@ -219,7 +289,9 @@ function WorkspaceDetail() {
                                                 <span className="text-mediumGray text-lg leading-normal">
                                                     {rate.startTime} - {rate.endTime}
                                                 </span>
-                                                <span className="text-mediumGray text-lg leading-normal">SAR {rate.rate}</span>
+                                                <span className="text-mediumGray text-lg leading-normal">
+                                                    SAR {rate.rate}
+                                                </span>
                                             </div>
                                         ))}
                                     </div>
@@ -231,14 +303,18 @@ function WorkspaceDetail() {
                     <div className="flex flex-col gap-12">
                         <div className="flex flex-col gap-6">
                             <div className="time-left flex gap-4 items-center justify-between  w-full">
-                                <span className=" text-xl leading-6 text-dark">Opening Timings</span>
+                                <span className=" text-xl leading-6 text-dark">
+                                    Opening Timings
+                                </span>
                                 <ClockIcon className="h-6 w-6 text-mediumGray font-normal" />
                             </div>
                             <div className="w-full h-[1px] border-t border-borderColor"></div>
                             <div className="flex flex-col gap-4">
                                 {workspaceData.openDays.map((day, index) => (
                                     <div key={index} className="flex justify-between">
-                                        <span className="text-mediumGray text-lg leading-normal">{day.day}</span>
+                                        <span className="text-mediumGray text-lg leading-normal">
+                                            {day.day}
+                                        </span>
                                         <span className="text-mediumGray text-lg leading-normal">
                                             {day.startTime} - {day.endTime}
                                         </span>

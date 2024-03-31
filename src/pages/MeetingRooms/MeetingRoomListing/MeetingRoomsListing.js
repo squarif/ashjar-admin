@@ -92,7 +92,8 @@ function MeetingRoomListing() {
 
                 <Link
                     to="/meeting-rooms/new"
-                    className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary">
+                    className="flex h-fit justify-center items-center gap-2 p-3 rounded-xl bg-primary"
+                >
                     <PlusIcon className="h-6 w-6 text-white" />
                     <span className="text-white text-xl leading-6">Add New</span>
                 </Link>
@@ -118,14 +119,19 @@ function MeetingRoomListing() {
                                 !allBranchesFilter
                                     ? "rounded-xl h-fit bg-primary border"
                                     : "h-fit rounded-xl border "
-                            }>
+                            }
+                        >
                             <div className="flex px-4 w-[312px] py-3 items-center justify-between">
                                 {selectedBranch ? (
-                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
+                                    <span
+                                        className={!allBranchesFilter ? "text-white" : "text-dark"}
+                                    >
                                         {selectedBranch.name}
                                     </span>
                                 ) : (
-                                    <span className={!allBranchesFilter ? "text-white" : "text-dark"}>
+                                    <span
+                                        className={!allBranchesFilter ? "text-white" : "text-dark"}
+                                    >
                                         Select a branch
                                     </span>
                                 )}
@@ -171,7 +177,8 @@ function MeetingRoomListing() {
                             allBranchesFilter
                                 ? "rounded-xl bg-primary border h-fit"
                                 : "h-fit rounded-xl border "
-                        }>
+                        }
+                    >
                         <input
                             key={"quantity"}
                             type="radio"
@@ -180,7 +187,9 @@ function MeetingRoomListing() {
                             checked={allBranchesFilter}
                             onChange={() => setAllBranchesFilter(true)}
                         />
-                        <span className="block text-lg leading-normal text-dark px-4 py-2.5">All</span>
+                        <span className="block text-lg leading-normal text-dark px-4 py-2.5">
+                            All
+                        </span>
                     </label>
                 </div>
 
@@ -189,70 +198,76 @@ function MeetingRoomListing() {
                         {allBranchesFilter
                             ? branchData.map((branch) =>
                                   branch.workspaces.length
-                                      ? paginatedList(branch.meetingRooms).map((meetingRoom) => (
-                                            <Link to={`/meeting-rooms/${meetingRoom._id}`}>
-                                                <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
-                                                    <div className="relative h-[134px] overflow-hidden ">
-                                                        <img
-                                                            className="object-contain"
-                                                            src={meetingRoom.pictures[0]}
-                                                            alt="meeting room"
-                                                        />
+                                      ? paginatedList(branch.meetingRooms)
+                                            ?.filter((m) => m.isArchived === false)
+                                            ?.map((meetingRoom) => (
+                                                <Link to={`/meeting-rooms/${meetingRoom._id}`}>
+                                                    <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
+                                                        <div className="relative h-[134px] overflow-hidden ">
+                                                            <img
+                                                                className="object-contain"
+                                                                src={meetingRoom.pictures[0]}
+                                                                alt="meeting room"
+                                                            />
 
-                                                        <div className="flex items-center justify-center bg-white h-[30px] w-fit px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
-                                                            <span className="text-dark text-xs">
-                                                                SAR {meetingRoom.ratesPerHour} / period
+                                                            <div className="flex items-center justify-center bg-white h-[30px] w-fit px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                                <span className="text-dark text-xs">
+                                                                    SAR {meetingRoom.ratesPerHour} /
+                                                                    period
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="h-fit py-2.5 px-3 flex flex-col">
+                                                            <span className="w-fit text-lg text-dark">
+                                                                {meetingRoom.name}
                                                             </span>
+                                                            <div className="w-fit">
+                                                                <span className="w-fit text-left text-sm text-light">
+                                                                    {meetingRoom.totalSeats}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
-
-                                                    <div className="h-fit py-2.5 px-3 flex flex-col">
-                                                        <span className="w-fit text-lg text-dark">
-                                                            {meetingRoom.name}
-                                                        </span>
-                                                        <div className="w-fit">
-                                                            <span className="w-fit text-left text-sm text-light">
-                                                                {meetingRoom.totalSeats}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Link>
-                                        ))
+                                                </Link>
+                                            ))
                                       : ""
                               )
                             : selectedBranch
                             ? paginatedList(selectedBranch.meetingRooms)?.length
-                                ? selectedBranch.meetingRooms.map((meetingRoom) => (
-                                      <Link to={`/meeting-rooms/${meetingRoom._id}`}>
-                                          <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
-                                              <div className="relative h-[134px] overflow-hidden ">
-                                                  <img
-                                                      className="object-contain"
-                                                      src={meetingRoom.pictures[0]}
-                                                      alt="meeting room"
-                                                  />
+                                ? selectedBranch.meetingRooms
+                                      ?.filter((m) => m.isArchived === false)
+                                      .map((meetingRoom) => (
+                                          <Link to={`/meeting-rooms/${meetingRoom._id}`}>
+                                              <div className="rounded-xl h-fit border border-borderColor  w-[278px] overflow-hidden">
+                                                  <div className="relative h-[134px] overflow-hidden ">
+                                                      <img
+                                                          className="object-contain"
+                                                          src={meetingRoom.pictures[0]}
+                                                          alt="meeting room"
+                                                      />
 
-                                                  <div className="flex items-center justify-center  bg-white h-[30px] w-fit px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
-                                                      <span className="text-dark text-xs">
-                                                          SAR {meetingRoom.ratesPerHour} / period
+                                                      <div className="flex items-center justify-center  bg-white h-[30px] w-fit px-4 absolute bottom-1.5 left-1.5 rounded-xl backdrop-blur-[2px] bg-opacity-50">
+                                                          <span className="text-dark text-xs">
+                                                              SAR {meetingRoom.ratesPerHour} /
+                                                              period
+                                                          </span>
+                                                      </div>
+                                                  </div>
+
+                                                  <div className="h-fit py-2.5 px-3 flex flex-col">
+                                                      <span className="w-fit text-lg text-dark">
+                                                          {meetingRoom.name}
                                                       </span>
+                                                      <div className="w-fit">
+                                                          <span className="w-fit text-left text-sm text-light">
+                                                              {meetingRoom.totalSeats}
+                                                          </span>
+                                                      </div>
                                                   </div>
                                               </div>
-
-                                              <div className="h-fit py-2.5 px-3 flex flex-col">
-                                                  <span className="w-fit text-lg text-dark">
-                                                      {meetingRoom.name}
-                                                  </span>
-                                                  <div className="w-fit">
-                                                      <span className="w-fit text-left text-sm text-light">
-                                                          {meetingRoom.totalSeats}
-                                                      </span>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </Link>
-                                  ))
+                                          </Link>
+                                      ))
                                 : "No Meeting Rooms"
                             : "Select a branch"}
                     </div>
