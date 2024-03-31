@@ -227,7 +227,7 @@ function WorkshopDetails() {
                                     src={amenity.picture}
                                 />
                                 <span className="capitalize text-sm text-dark font-normal leading-6">
-                                    {amenity}
+                                    {amenity.name}
                                 </span>
                             </div>
                         ))}

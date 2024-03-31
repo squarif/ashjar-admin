@@ -202,51 +202,59 @@ function WorkshopCreatePost() {
                 </div>
             </div>
 
-            <div className="z-[2] location border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
-                <div className="text-left text-2xl">Location</div>
+            {requestPayload.approvalStatus !== "approved" ? (
+                <div className="z-[2] location border rounded-2xl border-light px-8 py-12 flex flex-col gap-6">
+                    <div className="text-left text-2xl">Location</div>
 
-                <div className="rounded-xl border  w-fit  flex justify-start">
-                    <Menu autoSelect={false} closeOnBlur>
-                        <MenuButton as="button" className="h-fit rounded-xl border ">
-                            <div className="flex px-4 w-[312px] py-3 items-center justify-between">
-                                {selectedBranch.name ? (
-                                    <span className="text-dark">{selectedBranch.name}</span>
-                                ) : (
-                                    <span className="text-dark">Select a branch</span>
-                                )}
+                    <div className="rounded-xl border  w-fit  flex justify-start">
+                        <Menu autoSelect={false} closeOnBlur>
+                            <MenuButton as="button" className="h-fit rounded-xl border ">
+                                <div className="flex px-4 w-[312px] py-3 items-center justify-between">
+                                    {selectedBranch.name ? (
+                                        <span className="text-dark">{selectedBranch.name}</span>
+                                    ) : (
+                                        <span className="text-dark">Select a branch</span>
+                                    )}
 
-                                <ChevronRight className="rotate-90 h-5 text-dark " />
-                            </div>
-                        </MenuButton>
-                        <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
-                            {branchData.map((branch, index) => {
-                                return (
-                                    <MenuItem key={index} onClick={() => setSelectedBranch(branch)}>
-                                        {branch.name}
-                                    </MenuItem>
-                                );
-                            })}
-                        </MenuList>
-                    </Menu>
-                </div>
-            </div>
-
-            <div className="timings relative flex flex-col justify-between border rounded-2xl border-light px-8 py-12 gap-6">
-                <div className="text-left text-2xl">Timings</div>
-
-                {!selectedBranch.name ? (
-                    <div className="z-[1] absolute top-0 bottom-0 right-0 left-0 flex justify-center items-center backdrop-blur-md">
-                        Please select a branch first
+                                    <ChevronRight className="rotate-90 h-5 text-dark " />
+                                </div>
+                            </MenuButton>
+                            <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
+                                {branchData.map((branch, index) => {
+                                    return (
+                                        <MenuItem key={index} onClick={() => setSelectedBranch(branch)}>
+                                            {branch.name}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </MenuList>
+                        </Menu>
                     </div>
-                ) : (
-                    ""
-                )}
-                <DatePicker />
-                {/* <div className="border-r border-borderColor w-[1px] h-full"></div> */}
-                {/* <div className="">
+                </div>
+            ) : (
+                ""
+            )}
+
+            {requestPayload.approvalStatus !== "approved" ? (
+                <div className="timings relative flex flex-col justify-between border rounded-2xl border-light px-8 py-12 gap-6">
+                    <div className="text-left text-2xl">Timings</div>
+
+                    {!selectedBranch.name ? (
+                        <div className="z-[1] absolute top-0 bottom-0 right-0 left-0 flex justify-center items-center backdrop-blur-md">
+                            Please select a branch first
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                    <DatePicker />
+                    {/* <div className="border-r border-borderColor w-[1px] h-full"></div> */}
+                    {/* <div className="">
                     <div className="text-left text-2xl">Branches</div>
                 </div> */}
-            </div>
+                </div>
+            ) : (
+                ""
+            )}
 
             <div className="amenities border rounded-2xl border-light px-8 py-12 ">
                 <Amenities state={workshopAmenities} />
@@ -261,17 +269,27 @@ function WorkshopCreatePost() {
                     <span className="text-mediumGray text-xl leading-none">Cancel </span>
                     <PlusIcon className="text-error rotate-45" />
                 </button>
-                <button
-                    className="py-2 px-3 bg-primaryLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
-                    onClick={() => handleUpdateRequest()}>
-                    <span className="text-mediumGray text-xl">Save as Draft </span>
-                </button>
-                <button
-                    className="py-2 px-3 bg-primary flex justify-center items-center gap-2 flex-row rounded-xl"
-                    onClick={() => handleUpdateRequest(true)}>
-                    <span className="text-white text-xl leading-none">Create Post </span>
-                    <PlusIcon className="text-white" />
-                </button>
+                {requestPayload.approvalStatus === "approved" ? (
+                    <button
+                        className="py-2 px-3 bg-primaryLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
+                        onClick={() => handleUpdateRequest()}>
+                        <span className="text-mediumGray text-xl">Update Post</span>
+                    </button>
+                ) : (
+                    <div className="buttons flex gap-6 w-full justify-end">
+                        <button
+                            className="py-2 px-3 bg-primaryLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
+                            onClick={() => handleUpdateRequest()}>
+                            <span className="text-mediumGray text-xl">Save as Draft </span>
+                        </button>
+                        <button
+                            className="py-2 px-3 bg-primary flex justify-center items-center gap-2 flex-row rounded-xl"
+                            onClick={() => handleUpdateRequest(true)}>
+                            <span className="text-white text-xl leading-none">Create Post </span>
+                            <PlusIcon className="text-white" />
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
