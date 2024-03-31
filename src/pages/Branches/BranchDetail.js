@@ -1,11 +1,11 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ReactComponent as PlusIcon } from "../../assets/PlusIcon.svg";
 import { ReactComponent as EditIcon } from "../../assets/EditIcon.svg";
 import { ReactComponent as MapsIcon } from "../../assets/MapsIcon.svg";
 import { ReactComponent as EyeIcon } from "../../assets/EyeIcon.svg";
 import { ReactComponent as UserIcon } from "../../assets/UserIcon.svg";
-import { GET_BRANCH } from "../../queries/branchesQueries";
-import { useQuery } from "@apollo/client";
+import { GET_BRANCH, REMOVE_BRANCH } from "../../queries/branchesQueries";
+import { useMutation, useQuery } from "@apollo/client";
 
 import Breadcrumbs from "../../components/Breadcrumbs";
 import Loader from "../../components/Loader";
@@ -33,6 +33,36 @@ function BranchDetail() {
     const cancelRef = React.useRef();
     const toast = useToast();
     const [deleteLoading, setDeleteLoading] = useState(false);
+    const [removeBranch, {}] = useMutation(REMOVE_BRANCH);
+    const navigate = useNavigate();
+
+    async function deleteBranch() {
+        try {
+            setDeleteLoading(true);
+            const { data } = await removeBranch({
+                mutation: REMOVE_BRANCH,
+                variables: {
+                    input: { _id: id },
+                },
+                // client: client,
+            });
+
+            setDeleteLoading(false);
+            toast({
+                title: "Branch Deleted!",
+                status: "success",
+            });
+
+            navigate("/branches");
+        } catch (error) {
+            console.log({ error });
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+            });
+        }
+    }
 
     let { loading, error, data } = useQuery(GET_BRANCH, {
         variables: { id },
@@ -97,7 +127,7 @@ function BranchDetail() {
                                 </Button>
                                 <Button
                                     colorScheme="red"
-                                    onClick={onclose}
+                                    onClick={deleteBranch}
                                     ml={3}
                                     isLoading={deleteLoading}
                                 >

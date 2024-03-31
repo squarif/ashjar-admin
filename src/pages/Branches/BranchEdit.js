@@ -51,7 +51,7 @@ function BranchEdit() {
                     input: payload,
                 },
             })
-                .then((data) => {
+                .then(data => {
                     let newBranches = [...branches, data.data.updateBranch];
 
                     setBranches(newBranches);
@@ -77,13 +77,13 @@ function BranchEdit() {
 
     const { isLoaded } = useJsApiLoader({
         id: "google-map-script",
-        googleMapsApiKey: "AIzaSyBWRimC90Mj6kSABtRjLPtbBQylm_XszkM",
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries: MAP_LIBRARIES,
     });
 
     const mapsRef = useRef(null);
 
-    const onSearchBoxLoad = (ref) => {
+    const onSearchBoxLoad = ref => {
         if (mapsRef.current) {
             mapsRef.current.onSearchBoxLoad(ref);
         } else {
@@ -99,7 +99,7 @@ function BranchEdit() {
         }
     };
 
-    const onSetLocation = (value) => {
+    const onSetLocation = value => {
         console.log("onSetLocation", value);
         setLocation(value);
         setLocationName(value.name);
@@ -116,14 +116,15 @@ function BranchEdit() {
                             value={branchName}
                             placeholder="Enter branch name"
                             className="py-6  text-dark text-[24px] leading-none"
-                            onChange={(event) => setBranchName(event.target.value)}
+                            onChange={event => setBranchName(event.target.value)}
                             variant="unstyled"
                         />
                     </div>
 
                     <button
                         onClick={handleUpdateBranch}
-                        className="flex justify-center items-center gap-2 py-5 px-6 rounded-xl bg-primary">
+                        className="flex justify-center items-center gap-2 py-5 px-6 rounded-xl bg-primary"
+                    >
                         {loading ? (
                             <Spinner color="white" className="" />
                         ) : (
@@ -138,7 +139,8 @@ function BranchEdit() {
                         {isLoaded && (
                             <StandaloneSearchBox
                                 onLoad={onSearchBoxLoad}
-                                onPlacesChanged={callOnPlacesChanged}>
+                                onPlacesChanged={callOnPlacesChanged}
+                            >
                                 <div className="border rounded-xl w-[430px] border-light px-4">
                                     <Input
                                         className="py-6  text-light text-[24px] leading-none"
@@ -146,7 +148,7 @@ function BranchEdit() {
                                         variant="unstyled"
                                         type="text"
                                         value={locationName}
-                                        onChange={(event) => setLocationName(event.target.value)}
+                                        onChange={event => setLocationName(event.target.value)}
                                     />
                                 </div>
                             </StandaloneSearchBox>
@@ -157,7 +159,7 @@ function BranchEdit() {
                                 value={branchAddress}
                                 placeholder="Enter branch address"
                                 className="py-5 text-dark text-[24px] leading-none"
-                                onChange={(event) => setbranchAddress(event.target.value)}
+                                onChange={event => setbranchAddress(event.target.value)}
                                 variant="unstyled"
                             />
                         </div>
@@ -167,7 +169,7 @@ function BranchEdit() {
                         <Maps
                             ref={mapsRef}
                             center={JSON.parse(state.location).location}
-                            onSetLocation={(location) => onSetLocation(location)}
+                            onSetLocation={location => onSetLocation(location)}
                         />
                     </div>
                 </div>

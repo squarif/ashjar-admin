@@ -9,7 +9,7 @@ const Maps = forwardRef((props, ref) => {
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [center, setCenter] = useState(props.center);
 
-    const onLoad = (map) => {
+    const onLoad = map => {
         setMap(map);
     };
 
@@ -18,7 +18,7 @@ const Maps = forwardRef((props, ref) => {
         onSearchBoxLoad: onSearchBoxLoad,
     }));
 
-    const onSearchBoxLoad = (ref) => {
+    const onSearchBoxLoad = ref => {
         setSearchBox(ref);
     };
 
@@ -49,7 +49,7 @@ const Maps = forwardRef((props, ref) => {
         }
     };
 
-    const onMapClick = (event) => {
+    const onMapClick = event => {
         if (props.onSetLocation) {
             const clickedLocation = {
                 lat: event.latLng.lat(),
@@ -70,7 +70,7 @@ const Maps = forwardRef((props, ref) => {
 
     const { isLoaded } = useJsApiLoader({
         id: "google-map-script",
-        googleMapsApiKey: "AIzaSyBWRimC90Mj6kSABtRjLPtbBQylm_XszkM",
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries: MAP_LIBRARIES,
     });
     // <LoadScript googleMapsApiKey="" libraries={[""]}>
@@ -86,9 +86,13 @@ const Maps = forwardRef((props, ref) => {
                 center={center}
                 options={{ streetViewControl: false }}
                 onLoad={onLoad}
-                onClick={onMapClick}>
+                onClick={onMapClick}
+            >
                 {selectedPlace && (
-                    <Marker position={selectedPlace.location} onClick={() => setSelectedPlace(null)}></Marker>
+                    <Marker
+                        position={selectedPlace.location}
+                        onClick={() => setSelectedPlace(null)}
+                    ></Marker>
                 )}
             </GoogleMap>
         )

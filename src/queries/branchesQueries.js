@@ -76,6 +76,14 @@ export const CREATE_BRANCH = gql`
     }
 `;
 
+export const REMOVE_BRANCH = gql`
+    mutation RemoveBranch($input: removeMeetingRoomInput) {
+        removeBranch(input: $input) {
+            _id
+        }
+    }
+`;
+
 export const UPDATE_BRANCH = gql`
     mutation Mutation($input: BranchUpdateInput!) {
         updateBranch(input: $input) {
