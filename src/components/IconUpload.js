@@ -68,14 +68,18 @@ function PicturesUpload({ propIcon, setPropIcon }) {
     };
 
     const handleOpenFileDialog = () => {
-        document.getElementById("fileInput").click();
+        let iconFileInput = document.getElementById("iconFileInput");
+
+        console.log("iconFileInput", iconFileInput);
+
+        iconFileInput.click();
     };
 
     return (
         <div>
             <input
                 type="file"
-                id="fileInput"
+                id="iconFileInput"
                 style={{ display: "none" }}
                 multiple
                 onChange={handleFileChange}

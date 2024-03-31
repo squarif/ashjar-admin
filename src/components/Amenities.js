@@ -24,7 +24,7 @@ function Amenity({ amenity, index, state }) {
     //     iconName: "images",
     // });
 
-    const [icon, setIcon] = useState("");
+    const [icon, setIcon] = useState(amenity.picture);
     const [picture, setPicture] = useState();
 
     useEffect(() => {
@@ -147,13 +147,17 @@ function Amenity({ amenity, index, state }) {
                     value={icon.iconName}
                     onChange={(icon) => handleAmenityIcon(index, icon)}
                 /> */}
-                {icon.length ? (
+
+                {amenity.picture.length ? (
                     <div className="flex gap-2 py-3 px-4">
                         <img className="object-cover" height="24" width="24" alt="" src={icon} />
                         <span className="text-mediumGray text-base ">Uploaded</span>
                     </div>
                 ) : (
-                    <IconUpload propIcon={icon} setPropIcon={(icon) => handleAmenityIcon(index, icon)} />
+                    <IconUpload
+                        propIcon={amenity.picture}
+                        setPropIcon={(icon) => handleAmenityIcon(index, icon)}
+                    />
                 )}
             </div>
 
