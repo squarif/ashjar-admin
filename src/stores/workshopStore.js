@@ -28,16 +28,19 @@ export const totalBookingsSelector = selector({
     get: ({ get }) => {
         const bookings = get(workshopBookingsPayload); // Replace 'bookingsAtom' with your atom holding the bookings array
 
-        console.log(bookings);
+        console.log({ bookings });
 
         const totalSeats = bookings.reduce((total, booking) => {
-            const nurserySeats = booking.nurseryBookings.reduce((nurseryTotal, nursery) => {
-                return nurseryTotal + nursery.seats;
+            const nurserySeats = booking?.nurseryBookings?.reduce((nurseryTotal, nursery) => {
+                return nurseryTotal + nursery?.seats || 0;
             }, 0);
 
-            const workspaceSeats = booking.workspaceBookings.reduce((workspaceTotal, workspace) => {
-                return workspaceTotal + workspace.seats;
-            }, 0);
+            const workspaceSeats = booking?.workspaceBookings?.reduce(
+                (workspaceTotal, workspace) => {
+                    return workspaceTotal + workspace?.seats || 0;
+                },
+                0
+            );
 
             return total + nurserySeats + workspaceSeats;
         }, 0);

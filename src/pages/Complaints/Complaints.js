@@ -50,7 +50,7 @@ function Complaints() {
         let complaint = complaintsList[selectedComplaint];
 
         let payload = {
-            _id: complaint._id,
+            _id: complaint?._id,
             complaintStatus: status,
         };
 
@@ -118,14 +118,17 @@ function Complaints() {
             <button
                 key={index}
                 onClick={() => selectComplaint(index)}
-                className="flex p-6 w-full justify-between items-center">
+                className="flex p-6 w-full justify-between items-center"
+            >
                 <div className="flex flex-col justify-start gap-4">
                     <div className="flex gap-6 items-center">
-                        <div className="text-base text-dark leading-5">R-{complaint.complaintNumber}</div>
-                        {statusBadge(complaint.complaintStatus)}
+                        <div className="text-base text-dark leading-5">
+                            R-{complaint?.complaintNumber}
+                        </div>
+                        {statusBadge(complaint?.complaintStatus)}
                     </div>
                     <div className="text-left text-xs text-light">
-                        Complaint for pottery class from user {complaint.userDetail.email}
+                        Complaint for pottery class from user {complaint?.userDetail?.email}
                     </div>
                 </div>
 
@@ -139,18 +142,20 @@ function Complaints() {
             return <div>No Complaint Selected</div>;
         } else {
             let complaint = complaintsList[selectedComplaint];
-            setPictures(complaint.pictures);
+            setPictures(complaint?.pictures);
 
             return (
                 <div className="grid grid-cols-6 gap-2.5 h-full">
                     <div className="flex col-span-4 flex-col justify-between ">
                         <div className="complaintBody flex flex-col gap-8">
                             <div className="header flex gap-6 items-baseline">
-                                <span className="text-dark text-2xl">{complaint.complaintTitle}</span>
-                                {statusBadge(complaint.complaintStatus)}
+                                <span className="text-dark text-2xl">
+                                    {complaint?.complaintTitle}
+                                </span>
+                                {statusBadge(complaint?.complaintStatus)}
                             </div>
                             <span className="description text-left text-base text-mediumGray">
-                                {complaint.complaintDescription}
+                                {complaint?.complaintDescription}
                             </span>
 
                             {pictures?.length ? (
@@ -161,17 +166,21 @@ function Complaints() {
                         </div>
                         <div className="complaintActions mt-6 flex w-full justify-end gap-6">
                             <button
-                                disabled={complaint.complaintStatus === "rejected"}
+                                disabled={complaint?.complaintStatus === "rejected"}
                                 onClick={() => handleUpdateComplaint("rejected")}
-                                className="disabled:opacity-75 py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-errorLight shadow-md">
+                                className="disabled:opacity-75 py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-errorLight shadow-md"
+                            >
                                 <span className="text-sm font-medium text-mediumGray">Reject</span>
                                 <CloseIcon className="h-4 w-4 text-error" />
                             </button>
                             <button
-                                disabled={complaint.complaintStatus === "resolved"}
+                                disabled={complaint?.complaintStatus === "resolved"}
                                 onClick={() => handleUpdateComplaint("resolved")}
-                                className="disabled:opacity-75 py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-primaryLight shadow-md">
-                                <span className="text-sm font-medium text-mediumGray">Mark as Resolved</span>
+                                className="disabled:opacity-75 py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-primaryLight shadow-md"
+                            >
+                                <span className="text-sm font-medium text-mediumGray">
+                                    Mark as Resolved
+                                </span>
                                 <TickIcon className="h-4 w-4" />
                             </button>
                         </div>
@@ -179,19 +188,19 @@ function Complaints() {
                     <div className="flex flex-col col-span-2 my-6 p-6 gap-6">
                         <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Name</div>
-                            <div className="">{complaint.userDetail.name}</div>
+                            <div className="">{complaint?.userDetail?.name}</div>
                         </div>
                         <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Email</div>
-                            <div className="">{complaint.userDetail.email}</div>
+                            <div className="">{complaint?.userDetail?.email}</div>
                         </div>
                         <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Phone</div>
-                            <div className="">{complaint.userDetail.phoneNumber}</div>
+                            <div className="">{complaint?.userDetail?.phoneNumber}</div>
                         </div>
                         {/* <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Company</div>
-                            <div className="">{complaint.userDetail.company}</div>
+                            <div className="">{complaint?.userDetail.company}</div>
                         </div> */}
                     </div>
                 </div>
@@ -217,7 +226,7 @@ function Complaints() {
                             value={searchQuery}
                             placeholder="Search"
                             className=" py-3 px-6 w-[430px] "
-                            onChange={(event) => setSearchQuery(event.target.value)}
+                            onChange={event => setSearchQuery(event.target.value)}
                         />
 
                         <div className="Filter"></div>

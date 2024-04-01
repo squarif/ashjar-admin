@@ -108,6 +108,7 @@ function WorkshopCreatePost() {
                 description: "Please select bookings first",
                 status: "error",
             });
+            return;
         }
         if (parseInt(requestPayload.seats) >= totalBookings) {
             try {
@@ -179,8 +180,11 @@ function WorkshopCreatePost() {
                         value={requestPayload.name}
                         placeholder="Enter workshop name"
                         className="py-4 "
-                        onChange={(event) =>
-                            setWorkShopRequestPayload({ ...requestPayload, name: event.target.value })
+                        onChange={event =>
+                            setWorkShopRequestPayload({
+                                ...requestPayload,
+                                name: event.target.value,
+                            })
                         }
                     />
                 </div>
@@ -193,7 +197,7 @@ function WorkshopCreatePost() {
                                 variant="unstyled"
                                 value={requestPayload.pricePerSeat}
                                 className="py-4 max-w-[143px]"
-                                onChange={(event) =>
+                                onChange={event =>
                                     setWorkShopRequestPayload({
                                         ...requestPayload,
                                         pricePerSeat: event.target.value,
@@ -216,7 +220,7 @@ function WorkshopCreatePost() {
                                 variant="unstyled"
                                 value={requestPayload.seats}
                                 className="py-4 max-w-[125px]"
-                                onChange={(event) =>
+                                onChange={event =>
                                     setWorkShopRequestPayload({
                                         ...requestPayload,
                                         seats: event.target.value,
@@ -239,8 +243,11 @@ function WorkshopCreatePost() {
                 <div className="border rounded-2xl bordr-light px-8 py-12">
                     <Textarea
                         value={requestPayload.description ? requestPayload.description : ""}
-                        onChange={(event) =>
-                            setWorkShopRequestPayload({ ...requestPayload, description: event.target.value })
+                        onChange={event =>
+                            setWorkShopRequestPayload({
+                                ...requestPayload,
+                                description: event.target.value,
+                            })
                         }
                         placeholder="Here is a sample placeholder"
                         size="sm"
@@ -303,18 +310,21 @@ function WorkshopCreatePost() {
             <div className="buttons flex gap-6 w-full justify-end">
                 <button
                     className="py-2 px-3 bg-errorLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
-                    onClick={() => handleCancelRequest()}>
+                    onClick={() => handleCancelRequest()}
+                >
                     <span className="text-mediumGray text-xl leading-none">Cancel </span>
                     <PlusIcon className="text-error rotate-45" />
                 </button>
                 <button
                     className="py-2 px-3 bg-primaryLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
-                    onClick={() => handleUpdateRequest(true)}>
+                    onClick={() => handleUpdateRequest(true)}
+                >
                     <span className="text-mediumGray text-xl">Save as Draft </span>
                 </button>
                 <button
                     className="py-2 px-3 bg-primary flex justify-center items-center gap-2 flex-row rounded-xl"
-                    onClick={() => handleUpdateRequest(false)}>
+                    onClick={() => handleUpdateRequest(false)}
+                >
                     <span className="text-white text-xl leading-none">Create Post </span>
                     <PlusIcon className="text-white" />
                 </button>

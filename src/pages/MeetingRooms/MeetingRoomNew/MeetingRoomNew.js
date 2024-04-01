@@ -33,7 +33,8 @@ import Loader from "../../../components/Loader";
 import { useNavigate } from "react-router-dom";
 
 function MeetingRoomNew() {
-    const [newMeetingRoomRequestPayload, setNewMeetingRoomPayload] = useRecoilState(newMeetingRoomRequest);
+    const [newMeetingRoomRequestPayload, setNewMeetingRoomPayload] =
+        useRecoilState(newMeetingRoomRequest);
     const openDays = useRecoilValue(meetingRoomOpenDaysState);
     const pictures = useRecoilValue(meetingRoomPicturesState);
     const rates = useRecoilValue(meetingRoomRatesState);
@@ -97,7 +98,7 @@ function MeetingRoomNew() {
         }
 
         if (
-            amenities.some((amenity) => {
+            amenities.some(amenity => {
                 return !amenity.name.length;
             })
         ) {
@@ -108,7 +109,7 @@ function MeetingRoomNew() {
             return false;
         }
 
-        if (rates.some((rate) => !rate.rate)) {
+        if (rates.some(rate => !rate.rate)) {
             toast({
                 title: "Custom Rates cannot be null",
                 status: "error",
@@ -140,7 +141,7 @@ function MeetingRoomNew() {
 
         if ("__typename" in payload) delete payload["__typename"];
 
-        console.log("payload", payload);
+        console.log("new payload", payload);
         try {
             // console.log("CREATE_BRANCH", CREATE_BRANCH);
             const { data } = await createMeetingRoom({
@@ -180,7 +181,7 @@ function MeetingRoomNew() {
                             placeholder="Enter Meeting Room Name"
                             style={{ fontSize: 24 }}
                             className="py-4"
-                            onChange={(event) =>
+                            onChange={event =>
                                 setNewMeetingRoomPayload({
                                     ...newMeetingRoomRequestPayload,
                                     name: event.target.value,
@@ -199,7 +200,7 @@ function MeetingRoomNew() {
                                     value={newMeetingRoomRequestPayload.totalSeats}
                                     style={{ fontSize: 20 }}
                                     className="py-2.5 max-w-[143px]"
-                                    onChange={(event) =>
+                                    onChange={event =>
                                         setNewMeetingRoomPayload({
                                             ...newMeetingRoomRequestPayload,
                                             totalSeats: parseInt(event.target.value),
@@ -217,7 +218,9 @@ function MeetingRoomNew() {
                                     <MenuButton as="button" className="h-fit rounded-xl  ">
                                         <div className="flex px-4 w-[312px] py-3 items-center justify-between">
                                             {selectedBranch.name ? (
-                                                <span className="text-dark">{selectedBranch.name}</span>
+                                                <span className="text-dark">
+                                                    {selectedBranch.name}
+                                                </span>
                                             ) : (
                                                 <span className="text-dark">Select a branch</span>
                                             )}
@@ -230,7 +233,8 @@ function MeetingRoomNew() {
                                             return (
                                                 <MenuItem
                                                     key={index}
-                                                    onClick={() => setSelectedBranch(branch)}>
+                                                    onClick={() => setSelectedBranch(branch)}
+                                                >
                                                     {branch.name}
                                                 </MenuItem>
                                             );
@@ -248,7 +252,7 @@ function MeetingRoomNew() {
                     <Textarea
                         variant="unstyled"
                         value={newMeetingRoomRequestPayload.description}
-                        onChange={(event) =>
+                        onChange={event =>
                             setNewMeetingRoomPayload({
                                 ...newMeetingRoomRequestPayload,
                                 description: event.target.value,
@@ -279,7 +283,8 @@ function MeetingRoomNew() {
                 <div className="buttons flex gap-6 w-full justify-end">
                     <button
                         className="p-4 bg-errorLight flex justify-center items-center gap-2 flex-row rounded-xl"
-                        onClick={() => navigate(`/meeting-rooms`)}>
+                        onClick={() => navigate(`/meeting-rooms`)}
+                    >
                         <span className="text-mediumGray text-xl">Cancel </span>
                         <CloseIcon className="text-error" />
                     </button>
@@ -290,7 +295,8 @@ function MeetingRoomNew() {
                     ) : (
                         <button
                             className="py-2 px-3 bg-primary flex justify-center items-center gap-2 flex-row rounded-xl"
-                            onClick={() => handleAddMeetingRoom()}>
+                            onClick={() => handleAddMeetingRoom()}
+                        >
                             <span className="text-white text-xl">Add Meeting Room </span>
                             <PlusIcon className="text-white" />
                         </button>

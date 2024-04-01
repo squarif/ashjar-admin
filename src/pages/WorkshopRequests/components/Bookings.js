@@ -31,13 +31,17 @@ function BookingRow(props) {
     let type = props.type;
     let selectedBookingsIndex = props.selectedAvailableSlotsIndex;
     let index = props.index;
+    console.log({
+        selectedSeats,
+        totalBookings,
+    });
 
     function decreaseSelectedSeats(id) {
-        if (selectedSeats > 0 && parseInt(requestPayload.seats) <= totalBookings) {
-            setSelectedSeats((prevSeats) => prevSeats - 1);
+        if (selectedSeats > 0) {
+            setSelectedSeats(prevSeats => prevSeats - 1);
 
             if (type === "nursery") {
-                setNurseryBookings((prevBookings) => {
+                setNurseryBookings(prevBookings => {
                     const updatedBookings = { ...prevBookings };
                     if (updatedBookings[id]) {
                         const updatedSeats = updatedBookings[id].seats - 1;
@@ -50,7 +54,7 @@ function BookingRow(props) {
                     return updatedBookings;
                 });
             } else {
-                setWorkspaceBookings((prevBookings) => {
+                setWorkspaceBookings(prevBookings => {
                     const updatedBookings = { ...prevBookings };
                     if (updatedBookings[id]) {
                         const updatedSeats = updatedBookings[id].seats - 1;
@@ -69,18 +73,25 @@ function BookingRow(props) {
     }
 
     function increaseSelectedSeats(id) {
-        setSelectedSeats((prevSeats) => prevSeats + 1);
+        if (selectedSeats + 1 <= seatsRemaining) {
+            setSelectedSeats(prevSeats => prevSeats + 1);
 
-        if (type === "nursery") {
-            setNurseryBookings((prevBookings) => ({
-                ...prevBookings,
-                [id]: { nursery: id, seats: prevBookings[id] ? prevBookings[id].seats + 1 : 1 },
-            }));
+            if (type === "nursery") {
+                setNurseryBookings(prevBookings => ({
+                    ...prevBookings,
+                    [id]: { nursery: id, seats: prevBookings[id] ? prevBookings[id].seats + 1 : 1 },
+                }));
+            } else {
+                setWorkspaceBookings(prevBookings => ({
+                    ...prevBookings,
+                    [id]: {
+                        workspace: id,
+                        seats: prevBookings[id] ? prevBookings[id].seats + 1 : 1,
+                    },
+                }));
+            }
         } else {
-            setWorkspaceBookings((prevBookings) => ({
-                ...prevBookings,
-                [id]: { workspace: id, seats: prevBookings[id] ? prevBookings[id].seats + 1 : 1 },
-            }));
+            console.log("Cannot allocate more seats than available.");
         }
     }
 
@@ -92,16 +103,21 @@ function BookingRow(props) {
         const updatedBookings = JSON.parse(JSON.stringify(workshopBookings));
 
         if (updatedBookings[selectedBookingsIndex]) {
-            const bookingsToAdd = Object.values(type === "nursery" ? nurseryBookings : workspaceBookings);
+            const bookingsToAdd = Object.values(
+                type === "nursery" ? nurseryBookings : workspaceBookings
+            );
 
             if (type === "nursery") {
                 if (updatedBookings[selectedBookingsIndex].nurseryBookings[index])
-                    updatedBookings[selectedBookingsIndex].nurseryBookings[index] = bookingsToAdd[0];
+                    updatedBookings[selectedBookingsIndex].nurseryBookings[index] =
+                        bookingsToAdd[0];
                 else updatedBookings[selectedBookingsIndex].nurseryBookings.push(...bookingsToAdd);
             } else {
                 if (updatedBookings[selectedBookingsIndex].workspaceBookings[index])
-                    updatedBookings[selectedBookingsIndex].workspaceBookings[index] = bookingsToAdd[0];
-                else updatedBookings[selectedBookingsIndex].workspaceBookings.push(...bookingsToAdd);
+                    updatedBookings[selectedBookingsIndex].workspaceBookings[index] =
+                        bookingsToAdd[0];
+                else
+                    updatedBookings[selectedBookingsIndex].workspaceBookings.push(...bookingsToAdd);
             }
 
             setWorkshopBookings(updatedBookings);
@@ -112,13 +128,16 @@ function BookingRow(props) {
         <Tr>
             <Td>{data[type].name}</Td>
             <Td>{type} </Td>
-            <Td>{seatsRemaining}</Td>
+            <Td>{seatsRemaining || 0}</Td> {/* Add fallback value */}
             <Td>
                 <div className="w-[112px] rounded-lg justify-center items-center gap-2 flex">
                     <button
                         className="w-4 h-4 p-2 rounded-full border border-error flex justify-center items-center gap-2.5"
-                        onClick={() => decreaseSelectedSeats(data[type]._id)}>
-                        <div className="text-center text-error text-2xl font-normal  leading-[18px]">-</div>
+                        onClick={() => decreaseSelectedSeats(data[type]._id)}
+                    >
+                        <div className="text-center text-error text-2xl font-normal  leading-[18px]">
+                            -
+                        </div>
                     </button>
                     <div className="py-1 px-2">
                         <div className="text-center text-dark text-2xl font-normal leading-[18px]">
@@ -127,8 +146,11 @@ function BookingRow(props) {
                     </div>
                     <button
                         className="w-4 h-4 p-2 rounded-full border border-primary flex justify-center items-center gap-2.5"
-                        onClick={() => increaseSelectedSeats(data[type]._id)}>
-                        <div className="text-center text-primary text-2xl font-normal  leading-[18px]">+</div>
+                        onClick={() => increaseSelectedSeats(data[type]._id)}
+                    >
+                        <div className="text-center text-primary text-2xl font-normal  leading-[18px]">
+                            +
+                        </div>
                     </button>
                 </div>
             </Td>
@@ -140,50 +162,53 @@ function Bookings(props) {
     const requestPayload = useRecoilValue(workshopRequestPayload);
     const selectedBranch = useRecoilValue(workshopSelectedBranch);
     const workshopBookings = useRecoilValue(workshopBookingsPayload);
+    console.log({ workshopBookings });
 
-    let selectedAvailableSlotsIndex = props.selectedAvailableSlotsIndex;
-    let index = props.index;
+    const selectedAvailableSlotsIndex = props.selectedAvailableSlotsIndex;
+    const index = props.index;
+    const availableSlots = props.availableSlots;
 
-    let availableSlots = props.availableSlots;
+    const [bookingsCount, setBookingsCount] = useState(0);
+
+    useEffect(() => {
+        setBookingsCount(getBookingsCount());
+    }, [workshopBookings, selectedAvailableSlotsIndex, requestPayload]);
 
     function getBookingsCount() {
-        const bookings = workshopBookings;
         let totalSeats = 0;
+        const bookings = workshopBookings[selectedAvailableSlotsIndex];
 
-        if (bookings[selectedAvailableSlotsIndex]) {
-            const nurserySeats = bookings[selectedAvailableSlotsIndex].nurseryBookings.reduce(
-                (total, current) => total + current.seats,
+        if (bookings) {
+            const nurserySeats = bookings.nurseryBookings.reduce(
+                (total, current) => total + (current?.seats || 0),
                 0
             );
-            const workspaceSeats = bookings[selectedAvailableSlotsIndex].workspaceBookings.reduce(
-                (total, current) => total + current.seats,
+            const workspaceSeats = bookings.workspaceBookings.reduce(
+                (total, current) => total + (current?.seats || 0),
                 0
             );
 
             totalSeats += nurserySeats + workspaceSeats;
-
-            return totalSeats;
-        } else {
-            return 0;
         }
+
+        return totalSeats;
     }
 
     return (
         <div className={selectedAvailableSlotsIndex === index ? "block" : "hidden"}>
-            {index}
             <div className="flex flex-col gap-7 w-full">
                 <div className="flex flex-col gap-5">
                     <div className="flex justify-between items-center">
-                        <div className="text-left text-xl">Available spaces in {selectedBranch.name}</div>
-
+                        <div className="text-left text-xl">
+                            Available spaces in {selectedBranch.name}
+                        </div>
                         <div className="flex gap-6 items-center">
                             <div className="">Seats Allocated :</div>
                             <div className="py-3 px-4 rounded-xl bg-primaryLight text-lg  leading-normal">
-                                {getBookingsCount()} out of {requestPayload.seats}
+                                {bookingsCount} out of {requestPayload.seats}
                             </div>
                         </div>
                     </div>
-
                     <div className="border rounded-xl">
                         <TableContainer className="w-full">
                             <Table variant="simple">
@@ -195,13 +220,14 @@ function Bookings(props) {
                                         <Th>Seats</Th>
                                     </Tr>
                                 </Thead>
-
                                 <Tbody>
                                     {availableSlots.nurseries?.map((nursery, index) => (
                                         <BookingRow
                                             data={nursery}
                                             key={index}
-                                            selectedAvailableSlotsIndex={selectedAvailableSlotsIndex}
+                                            selectedAvailableSlotsIndex={
+                                                selectedAvailableSlotsIndex
+                                            }
                                             seatsRemaining={nursery.seatsRemaining}
                                             type="nursery"
                                             index={index}
@@ -211,7 +237,9 @@ function Bookings(props) {
                                         <BookingRow
                                             data={workspace}
                                             key={index}
-                                            selectedAvailableSlotsIndex={selectedAvailableSlotsIndex}
+                                            selectedAvailableSlotsIndex={
+                                                selectedAvailableSlotsIndex
+                                            }
                                             seatsRemaining={workspace.seatsRemaining}
                                             type="workspace"
                                             index={index}
@@ -226,5 +254,4 @@ function Bookings(props) {
         </div>
     );
 }
-
 export default Bookings;

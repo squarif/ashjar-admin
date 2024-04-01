@@ -41,8 +41,8 @@ function MeetingRoomRates(props) {
     function handleBaseRateChange(value) {
         let updatedRequest = { ...requestPayload };
 
-        updatedRequest.ratesPerHour = value;
-
+        updatedRequest.ratesPerHour = parseFloat(value);
+        console.log({ updatedRequest });
         setMeetingRoomPayload(updatedRequest);
     }
 
@@ -80,7 +80,8 @@ function MeetingRoomRates(props) {
                 <div className="text-left text-2xl">Rates</div>
                 <button
                     className="rounded-lg border border-borderColor px-6 py-4 bg-primaryLight flex items-center"
-                    onClick={() => handleNewRate()}>
+                    onClick={() => handleNewRate()}
+                >
                     <span className="text-lg leading-normal">Add Custom Rate</span>
                     <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                 </button>
@@ -98,7 +99,7 @@ function MeetingRoomRates(props) {
                                 type="number"
                                 placeholder="Enter workshop name"
                                 className="py-2 text-xl text-primary leading-6 text-center"
-                                onChange={(event) => handleBaseRateChange(event.target.value)}
+                                onChange={event => handleBaseRateChange(event.target.value)}
                             />
                         </div>
                         <span className="">/ hr</span>
@@ -106,7 +107,10 @@ function MeetingRoomRates(props) {
                 </div>
 
                 {rates.map((rate, index) => (
-                    <div key={index} className="base-rate px-6 py-4 flex  items-baseline justify-between ">
+                    <div
+                        key={index}
+                        className="base-rate px-6 py-4 flex  items-baseline justify-between "
+                    >
                         <div className="custom-rate flex gap-2  items-baseline justify-between w-fit">
                             <div className="border rounded border-mediumGray px-2">
                                 <Input
@@ -116,8 +120,12 @@ function MeetingRoomRates(props) {
                                     name="date-start"
                                     value={getDate(rate.startDate)}
                                     className="max-w-[200px] text-lg text-dark"
-                                    onChange={(event) =>
-                                        handleCustomDateChange(index, "startDate", event.target.value)
+                                    onChange={event =>
+                                        handleCustomDateChange(
+                                            index,
+                                            "startDate",
+                                            event.target.value
+                                        )
                                     }
                                 />
                                 {/* max={rate.endDate} */}
@@ -133,7 +141,7 @@ function MeetingRoomRates(props) {
                                     name="date-end"
                                     value={getDate(rate.endDate)}
                                     className="max-w-[200px] text-lg text-dark"
-                                    onChange={(event) =>
+                                    onChange={event =>
                                         handleCustomDateChange(index, "endDate", event.target.value)
                                     }
                                 />
@@ -151,7 +159,7 @@ function MeetingRoomRates(props) {
                                         placeholder="Rate"
                                         type="number"
                                         className="py-2 text-xl text-primary leading-6 text-center"
-                                        onChange={(event) =>
+                                        onChange={event =>
                                             handleCustomRateChange(index, event.target.value)
                                         }
                                     />
@@ -161,7 +169,8 @@ function MeetingRoomRates(props) {
 
                             <button
                                 onClick={() => handleDeleteRate(index)}
-                                className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                                className="hover:bg-errorLight h-fit p-2 rounded-lg"
+                            >
                                 <PlusIcon className="rotate-45 text-error" />
                             </button>
                         </div>
