@@ -14,8 +14,10 @@ function OpenDaysList(props) {
     const [openDays, setOpenDays] = useRecoilState(props.state);
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-    function filteredDays(toFilter) {
-        return days.filter((day) => day !== toFilter);
+    function filteredDays(selectedDay) {
+        return days.filter(
+            day => !openDays.find(openDay => openDay.day === day) || selectedDay === day
+        );
     }
 
     const [startAMPM, setStartAMPM] = useState("AM");
@@ -110,7 +112,9 @@ function OpenDaysList(props) {
                                 style={{ fontSize: "20px" }}
                                 className="
 														input text-mediumGray leading-[18px] my-2 mx-2 "
-                                onChange={(event) => handleTimeChange(index, "startTime", event.target.value)}
+                                onChange={event =>
+                                    handleTimeChange(index, "startTime", event.target.value)
+                                }
                                 type="time"
                             />
                         </div>
@@ -118,28 +122,39 @@ function OpenDaysList(props) {
                         <div className="border rounded h-full w-fit flex">
                             <label
                                 className={
-                                    getAMPM(day.startTime) === "AM" ? "bg-primary font-xs rounded-l" : ""
-                                }>
+                                    getAMPM(day.startTime) === "AM"
+                                        ? "bg-primary font-xs rounded-l"
+                                        : ""
+                                }
+                            >
                                 <input
                                     type="radio"
                                     value="AM"
                                     className="absolute hidden"
                                     checked={getAMPM(day.startTime) === "AM"}
-                                    onChange={(event) =>
+                                    onChange={event =>
                                         handleAMPMChange(index, day.startTime, event.target.value)
                                     }
                                 />
-                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">AM</span>
+                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                    AM
+                                </span>
                             </label>
-                            <label className={getAMPM(day.startTime) === "PM" ? "bg-primary rounded-r" : ""}>
+                            <label
+                                className={
+                                    getAMPM(day.startTime) === "PM" ? "bg-primary rounded-r" : ""
+                                }
+                            >
                                 <input
                                     className="absolute hidden"
                                     type="radio"
                                     value="PM"
                                     checked={getAMPM(day.startTime) === "PM"}
-                                    onChange={(event) => setStartAMPM(event.target.value)}
+                                    onChange={event => setStartAMPM(event.target.value)}
                                 />
-                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">PM</span>
+                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                    PM
+                                </span>
                             </label>
                         </div>
                     </div>
@@ -155,7 +170,9 @@ function OpenDaysList(props) {
                                 style={{ fontSize: "20px" }}
                                 className="input 
 														text-mediumGray leading-[18px] my-2 mx-2"
-                                onChange={(event) => handleTimeChange(index, "endTime", event.target.value)}
+                                onChange={event =>
+                                    handleTimeChange(index, "endTime", event.target.value)
+                                }
                                 type="time"
                             />
                         </div>
@@ -163,26 +180,37 @@ function OpenDaysList(props) {
                         <div className="border rounded h-full w-fit flex">
                             <label
                                 className={
-                                    getAMPM(day.endTime) === "AM" ? "bg-primary font-xs rounded-l" : ""
-                                }>
+                                    getAMPM(day.endTime) === "AM"
+                                        ? "bg-primary font-xs rounded-l"
+                                        : ""
+                                }
+                            >
                                 <input
                                     type="radio"
                                     value="AM"
                                     className="absolute hidden"
                                     checked={getAMPM(day.startTime) === "AM"}
-                                    onChange={(event) => setEndAMPM(event.target.value)}
+                                    onChange={event => setEndAMPM(event.target.value)}
                                 />
-                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">AM</span>
+                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                    AM
+                                </span>
                             </label>
-                            <label className={getAMPM(day.endTime) === "PM" ? "bg-primary rounded-r" : ""}>
+                            <label
+                                className={
+                                    getAMPM(day.endTime) === "PM" ? "bg-primary rounded-r" : ""
+                                }
+                            >
                                 <input
                                     className="absolute hidden"
                                     type="radio"
                                     value="PM"
                                     checked={getAMPM(day.startTime) === "PM"}
-                                    onChange={(event) => setEndAMPM(event.target.value)}
+                                    onChange={event => setEndAMPM(event.target.value)}
                                 />
-                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">PM</span>
+                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                    PM
+                                </span>
                             </label>
                         </div>
                     </div>
@@ -190,7 +218,8 @@ function OpenDaysList(props) {
 
                 <button
                     onClick={() => handleDeleteDay(index)}
-                    className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                    className="hover:bg-errorLight h-fit p-2 rounded-lg"
+                >
                     <PlusIcon className="rotate-45 text-error" />
                 </button>
             </div>
@@ -242,7 +271,10 @@ function CustomOpenHoursList(props) {
     }
 
     return customOpenHours.map((day, index) => (
-        <div key={`customOpenHours` + index} className="flex gap-4 justify-between items-center h-9">
+        <div
+            key={`customOpenHours` + index}
+            className="flex gap-4 justify-between items-center h-9"
+        >
             <div className="custom-date flex gap-2 items-baseline justify-between w-fit">
                 <div className="border rounded border-mediumGray px-2 py-1">
                     <Input
@@ -252,7 +284,9 @@ function CustomOpenHoursList(props) {
                         name="date-start"
                         value={getDate(day.startDate)}
                         className="max-w-[200px] text-lg text-dark"
-                        onChange={(event) => handleCustomDateChange(index, "startDate", event.target.value)}
+                        onChange={event =>
+                            handleCustomDateChange(index, "startDate", event.target.value)
+                        }
                     />
                     {/* max={customRate.endDate} */}
                 </div>
@@ -267,7 +301,9 @@ function CustomOpenHoursList(props) {
                         name="date-end"
                         value={getDate(day.endDate)}
                         className="max-w-[200px] text-lg text-dark"
-                        onChange={(event) => handleCustomDateChange(index, "endDate", event.target.value)}
+                        onChange={event =>
+                            handleCustomDateChange(index, "endDate", event.target.value)
+                        }
                     />
                     {/* min={customRate.startDate} */}
                 </div>
@@ -284,8 +320,12 @@ function CustomOpenHoursList(props) {
                                 style={{ fontSize: "20px" }}
                                 className="
 															input text-mediumGray leading-[18px] my-2 mx-2 "
-                                onChange={(event) =>
-                                    handleCustomOpenHoursTimeChange(index, "startTime", event.target.value)
+                                onChange={event =>
+                                    handleCustomOpenHoursTimeChange(
+                                        index,
+                                        "startTime",
+                                        event.target.value
+                                    )
                                 }
                                 type="time"
                             />
@@ -294,28 +334,39 @@ function CustomOpenHoursList(props) {
                         <div className="border rounded h-full w-fit flex">
                             <label
                                 className={
-                                    getAMPM(day.startTime) === "AM" ? "bg-primary font-xs rounded-l" : ""
-                                }>
+                                    getAMPM(day.startTime) === "AM"
+                                        ? "bg-primary font-xs rounded-l"
+                                        : ""
+                                }
+                            >
                                 <input
                                     type="radio"
                                     value="AM"
                                     className="absolute hidden"
                                     checked={getAMPM(day.startTime) === "AM"}
-                                    onChange={(event) =>
+                                    onChange={event =>
                                         handleAMPMChange(index, day.startTime, event.target.value)
                                     }
                                 />
-                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">AM</span>
+                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                    AM
+                                </span>
                             </label>
-                            <label className={getAMPM(day.startTime) === "PM" ? "bg-primary rounded-r" : ""}>
+                            <label
+                                className={
+                                    getAMPM(day.startTime) === "PM" ? "bg-primary rounded-r" : ""
+                                }
+                            >
                                 <input
                                     className="absolute hidden"
                                     type="radio"
                                     value="PM"
                                     checked={getAMPM(day.startTime) === "PM"}
-                                    onChange={(event) => setStartAMPM(event.target.value)}
+                                    onChange={event => setStartAMPM(event.target.value)}
                                 />
-                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">PM</span>
+                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                    PM
+                                </span>
                             </label>
                         </div>
                     </div>
@@ -331,8 +382,12 @@ function CustomOpenHoursList(props) {
                                 style={{ fontSize: "20px" }}
                                 className="input 
 															text-mediumGray leading-[18px] my-2 mx-2"
-                                onChange={(event) =>
-                                    handleCustomOpenHoursTimeChange(index, "endTime", event.target.value)
+                                onChange={event =>
+                                    handleCustomOpenHoursTimeChange(
+                                        index,
+                                        "endTime",
+                                        event.target.value
+                                    )
                                 }
                                 type="time"
                             />
@@ -341,26 +396,37 @@ function CustomOpenHoursList(props) {
                         <div className="border rounded h-full w-fit flex">
                             <label
                                 className={
-                                    getAMPM(day.endTime) === "AM" ? "bg-primary font-xs rounded-l" : ""
-                                }>
+                                    getAMPM(day.endTime) === "AM"
+                                        ? "bg-primary font-xs rounded-l"
+                                        : ""
+                                }
+                            >
                                 <input
                                     type="radio"
                                     value="AM"
                                     className="absolute hidden"
                                     checked={getAMPM(day.startTime) === "AM"}
-                                    onChange={(event) => setEndAMPM(event.target.value)}
+                                    onChange={event => setEndAMPM(event.target.value)}
                                 />
-                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">AM</span>
+                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                    AM
+                                </span>
                             </label>
-                            <label className={getAMPM(day.endTime) === "PM" ? "bg-primary rounded-r" : ""}>
+                            <label
+                                className={
+                                    getAMPM(day.endTime) === "PM" ? "bg-primary rounded-r" : ""
+                                }
+                            >
                                 <input
                                     className="absolute hidden"
                                     type="radio"
                                     value="PM"
                                     checked={getAMPM(day.startTime) === "PM"}
-                                    onChange={(event) => setEndAMPM(event.target.value)}
+                                    onChange={event => setEndAMPM(event.target.value)}
                                 />
-                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">PM</span>
+                                <span className="block text-lg text-[#666666] px-2 py-1 font-medium">
+                                    PM
+                                </span>
                             </label>
                         </div>
                     </div>
@@ -368,7 +434,8 @@ function CustomOpenHoursList(props) {
 
                 <button
                     onClick={() => handleDeleteCustomDate(index)}
-                    className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                    className="hover:bg-errorLight h-fit p-2 rounded-lg"
+                >
                     <PlusIcon className="rotate-45 text-error" />
                 </button>
             </div>
@@ -409,13 +476,15 @@ function OpenDays(props) {
                 <div className="flex gap-4">
                     <button
                         onClick={() => handleNewCustomDate()}
-                        className="rounded-lg border border-borderColor px-3 py-2 bg-primaryLight flex gap-2.5 items-center">
+                        className="rounded-lg border border-borderColor px-3 py-2 bg-primaryLight flex gap-2.5 items-center"
+                    >
                         <span className="text-lg leading-normal">Add Custom Date</span>
                         <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                     </button>
                     <button
                         onClick={() => handleNewDay()}
-                        className="rounded-lg border border-borderColor px-3 py-2 bg-primaryLight flex gap-2.5 items-center">
+                        className="rounded-lg border border-borderColor px-3 py-2 bg-primaryLight flex gap-2.5 items-center"
+                    >
                         <span className="text-lg leading-normal">Add Day</span>
                         <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                     </button>
