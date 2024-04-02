@@ -14,6 +14,7 @@ import { GET_COMPLAINTS, UPDATE_COMPLAINT } from "../../queries/complaintQueries
 import Loader from "../../components/Loader";
 import PicturesGrid from "../../components/PicturesGrid";
 import { complaintPictures } from "../../stores/complaintStore";
+import ComplaintPicturesGrid from "../../components/complaintPicturesGrid";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
@@ -128,7 +129,7 @@ function Complaints() {
                         {statusBadge(complaint?.complaintStatus)}
                     </div>
                     <div className="text-left text-xs text-light">
-                        Complaint for pottery class from user {complaint?.userDetail?.email}
+                        Complaint Type: {complaint?.complaintType}
                     </div>
                 </div>
 
@@ -159,7 +160,7 @@ function Complaints() {
                             </span>
 
                             {pictures?.length ? (
-                                <PicturesGrid picturesState={complaintPictures} />
+                                <ComplaintPicturesGrid picturesState={complaintPictures} />
                             ) : (
                                 "No pictures uploaded"
                             )}
@@ -190,10 +191,10 @@ function Complaints() {
                             <div className="text-base text-mediumGray">Name</div>
                             <div className="">{complaint?.userDetail?.name}</div>
                         </div>
-                        <div className="flex justify-between">
+                        {/* <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Email</div>
                             <div className="">{complaint?.userDetail?.email}</div>
-                        </div>
+                        </div> */}
                         <div className="flex justify-between">
                             <div className="text-base text-mediumGray">Phone</div>
                             <div className="">{complaint?.userDetail?.phoneNumber}</div>

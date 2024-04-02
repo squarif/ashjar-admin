@@ -13,7 +13,7 @@ function PicturesUpload(props) {
 
     const toast = useToast();
 
-    const handleFileChange = async (e) => {
+    const handleFileChange = async e => {
         const files = e.target.files;
 
         console.log("files", files);
@@ -23,66 +23,21 @@ function PicturesUpload(props) {
             return;
         }
 
-        const uploadPromises = Array.from(files).map((file) => {
+        const uploadPromises = Array.from(files).map(file => {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const reader = new FileReader();
-                    reader.onload = async (event) => {
-                        const img = new Image();
-                        img.src = event.target.result;
+                    const storageRef = storage.ref();
+                    const fileRef = storageRef.child(`images/${file.name}`);
+                    const uploadTask = fileRef.put(file);
 
-                        img.onload = async () => {
-                            const canvas = document.createElement("canvas");
-                            const ctx = canvas.getContext("2d");
+                    uploadTask.on("state_changed", snapshot => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setUploadProgress(progress);
+                    });
 
-                            // Calculate new dimensions to maintain aspect ratio and reduce size
-                            const MAX_WIDTH = 800;
-                            const MAX_HEIGHT = 600;
-                            let width = img.width;
-                            let height = img.height;
-
-                            if (width > height) {
-                                if (width > MAX_WIDTH) {
-                                    height *= MAX_WIDTH / width;
-                                    width = MAX_WIDTH;
-                                }
-                            } else {
-                                if (height > MAX_HEIGHT) {
-                                    width *= MAX_HEIGHT / height;
-                                    height = MAX_HEIGHT;
-                                }
-                            }
-
-                            canvas.width = width;
-                            canvas.height = height;
-
-                            // Draw image on canvas
-                            ctx.drawImage(img, 0, 0, width, height);
-
-                            // Get compressed data URL
-                            const compressedDataURL = canvas.toDataURL("image/jpeg", 0.6);
-
-                            // Convert data URL to Blob
-                            const blob = await fetch(compressedDataURL).then((res) => res.blob());
-
-                            // Upload compressed image
-                            const storageRef = storage.ref();
-                            const fileRef = storageRef.child(`images/${file.name}`);
-                            const uploadTask = fileRef.put(blob);
-
-                            uploadTask.on("state_changed", (snapshot) => {
-                                const progress =
-                                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                setUploadProgress(progress);
-                            });
-
-                            await uploadTask;
-                            const downloadURL = await fileRef.getDownloadURL();
-                            resolve(downloadURL);
-                        };
-                    };
-
-                    reader.readAsDataURL(file);
+                    await uploadTask;
+                    const downloadURL = await fileRef.getDownloadURL();
+                    resolve(downloadURL);
                 } catch (error) {
                     reject(error.message);
                 }
@@ -93,7 +48,7 @@ function PicturesUpload(props) {
             setLoading(true);
             const uploadedUrls = await Promise.all(uploadPromises);
             setUploadStatus("Files uploaded successfully!");
-            setPictures((pictures) => [...pictures, ...uploadedUrls]);
+            setPictures(pictures => [...pictures, ...uploadedUrls]);
             setLoading(false);
             toast({
                 title: "Picture Uploaded!",
@@ -109,6 +64,7 @@ function PicturesUpload(props) {
             });
         }
     };
+
     const handleOpenFileDialog = () => {
         document.getElementById("fileInput").click();
     };

@@ -8,9 +8,11 @@ export const GET_BRANCH = gql`
             location
             address
             name
+            nameArabic
             meetingRooms {
                 _id
                 name
+                nameArabic
                 totalSeats
                 ratesPerHour
                 pictures
@@ -19,6 +21,7 @@ export const GET_BRANCH = gql`
             workspaces {
                 _id
                 name
+                nameArabic
                 totalSeats
                 pictures
                 isArchived
@@ -38,15 +41,18 @@ export const GET_BRANCHES = gql`
             meetingRooms {
                 _id
                 name
+                nameArabic
                 totalSeats
                 pictures
                 ratesPerHour
                 isArchived
             }
             name
+            nameArabic
             workspaces {
                 _id
                 name
+                nameArabic
                 totalSeats
                 pictures
                 baseRates {
@@ -58,6 +64,7 @@ export const GET_BRANCHES = gql`
             nurseries {
                 _id
                 name
+                nameArabic
                 seats
                 pictures
             }
@@ -70,6 +77,7 @@ export const CREATE_BRANCH = gql`
         createBranch(input: $input) {
             _id
             name
+            nameArabic
             location
             address
         }
@@ -89,6 +97,7 @@ export const UPDATE_BRANCH = gql`
         updateBranch(input: $input) {
             _id
             name
+            nameArabic
             location
             address
         }

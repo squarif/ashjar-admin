@@ -30,7 +30,8 @@ import { GET_BRANCHES } from "../../../queries/branchesQueries";
 import Loader from "../../../components/Loader";
 
 function MeetingRoomEdit() {
-    const [editMeetingRoomRequestPayload, setEditMeetingRoomPayload] = useRecoilState(editMeetingRoomRequest);
+    const [editMeetingRoomRequestPayload, setEditMeetingRoomPayload] =
+        useRecoilState(editMeetingRoomRequest);
     const openDays = useRecoilValue(meetingRoomOpenDaysState);
     const pictures = useRecoilValue(meetingRoomPicturesState);
     const rates = useRecoilValue(meetingRoomRatesState);
@@ -103,7 +104,7 @@ function MeetingRoomEdit() {
         }
 
         if (
-            amenities.some((amenity) => {
+            amenities.some(amenity => {
                 return !amenity.name.length;
             })
         ) {
@@ -114,7 +115,7 @@ function MeetingRoomEdit() {
             return false;
         }
 
-        if (rates.some((rate) => !rate.rate)) {
+        if (rates.some(rate => !rate.rate || rate.rate < 0)) {
             toast({
                 title: "Custom Rates cannot be null",
                 status: "error",
@@ -176,19 +177,36 @@ function MeetingRoomEdit() {
     return (
         <div className="flex flex-col gap-8">
             <div className="title border rounded-2xl border-light px-8 py-12 flex flex-col gap-8">
-                <div className="title rounded-xl border border-light overflow-hidden px-4">
+                <div className="flex flex-row  title rounded-xl border border-light overflow-hidden px-4">
+                    <div className=" w-[500px]">
+                        <Input
+                            variant="unstyled"
+                            value={editMeetingRoomRequestPayload.name}
+                            placeholder="Enter Meeting Room Name"
+                            style={{ fontSize: 24 }}
+                            className="py-4"
+                            onChange={event =>
+                                setEditMeetingRoomPayload({
+                                    ...editMeetingRoomRequestPayload,
+                                    name: event.target.value,
+                                })
+                            }
+                        />
+                    </div>
+
+                    <div className="border-l border-gray-300"></div>
                     <Input
-                        variant="unstyled"
-                        value={editMeetingRoomRequestPayload.name}
-                        placeholder="Enter Meeting Room Name"
-                        style={{ fontSize: 24 }}
-                        className="py-4"
-                        onChange={(event) =>
+                        value={editMeetingRoomRequestPayload.nameArabic}
+                        placeholder="ادخل اسم القاعة"
+                        className="py-6 text-dark text-[24px] leading-none flex-1 text-right"
+                        onChange={event =>
                             setEditMeetingRoomPayload({
                                 ...editMeetingRoomRequestPayload,
-                                name: event.target.value,
+                                nameArabic: event.target.value,
                             })
                         }
+                        variant="unstyled"
+                        dir="rtl" // Right-to-left text direction
                     />
                 </div>
 
@@ -203,7 +221,7 @@ function MeetingRoomEdit() {
                                 value={editMeetingRoomRequestPayload.totalSeats}
                                 style={{ fontSize: 20 }}
                                 className="py-2.5 max-w-[143px]"
-                                onChange={(event) =>
+                                onChange={event =>
                                     setEditMeetingRoomPayload({
                                         ...editMeetingRoomRequestPayload,
                                         totalSeats: parseInt(event.target.value),
@@ -231,7 +249,10 @@ function MeetingRoomEdit() {
                                 <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
                                     {branchData.map((branch, index) => {
                                         return (
-                                            <MenuItem key={index} onClick={() => setSelectedBranch(branch)}>
+                                            <MenuItem
+                                                key={index}
+                                                onClick={() => setSelectedBranch(branch)}
+                                            >
                                                 {branch.name}
                                             </MenuItem>
                                         );
@@ -243,19 +264,39 @@ function MeetingRoomEdit() {
                 </div>
             </div>
 
-            <div className="description flex gap-7 flex-col border rounded-2xl border-light px-8 py-12">
-                <div className="text-left text-2xl">Description</div>
+            <div className="description flex gap-7 flex-row border rounded-2xl border-light px-8 py-12">
+                <div className=" w-[450px]">
+                    <div className="text-left text-2xl">Description</div>
 
+                    <Textarea
+                        value={editMeetingRoomRequestPayload.description}
+                        onChange={event =>
+                            setEditMeetingRoomPayload({
+                                ...editMeetingRoomRequestPayload,
+                                description: event.target.value,
+                            })
+                        }
+                        placeholder="Here is a sample placeholder"
+                        size="sm"
+                        style={{ borderRadius: 16 }}
+                        variant="unstyled"
+                    />
+                </div>
+                <div className="border-l border-gray-300"></div>
                 <Textarea
-                    value={editMeetingRoomRequestPayload.description}
-                    onChange={(event) =>
+                    variant="unstyled"
+                    value={editMeetingRoomRequestPayload.descriptionArabic}
+                    onChange={event =>
                         setEditMeetingRoomPayload({
                             ...editMeetingRoomRequestPayload,
-                            description: event.target.value,
+                            descriptionArabic: event.target.value,
                         })
                     }
-                    placeholder="Here is a sample placeholder"
+                    placeholder="يرجى إدخال الوصف هنا"
                     size="sm"
+                    style={{ borderRadius: 16 }}
+                    className="flex-1 text-right" // Align text to the right
+                    dir="rtl" // Right-to-left text direction
                 />
             </div>
 
@@ -278,7 +319,8 @@ function MeetingRoomEdit() {
             <div className="buttons flex gap-6 w-full justify-end">
                 <button
                     className="p-4 bg-errorLight flex justify-center items-center gap-2 flex-row rounded-xl"
-                    onClick={() => navigate(`/meeting-rooms/${params.id}`)}>
+                    onClick={() => navigate(`/meeting-rooms/${params.id}`)}
+                >
                     <span className="text-mediumGray text-xl">Cancel </span>
                     <CloseIcon className="text-error" />
                 </button>
@@ -290,7 +332,8 @@ function MeetingRoomEdit() {
                 ) : (
                     <button
                         className="p-4 bg-primary flex justify-center items-center gap-4 rounded-xl"
-                        onClick={() => handleEditMeetingRoom()}>
+                        onClick={() => handleEditMeetingRoom()}
+                    >
                         <span className="text-white text-xl">Update Meeting Room </span>
                     </button>
                 )}

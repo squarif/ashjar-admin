@@ -5,11 +5,15 @@ const GET_INFO = gql`
         informationManagementAll {
             _id
             termsAndConditions
+            termsAndConditionsArabic
             cancellationPolicy
+            cancellationPolicyArabic
             aboutAshjarSpace
+            aboutAshjarSpaceArabic
             landingPage {
                 pictures
                 landingText
+                landingTextArabic
             }
         }
     }
@@ -20,11 +24,15 @@ const EDIT_INFO = gql`
         updateInformationManagement(input: $input) {
             _id
             termsAndConditions
+            termsAndConditionsArabic
             cancellationPolicy
+            cancellationPolicyArabic
             aboutAshjarSpace
+            aboutAshjarSpaceArabic
             landingPage {
                 pictures
                 landingText
+                landingTextArabic
             }
         }
     }

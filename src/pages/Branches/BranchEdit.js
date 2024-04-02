@@ -13,13 +13,16 @@ import { useRecoilState } from "recoil";
 import { branchData, branchesData } from "../../stores/branches";
 import Maps from "../../components/Maps";
 import { LoadScript, StandaloneSearchBox, useJsApiLoader } from "@react-google-maps/api";
+import ArabicField from "../../components/englishArabicField";
 
 const MAP_LIBRARIES = ["places"];
 
 function BranchEdit() {
     const { state } = useLocation();
+    console.log({ state });
 
     const [branchName, setBranchName] = useState(state.name);
+    const [arabicBranchName, setArabicBranchName] = useState(state.nameArabic);
     const [branchAddress, setbranchAddress] = useState(state.address);
     const [location, setLocation] = useState(state.location);
     const [locationName, setLocationName] = useState(JSON.parse(state.location).name);
@@ -41,6 +44,7 @@ function BranchEdit() {
             let payload = {
                 _id: branch._id,
                 name: branchName,
+                nameArabic: arabicBranchName,
                 address: branchAddress,
                 location: JSON.stringify(location),
             };
@@ -74,7 +78,6 @@ function BranchEdit() {
             });
         }
     }
-
     const { isLoaded } = useJsApiLoader({
         id: "google-map-script",
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -111,15 +114,14 @@ function BranchEdit() {
 
             <div className="flex flex-col gap-16 ">
                 <div className="flex justify-between items-center">
-                    <div className="border rounded-xl w-[430px] border-light px-4">
-                        <Input
-                            value={branchName}
-                            placeholder="Enter branch name"
-                            className="py-6  text-dark text-[24px] leading-none"
-                            onChange={event => setBranchName(event.target.value)}
-                            variant="unstyled"
-                        />
-                    </div>
+                    <ArabicField
+                        englishValue={branchName}
+                        englishPlaceHolder={"Enter English branch name"}
+                        arabicValue={arabicBranchName}
+                        onChangeEnglish={setBranchName}
+                        arabicPlaceholder={"ادخل اسم الفرع بالعربي"}
+                        onChangeArabic={setArabicBranchName}
+                    />
 
                     <button
                         onClick={handleUpdateBranch}

@@ -35,11 +35,21 @@ import { useNavigate } from "react-router-dom";
 function MeetingRoomNew() {
     const [newMeetingRoomRequestPayload, setNewMeetingRoomPayload] =
         useRecoilState(newMeetingRoomRequest);
-    const openDays = useRecoilValue(meetingRoomOpenDaysState);
-    const pictures = useRecoilValue(meetingRoomPicturesState);
-    const rates = useRecoilValue(meetingRoomRatesState);
-    const amenities = useRecoilValue(meetingRoomAmenitiesState);
-    const customOpenHours = useRecoilValue(meetingRoomCustomOpenHoursState);
+
+    let [amenities, setAmenitiesData] = useRecoilState(meetingRoomAmenitiesState);
+    let [rates, setRatesData] = useRecoilState(meetingRoomRatesState);
+    let [openDays, setOpenDays] = useRecoilState(meetingRoomOpenDaysState);
+    let [pictures, setPictures] = useRecoilState(meetingRoomPicturesState);
+    let [customOpenHours, setCustomOpenHours] = useRecoilState(meetingRoomCustomOpenHoursState);
+
+    useEffect(() => {
+        setAmenitiesData([]);
+        setRatesData([]);
+        setOpenDays([]);
+        setPictures([]);
+        setCustomOpenHours([]);
+    }, []);
+    const [arabicDescription, setArabicDescription] = useState();
 
     const toast = useToast();
 
@@ -109,7 +119,7 @@ function MeetingRoomNew() {
             return false;
         }
 
-        if (rates.some(rate => !rate.rate)) {
+        if (rates.some(rate => !rate.rate || rate.rate < 0)) {
             toast({
                 title: "Custom Rates cannot be null",
                 status: "error",
@@ -174,19 +184,36 @@ function MeetingRoomNew() {
             <Breadcrumbs />
             <div className="flex flex-col gap-8">
                 <div className="title border rounded-2xl border-light px-8 py-12 flex flex-col gap-8">
-                    <div className="title rounded-xl border border-light overflow-hidden px-4">
+                    <div className="flex flex-row justify-evenly rounded-xl border border-light px-4">
+                        <div className="w-[500px]">
+                            <Input
+                                variant="unstyled"
+                                value={newMeetingRoomRequestPayload.name}
+                                placeholder="Enter Meeting Room Name"
+                                style={{ fontSize: 24 }}
+                                className="py-4"
+                                onChange={event =>
+                                    setNewMeetingRoomPayload({
+                                        ...newMeetingRoomRequestPayload,
+                                        name: event.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+
+                        <div className="border-l border-gray-300"></div>
                         <Input
-                            variant="unstyled"
-                            value={newMeetingRoomRequestPayload.name}
-                            placeholder="Enter Meeting Room Name"
-                            style={{ fontSize: 24 }}
-                            className="py-4"
+                            value={newMeetingRoomRequestPayload.nameArabic}
+                            placeholder="ادخل اسم القاعة"
+                            className="py-6 text-dark text-[24px] leading-none flex-1 text-right"
                             onChange={event =>
                                 setNewMeetingRoomPayload({
                                     ...newMeetingRoomRequestPayload,
-                                    name: event.target.value,
+                                    nameArabic: event.target.value,
                                 })
                             }
+                            variant="unstyled"
+                            dir="rtl" // Right-to-left text direction
                         />
                     </div>
                     <div className="flex gap-8">
@@ -246,21 +273,38 @@ function MeetingRoomNew() {
                     </div>
                 </div>
 
-                <div className="description flex gap-7 flex-col border rounded-2xl border-light px-8 py-12">
-                    <div className="text-left text-2xl">Description</div>
-
+                <div className="description  flex gap-7 flex-row border rounded-2xl border-light px-8 py-12">
+                    <div className=" w-[450px]">
+                        <div className="text-left text-2xl">Description</div>
+                        <Textarea
+                            variant="unstyled"
+                            value={newMeetingRoomRequestPayload.description}
+                            onChange={event =>
+                                setNewMeetingRoomPayload({
+                                    ...newMeetingRoomRequestPayload,
+                                    description: event.target.value,
+                                })
+                            }
+                            placeholder="Please write description here"
+                            size="sm"
+                            style={{ borderRadius: 16 }}
+                        />
+                    </div>
+                    <div className="border-l border-gray-300"></div> {/* Vertical Line */}
                     <Textarea
                         variant="unstyled"
-                        value={newMeetingRoomRequestPayload.description}
+                        value={newMeetingRoomRequestPayload.descriptionArabic}
                         onChange={event =>
                             setNewMeetingRoomPayload({
                                 ...newMeetingRoomRequestPayload,
-                                description: event.target.value,
+                                descriptionArabic: event.target.value,
                             })
                         }
-                        placeholder="Please write description here"
+                        placeholder="يرجى إدخال الوصف هنا"
                         size="sm"
                         style={{ borderRadius: 16 }}
+                        className="flex-1 text-right" // Align text to the right
+                        dir="rtl" // Right-to-left text direction
                     />
                 </div>
 

@@ -122,6 +122,19 @@ function Amenity({ amenity, index, state }) {
         setAmenitiesData(updatedAmenities);
     }
 
+    function handleAmenityTitleArabic(index, value) {
+        // const updatedAmenities = [...amenitiesData];
+        const updatedAmenities = JSON.parse(JSON.stringify(amenitiesData));
+
+        console.log("updatedAmenities", updatedAmenities[index]);
+
+        updatedAmenities[index].nameArabic = value;
+
+        console.log("updatedAmenities", updatedAmenities);
+
+        setAmenitiesData(updatedAmenities);
+    }
+
     function handleAmenityIcon(index, icon) {
         setIcon(icon);
         console.log("ICON", icon);
@@ -156,19 +169,29 @@ function Amenity({ amenity, index, state }) {
                 ) : (
                     <IconUpload
                         propIcon={amenity.picture}
-                        setPropIcon={(icon) => handleAmenityIcon(index, icon)}
+                        setPropIcon={icon => handleAmenityIcon(index, icon)}
                     />
                 )}
             </div>
 
-            <div className="border rounded-lg border-light px-4">
+            <div className=" flex flex-row border rounded-lg border-light px-4">
                 <Input
                     id="title"
                     variant="unstyled"
                     placeholder="Name"
                     value={amenity.name}
                     className="py-1.5 text-xl max-w-[125px]"
-                    onChange={(event) => handleAmenityTitle(index, event.target.value)}
+                    onChange={event => handleAmenityTitle(index, event.target.value)}
+                />
+                <div className="border-l border-gray-300"></div> {/* Vertical Line */}
+                <Input
+                    id="titleArabic"
+                    value={amenity.nameArabic}
+                    placeholder="الاسم "
+                    className="py-6 text-dark text-[24px] leading-none text-right"
+                    onChange={event => handleAmenityTitleArabic(index, event.target.value)}
+                    variant="unstyled"
+                    dir="rtl" // Right-to-left text direction
                 />
             </div>
             <div className="border w-fit rounded-lg overflow-hidden flex items-center">
@@ -183,7 +206,11 @@ function Amenity({ amenity, index, state }) {
                     />
                     <span className="text-base text-dark  ">Toggle</span>
                 </label>
-                <label className={amenity.type === "quantity" ? "bg-primary font-xs px-2 py-2" : "px-2 py-2"}>
+                <label
+                    className={
+                        amenity.type === "quantity" ? "bg-primary font-xs px-2 py-2" : "px-2 py-2"
+                    }
+                >
                     <input
                         key={"quantity" + index}
                         type="radio"
@@ -202,14 +229,15 @@ function Amenity({ amenity, index, state }) {
                             id="toggle"
                             size="lg"
                             isChecked={amenity.quantity}
-                            onChange={(event) => handleToggle(index, event.target.checked)}
+                            onChange={event => handleToggle(index, event.target.checked)}
                         />
                     ) : (
                         <div className="w-[112px] rounded-lg justify-center items-center gap-2 flex">
                             <button className="w-4 h-4 p-2 rounded-full border border-error flex justify-center items-center gap-2.5">
                                 <div
                                     className="text-center text-error text-2xl font-normal  leading-[18px]"
-                                    onClick={() => decreaseQuantity(index)}>
+                                    onClick={() => decreaseQuantity(index)}
+                                >
                                     -
                                 </div>
                             </button>
@@ -220,7 +248,8 @@ function Amenity({ amenity, index, state }) {
                             </div>
                             <button
                                 className="w-4 h-4 p-2 rounded-full border border-primary flex justify-center items-center gap-2.5"
-                                onClick={() => increaseQuantity(index)}>
+                                onClick={() => increaseQuantity(index)}
+                            >
                                 <div className="text-center text-primary text-2xl font-normal  leading-[18px]">
                                     +
                                 </div>
@@ -230,7 +259,8 @@ function Amenity({ amenity, index, state }) {
                 </div>
                 <button
                     onClick={() => handleDeleteAmenity(index)}
-                    className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                    className="hover:bg-errorLight h-fit p-2 rounded-lg"
+                >
                     <PlusIcon className="rotate-45 text-error" />
                 </button>
             </div>
@@ -263,7 +293,10 @@ function Amenities({ state }) {
             </div>
 
             <div className="">
-                <button className="rounded-xl bg-primary flex gap-3 px-3 py-4" onClick={handleAddAmenity}>
+                <button
+                    className="rounded-xl bg-primary flex gap-3 px-3 py-4"
+                    onClick={handleAddAmenity}
+                >
                     <span className="text-lg text-white leading-normal">Add New Amenity</span>
                     <PlusIcon />
                 </button>

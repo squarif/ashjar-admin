@@ -6,7 +6,9 @@ const CREATE_MEETING_ROOM = gql`
         createMeetingRoom(input: $input) {
             _id
             name
+            nameArabic
             description
+            descriptionArabic
             branch {
                 _id
             }
@@ -30,6 +32,7 @@ const CREATE_MEETING_ROOM = gql`
             }
             amenities {
                 name
+                nameArabic
                 picture
                 quantity
                 type
@@ -76,7 +79,9 @@ const GET_MEETING_ROOM = gql`
         MeetingRoom(_id: $id) {
             _id
             name
+            nameArabic
             description
+            descriptionArabic
             branch {
                 _id
                 name
@@ -112,6 +117,7 @@ const GET_MEETING_ROOM = gql`
             }
             amenities {
                 name
+                nameArabic
                 picture
                 quantity
                 type
@@ -126,7 +132,9 @@ const EDIT_MEETING_ROOM = gql`
         updateMeetingRoom(input: $input) {
             _id
             name
+            nameArabic
             description
+            descriptionArabic
             branch {
                 _id
                 name
@@ -162,6 +170,7 @@ const EDIT_MEETING_ROOM = gql`
             }
             amenities {
                 name
+                nameArabic
                 picture
                 quantity
                 type
@@ -222,9 +231,4 @@ const REMOVE_MEETING_ROOM = gql`
     }
 `;
 
-export {
-    CREATE_MEETING_ROOM,
-    GET_MEETING_ROOM,
-    EDIT_MEETING_ROOM,
-    REMOVE_MEETING_ROOM,
-};
+export { CREATE_MEETING_ROOM, GET_MEETING_ROOM, EDIT_MEETING_ROOM, REMOVE_MEETING_ROOM };

@@ -5,7 +5,9 @@ const CREATE_WORKSPACE = gql`
         createWorkSpace(input: $input) {
             _id
             name
+            nameArabic
             description
+            descriptionArabic
             branch {
                 _id
             }
@@ -37,6 +39,7 @@ const CREATE_WORKSPACE = gql`
             }
             amenities {
                 name
+                nameArabic
                 picture
                 quantity
                 type
@@ -51,7 +54,9 @@ const GET_WORKSPACE = gql`
         WorkSpace(_id: $id) {
             _id
             name
+            nameArabic
             description
+            descriptionArabic
             branch {
                 _id
                 name
@@ -102,6 +107,7 @@ const GET_WORKSPACE = gql`
             }
             amenities {
                 name
+                nameArabic
                 picture
                 quantity
                 type
@@ -116,7 +122,9 @@ const EDIT_WORKSPACE = gql`
         updateWorkSpace(input: $input) {
             _id
             name
+            nameArabic
             description
+            descriptionArabic
             branch {
                 _id
                 name
@@ -151,6 +159,7 @@ const EDIT_WORKSPACE = gql`
             }
             amenities {
                 name
+                nameArabic
                 picture
                 quantity
                 type
