@@ -10,7 +10,10 @@ import { ReactComponent as EditIcon } from "../../../assets/EditIcon.svg";
 import ReactQuill from "react-quill";
 import { useRecoilState, useRecoilValue } from "recoil";
 import "react-quill/dist/quill.snow.css";
-import { editInformationManagementRequest, landingPagePictures } from "../../../stores/informationManagement";
+import {
+    editInformationManagementRequest,
+    landingPagePictures,
+} from "../../../stores/informationManagement";
 import { useMutation } from "@apollo/client";
 import { EDIT_INFO } from "../../../queries/informationManagement";
 
@@ -23,7 +26,7 @@ function LandingPage(props) {
     const toast = useToast();
 
     //  console.log("PROPS", props);
-    const [value, setValue] = useState(props.data.landingText);
+    const [value, setValue] = useState(props?.data?.landingText || "Landing Text");
     const [pictures, setPictures] = useRecoilState(landingPagePictures);
 
     const parser = new DOMParser();
@@ -74,7 +77,10 @@ function LandingPage(props) {
         <div className="flex flex-col gap-6">
             <div className="flex items-center gap-6">
                 <span className=" text-2xl leading-none">Landing Page</span>
-                <button onClick={() => setEdit(!edit)} className="p-1 hover:bg-primaryLight rounded-lg">
+                <button
+                    onClick={() => setEdit(!edit)}
+                    className="p-1 hover:bg-primaryLight rounded-lg"
+                >
                     <EditIcon className="text-mediumGray h-6 w-6" />
                 </button>
             </div>
@@ -94,14 +100,18 @@ function LandingPage(props) {
                         <div className="flex flex-row gap-6 justify-end w-full">
                             <button
                                 onClick={() => setEdit(false)}
-                                className="flex flex-row gap-2 py-2 px-3 items-center rounded-lgborder border-borderColor bg-errorLight">
+                                className="flex flex-row gap-2 py-2 px-3 items-center rounded-lgborder border-borderColor bg-errorLight"
+                            >
                                 <span className="text-sm text-mediumGray font-medium">Cancel</span>
                                 <CloseIcon className="text-error h-5 w-5" />
                             </button>
                             <button
                                 className="flex flex-row gap-2 py-2 px-3 items-center rounded-lg border border-borderColor bg-primaryLight"
-                                onClick={() => handleEditLandingPage()}>
-                                <span className="text-sm text-mediumGray font-medium">Confirm Changes</span>
+                                onClick={() => handleEditLandingPage()}
+                            >
+                                <span className="text-sm text-mediumGray font-medium">
+                                    Confirm Changes
+                                </span>
                                 <TickIcon className="text-primary h-5 w-5" />
                             </button>
                         </div>
