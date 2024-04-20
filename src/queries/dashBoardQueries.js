@@ -48,6 +48,7 @@ export const GET_ADVANCE_SEARCH_BOOKINGS = gql`
             bookings {
                 bookingType
                 bookingId
+                bookingNumber
                 bookingDate
                 bookingType
                 seats

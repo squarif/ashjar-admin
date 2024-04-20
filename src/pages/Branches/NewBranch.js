@@ -18,11 +18,14 @@ import {
     useJsApiLoader,
     useLoadScript,
 } from "@react-google-maps/api";
+import ArabicField from "../../components/englishArabicField";
 
 const MAP_LIBRARIES = ["places"];
 
 function NewBranch() {
     const [branchName, setBranchName] = useState("");
+    const [arabicBranchName, setArabicBranchName] = useState("");
+
     const [branchAddress, setBranchAddress] = useState("lalu khait");
     const [branches, setBranches] = useRecoilState(branchesData);
 
@@ -37,6 +40,7 @@ function NewBranch() {
         try {
             let payload = {
                 name: branchName,
+                nameArabic: arabicBranchName,
                 address: branchAddress,
                 location: JSON.stringify(location),
             };
@@ -101,15 +105,14 @@ function NewBranch() {
 
             <div className="flex flex-col gap-16 ">
                 <div className="flex justify-between items-center">
-                    <div className="border rounded-xl w-[430px] border-light px-4">
-                        <Input
-                            value={branchName}
-                            placeholder="Enter branch name"
-                            className="py-6  text-light text-[24px] leading-none"
-                            onChange={event => setBranchName(event.target.value)}
-                            variant="unstyled"
-                        />
-                    </div>
+                    <ArabicField
+                        englishValue={branchName}
+                        englishPlaceHolder={"Enter English branch name"}
+                        arabicValue={arabicBranchName}
+                        onChangeEnglish={setBranchName}
+                        arabicPlaceholder={"ادخل اسم الفرع بالعربي"}
+                        onChangeArabic={setArabicBranchName}
+                    />
 
                     <button
                         onClick={handleAddBranch}

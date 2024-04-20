@@ -51,7 +51,8 @@ function UsersBookingsList() {
                 <span className="text-xl text-mediumGray">Latest Bookings</span>
                 <Link
                     to="/dashboard/bookings"
-                    className="rounded-xl py-2 px-3 flex gap-3 items-center border border-borderColor bg-primaryLight">
+                    className="rounded-xl py-2 px-3 flex gap-3 items-center border border-borderColor bg-primaryLight"
+                >
                     <span className="text-lg text-dark">View All</span>
                     <ChevronRight className="h-6 w-6 text-light" />
                 </Link>
@@ -73,7 +74,7 @@ function UsersBookingsList() {
                         <Tbody>
                             {userBookingsData.map((booking, index) => (
                                 <Tr key={index}>
-                                    <Td>{booking._id}</Td>
+                                    <Td>{booking.bookingNumber || booking._id}</Td>
                                     <Td>{booking.bookingType}</Td>
                                     <Td>{booking.userId.name}</Td>
                                     <Td>{getDate(booking.bookingDate)}</Td>

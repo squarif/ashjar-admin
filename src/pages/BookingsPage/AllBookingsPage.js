@@ -55,15 +55,21 @@ function FiltersModal({ setFiltersModal, bookingsData, handleApplyFilters }) {
         <div className="">
             <div
                 onClick={() => setFiltersModal(false)}
-                className="fixed bg-dark bg-opacity-50 top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] backdrop-blur-sm"></div>
+                className="fixed bg-dark bg-opacity-50 top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] backdrop-blur-sm"
+            ></div>
 
             <div className="top-0 bottom-0 left-0 right-0 p-8 mx-auto my-auto gap-12 shadow-lg flex w-[70%] h-[547px] absolute bg-white z-10 flex-col rounded-lg text-mediumGray text-sm text-center border border-borderColor">
                 <div className="flex gap-6 h-14">
                     <div className="border rounded-xl border-light flex items-center">
                         <Menu autoSelect={false} closeOnBlur>
-                            <MenuButton as="button" className="h-fit rounded-xl flex justify-between">
+                            <MenuButton
+                                as="button"
+                                className="h-fit rounded-xl flex justify-between"
+                            >
                                 <div className="flex pl-4 w-[180px] py-2 items-center justify-between text-lg leading-none">
-                                    <span className="text-mediumGray capitalize">{selectedFilter}</span>
+                                    <span className="text-mediumGray capitalize">
+                                        {selectedFilter}
+                                    </span>
                                     <ChevronRight className="rotate-90 h-7 text-light " />
                                 </div>
                             </MenuButton>
@@ -73,7 +79,8 @@ function FiltersModal({ setFiltersModal, bookingsData, handleApplyFilters }) {
                                         <MenuItem
                                             key={index}
                                             onClick={() => setSelectedFilter(filter)}
-                                            className="capitalize">
+                                            className="capitalize"
+                                        >
                                             {filter}
                                         </MenuItem>
                                     );
@@ -112,13 +119,14 @@ function FiltersModal({ setFiltersModal, bookingsData, handleApplyFilters }) {
                             value={value}
                             style={{ fontSize: 18 }}
                             className="py-2.5 !max-w-[100px] !h-14 placeholder:text-lg text-center"
-                            onChange={(event) => setValue(event.target.value)}
+                            onChange={event => setValue(event.target.value)}
                         />
                     </div>
 
                     <button
                         onClick={() => handleAddFilter()}
-                        className="py-2 px-3 bg-primaryLight shadow-md flex justify-center items-center gap-2 rounded-xl border border-borderColor">
+                        className="py-2 px-3 bg-primaryLight shadow-md flex justify-center items-center gap-2 rounded-xl border border-borderColor"
+                    >
                         <span className="text-dark text-lg font-medium">Add Filter</span>
                         <PlusIcon className="h-6 w-6 border-mediumGray text-light" />
                     </button>
@@ -128,10 +136,13 @@ function FiltersModal({ setFiltersModal, bookingsData, handleApplyFilters }) {
                     {Object.keys(filtersList).map((filter, index) => {
                         return (
                             <div className="flex gap-2.5 h-fit w-fit" key={index}>
-                                {index > 0 && <div className="border border-borderColor w-[2px] !h-11"></div>}
+                                {index > 0 && (
+                                    <div className="border border-borderColor w-[2px] !h-11"></div>
+                                )}
                                 <button
                                     onClick={() => handleRemoveFilter(filter)}
-                                    className="p-3 bg-primaryLight flex justify-center items-center gap-2 rounded-lg text-lg leading-none border border-borderColor">
+                                    className="p-3 bg-primaryLight flex justify-center items-center gap-2 rounded-lg text-lg leading-none border border-borderColor"
+                                >
                                     <CloseIcon className="h-5 w-5 border-2 rounded-full border-mediumGray mr-1" />
                                     <span className="text-dark ">{filter}</span>
                                     <span className="text-mediumGray ">{filtersList[filter]}</span>
@@ -144,12 +155,14 @@ function FiltersModal({ setFiltersModal, bookingsData, handleApplyFilters }) {
                 <div className="flex justify-end gap-6">
                     <button
                         onClick={() => setFiltersModal(false)}
-                        className="py-2.5 px-3 flex justify-center items-center gap-2 rounded-lg border border-error">
+                        className="py-2.5 px-3 flex justify-center items-center gap-2 rounded-lg border border-error"
+                    >
                         <span className="text-mediumGray text-sm font-medium">Cancel</span>
                     </button>
                     <button
                         onClick={() => handleApplyFilters()}
-                        className="py-2.5 px-3 bg-primary flex justify-center items-center gap-2 rounded-lg">
+                        className="py-2.5 px-3 bg-primary flex justify-center items-center gap-2 rounded-lg"
+                    >
                         <span className="text-white text-sm font-medium">Apply Filters</span>
                     </button>
                 </div>
@@ -218,7 +231,7 @@ function BookingRow(props) {
 
     return (
         <Tr>
-            <Td>{booking._id}</Td>
+            <Td>{booking.bookingNumber || booking._id}</Td>
             <Td>{booking.userId && booking.userId.name}</Td>
             <Td>{booking.bookingType}</Td>
             <Td>{getDate(booking.bookingDate)}</Td>
@@ -259,13 +272,12 @@ function BookingRow(props) {
 }
 
 function AllBookingsPage() {
-    const itemsPerPage = 8;
+    const itemsPerPage = 10;
     const [searchQuery, setSearchQuery] = useState("");
     const [userBookingsData, setUserBookingsData] = useState([]);
     const [showFilters, setShowFilters] = useState(false);
     const [filtersList, setFiltersList] = useRecoilState(userBookingsFilters);
     const [pageNumber, setPageNumber] = useState(1);
-
     const {
         loading: userBookingsLoading,
         error: userBookingsError,
@@ -286,31 +298,30 @@ function AllBookingsPage() {
             },
             pagination: {
                 pageNo: pageNumber - 1,
-                itemsPerPage: itemsPerPage,
+                itemsPerPage: 1000,
             },
         },
     });
     useEffect(() => {
         if (!userBookingsLoading && !userBookingsError) {
             // Set the branches data
-
-            setUserBookingsData(userBookingsResponse.AdvanceSearchBooking.bookings);
+            if (!!!userBookingsData.length)
+                setUserBookingsData(userBookingsResponse.AdvanceSearchBooking.bookings);
         }
     }, [userBookingsLoading, userBookingsError, userBookingsResponse]);
 
     function filteredList(items) {
         return items.filter(
-            (item) =>
-                item.userId?.name.toLowerCase().includes(searchQuery) ||
-                item._id.toLowerCase().includes(searchQuery) ||
-                item.phoneNumber.includes(searchQuery)
+            item =>
+                item.userId?.name.toLowerCase()?.includes(searchQuery) ||
+                item._id.toLowerCase()?.includes(searchQuery) ||
+                item.phoneNumber?.includes(searchQuery)
         );
     }
 
     function paginatedList(items) {
         const startIndex = (pageNumber - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-
         return filteredList(items.slice(startIndex, endIndex));
     }
 
@@ -340,7 +351,7 @@ function AllBookingsPage() {
                     },
                 },
             })
-            .then((result) => {
+            .then(result => {
                 if (!result.loading && !result.error) {
                     console.log("result", result);
                     setUserBookingsData(result.data.AdvanceSearchBooking.bookings);
@@ -364,13 +375,14 @@ function AllBookingsPage() {
                                 value={searchQuery}
                                 placeholder="Search"
                                 className=" py-3 px-6 w-[430px] "
-                                onChange={(event) => setSearchQuery(event.target.value)}
+                                onChange={event => setSearchQuery(event.target.value)}
                             />
                         </div>
 
                         <button
                             onClick={() => setShowFilters(true)}
-                            className="p-3 hover:bg-primaryLight rounded-lg">
+                            className="p-3 hover:bg-primaryLight rounded-lg"
+                        >
                             <FilterIcon className="h-7 w-7 text-light" />
                         </button>
 
@@ -383,10 +395,13 @@ function AllBookingsPage() {
                                         )}
                                         <button
                                             onClick={() => handleRemoveFilter(filter)}
-                                            className="p-3 bg-primaryLight flex justify-center items-center gap-2 rounded-lg text-lg leading-none border border-borderColor">
+                                            className="p-3 bg-primaryLight flex justify-center items-center gap-2 rounded-lg text-lg leading-none border border-borderColor"
+                                        >
                                             <CloseIcon className="h-5 w-5 border-2 rounded-full border-mediumGray mr-1" />
                                             <span className="text-dark ">{filter}</span>
-                                            <span className="text-mediumGray ">{filtersList[filter]}</span>
+                                            <span className="text-mediumGray ">
+                                                {filtersList[filter]}
+                                            </span>
                                         </button>
                                     </div>
                                 );
@@ -449,7 +464,7 @@ function AllBookingsPage() {
                             defaultCurrent={pageNumber}
                             total={userBookingsData.length}
                             pageSize={itemsPerPage}
-                            onChange={(x) => setPageNumber(x)}
+                            onChange={x => setPageNumber(x)}
                         />
                     </div>
                 </div>
