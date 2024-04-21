@@ -1,7 +1,7 @@
 import "./App.css";
 
 import { ReactComponent as AshjarLogo } from "./assets/AshjarLogo.svg";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import React from "react";
 
 import { auth } from "./auth/firebase/config";
@@ -51,7 +51,9 @@ function App() {
             <div className="header border-b border-borderColor px-6 py-4 flex justify-between items-center ">
                 <div className="flex gap-2 items-end">
                     <AshjarLogo />
-                    <span className="text-[#AF8465] text-[32px] font-Adam leading-none">Ashjar</span>
+                    <span className="text-[#AF8465] text-[32px] font-Adam leading-none">
+                        Ashjar
+                    </span>
                 </div>
 
                 {userA ? (
@@ -63,13 +65,15 @@ function App() {
                             setUserAtom(null);
                             navigator("/login");
                         }}
-                        className="p-3 border rounded-xl bg-primaryLight text-primary">
+                        className="p-3 border rounded-xl bg-primaryLight text-primary"
+                    >
                         Sign Out
                     </button>
                 ) : (
                     <button
                         // onClick={() => handleSignIn()}
-                        className="p-3 border rounded-xl bg-primaryLight text-primary">
+                        className="p-3 border rounded-xl bg-primaryLight text-primary"
+                    >
                         Sign In
                     </button>
                 )}
@@ -352,6 +356,14 @@ function App() {
 
                         <Route
                             path="/"
+                            element={
+                                <PrivateRoute redirect="/login">
+                                    <DashboardPage />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="*"
                             element={
                                 <PrivateRoute redirect="/login">
                                     <DashboardPage />

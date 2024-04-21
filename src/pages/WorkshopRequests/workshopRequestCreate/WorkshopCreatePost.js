@@ -119,7 +119,7 @@ function WorkshopCreatePost() {
                     bookings: workshopBookings.map(({ __typename, ...rest }) => rest),
                     amenities: amenities.map(({ __typename, ...rest }) => rest),
                     categories: categories,
-                    pricePerSeat: requestPayload.pricePerSeat,
+                    pricePerSeat: parseInt(requestPayload.pricePerSeat),
                     seats: parseInt(requestPayload.seats),
                     branch: selectedBranch._id,
                     draft: draft,
