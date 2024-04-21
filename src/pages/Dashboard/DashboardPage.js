@@ -58,7 +58,7 @@ function RevenuePieCharts({ dates, selectedBranch }) {
                 query: selectedBranch ? GET_BRANCH_REVENUE : GET_BRANCHES_REVENUE,
                 variables: params,
             })
-            .then((result) => {
+            .then(result => {
                 console.log("GET BRANCHESSS", result);
                 // Set the branches data
 
@@ -102,7 +102,8 @@ function RevenuePieCharts({ dates, selectedBranch }) {
                             outerRadius={40}
                             fill="#8884d8"
                             paddingAngle={5}
-                            dataKey="value">
+                            dataKey="value"
+                        >
                             {[
                                 { name: "Total Branch Revenue", value: totalRevenueData },
                                 { name: "Meeting Room", value: workspaceRevenueData },
@@ -134,7 +135,8 @@ function RevenuePieCharts({ dates, selectedBranch }) {
                             outerRadius={40}
                             fill="#8884d8"
                             paddingAngle={5}
-                            dataKey="value">
+                            dataKey="value"
+                        >
                             {[
                                 { name: "Total Branch Revenue", value: totalRevenueData },
                                 { name: "Meeting Room", value: roomRevenueData },
@@ -166,7 +168,8 @@ function RevenuePieCharts({ dates, selectedBranch }) {
                             outerRadius={40}
                             fill="#8884d8"
                             paddingAngle={5}
-                            dataKey="value">
+                            dataKey="value"
+                        >
                             {[
                                 { name: "Total Branch Revenue", value: totalRevenueData },
                                 { name: "Workshop", value: workshopRevenueData },
@@ -198,7 +201,8 @@ function RevenuePieCharts({ dates, selectedBranch }) {
                             outerRadius={40}
                             fill="#8884d8"
                             paddingAngle={5}
-                            dataKey="value">
+                            dataKey="value"
+                        >
                             {[
                                 { name: "Total Branch Revenue", value: totalRevenueData },
                                 { name: "Percentage of Returning Users", value: roomRevenueData },
@@ -232,24 +236,32 @@ function RevenueGraph({ dates, selectedBranch }) {
 
         client
             .query({
-                query: selectedBranch ? GET_BRANCH_REVENUE_FOR_N_MONTHS : GET_BRANCHES_REVENUE_FOR_N_MONTHS,
+                query: selectedBranch
+                    ? GET_BRANCH_REVENUE_FOR_N_MONTHS
+                    : GET_BRANCHES_REVENUE_FOR_N_MONTHS,
                 variables: params,
             })
-            .then((result) => {
+            .then(result => {
                 console.log("RevenueGraph result", result);
 
                 // Set the branches data
                 let items = selectedBranch
-                    ? result.data.branchRevenueForNMonths.map((item) => {
+                    ? result.data.branchRevenueForNMonths.map(item => {
                           return {
                               month: item.month.split(" ")[0],
-                              revenue: item.meetingRoomRevenue + item.workSpaceRevenue + item.workshopRevenue,
+                              revenue:
+                                  item.meetingRoomRevenue +
+                                  item.workSpaceRevenue +
+                                  item.workshopRevenue,
                           };
                       })
-                    : result.data.branchesRevenueForNMonths.map((item) => {
+                    : result.data.branchesRevenueForNMonths.map(item => {
                           return {
                               month: item.month.split(" ")[0],
-                              revenue: item.meetingRoomRevenue + item.workSpaceRevenue + item.workshopRevenue,
+                              revenue:
+                                  item.meetingRoomRevenue +
+                                  item.workSpaceRevenue +
+                                  item.workshopRevenue,
                           };
                       });
 
@@ -268,7 +280,7 @@ function RevenueGraph({ dates, selectedBranch }) {
     useEffect(() => {
         if (!monthlyRevenueLoading && !monthlyRevenueError) {
             // Set the branches data
-            let items = monthlyDataResponse.branchesRevenueForNMonths.map((item) => {
+            let items = monthlyDataResponse.branchesRevenueForNMonths.map(item => {
                 return {
                     month: item.month.split(" ")[0],
                     revenue: item.meetingRoomRevenue + item.workSpaceRevenue + item.workshopRevenue,
@@ -279,7 +291,7 @@ function RevenueGraph({ dates, selectedBranch }) {
         }
     }, [monthlyRevenueLoading, monthlyRevenueError, monthlyDataResponse]);
 
-    const RectangleBar = (props) => {
+    const RectangleBar = props => {
         const { fill, x, y, width, height } = props;
         return <rect x={x} y={y} width={width} height={height} rx="5" ry="5" fill={fill} />;
     };
@@ -299,7 +311,8 @@ function RevenueGraph({ dates, selectedBranch }) {
                     margin={{
                         top: 36,
                         bottom: 36,
-                    }}>
+                    }}
+                >
                     <XAxis dataKey="month" axisLine={false} />
                     <YAxis axisLine={false} />
                     <Tooltip />
@@ -368,7 +381,7 @@ function DashboardPage() {
             setEndDate("02-01-2025");
         }
     };
-    const onOk = (value) => {
+    const onOk = value => {
         console.log("onOk: ", value);
     };
 
@@ -390,7 +403,8 @@ function DashboardPage() {
                               borderRadius: "12px",
                           }
                         : {}
-                }>
+                }
+            >
                 {current.date()}
             </div>
         );
@@ -412,7 +426,7 @@ function DashboardPage() {
                     },
                 },
             })
-            .then((result) => {
+            .then(result => {
                 if (!result.loading && !result.error) {
                     console.log("result", result);
                     // setUserBookingsData(result.data.AdvanceSearchBooking.bookings);
@@ -439,7 +453,7 @@ function DashboardPage() {
                             </div>
                         </MenuButton>
                         <MenuList className="MenuList inset-0 w-[312px] left-[-200px]">
-                            {branchData.map((branch) => {
+                            {branchData.map(branch => {
                                 // console.log("branch", branch);
                                 return (
                                     <MenuItem onClick={() => handleSelectBranch(branch)}>

@@ -1,7 +1,16 @@
 import "./App.css";
 
 import { ReactComponent as AshjarLogo } from "./assets/AshjarLogo.svg";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import {
+    Navigate,
+    Route,
+    Routes,
+    useNavigate,
+    useLocation,
+    useNavigationType,
+    createRoutesFromChildren,
+    matchRoutes,
+} from "react-router-dom";
 import React from "react";
 
 import { auth } from "./auth/firebase/config";
@@ -41,6 +50,23 @@ import CouponsPage from "./pages/Coupons/CouponsPage";
 import WorkshopEditPost from "./pages/Workshops/WorkshopEdit/WorkshopEdit";
 import UserBookingsPage from "./pages/BookingsPage/UserBookingsPage";
 import AllBookingsPage from "./pages/BookingsPage/AllBookingsPage";
+
+import * as Sentry from "@sentry/react";
+Sentry.init({
+    dsn: process.env.REACT_APP_SENTRY_KEY,
+    integrations: [
+        Sentry.reactRouterV6BrowserTracingIntegration({
+            useEffect: React.useEffect,
+            useLocation,
+            useNavigationType,
+            createRoutesFromChildren,
+            matchRoutes,
+        }),
+    ],
+    tracesSampleRate: 1.0,
+});
+
+const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
 function App() {
     const [userA, setUserAtom] = useRecoilStateCallback(userAtom);
@@ -82,7 +108,7 @@ function App() {
                 {userA ? <NavBar /> : ""}
 
                 <div className="body col-span-6 p-12 h-[calc(100vh-80px)] ">
-                    <Routes>
+                    <SentryRoutes>
                         <Route path="/login" element={<SignIn />} />
 
                         <Route
@@ -362,15 +388,15 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
-                        <Route
+                        {/* <Route
                             path="*"
                             element={
                                 <PrivateRoute redirect="/login">
                                     <DashboardPage />
                                 </PrivateRoute>
                             }
-                        />
-                    </Routes>
+                        /> */}
+                    </SentryRoutes>
                 </div>
             </div>
         </div>

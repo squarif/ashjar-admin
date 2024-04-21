@@ -9,12 +9,16 @@ import client from "./apollo";
 
 import { RecoilRoot } from "recoil";
 import { BrowserRouter as Router } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <React.StrictMode>
         <ChakraProvider
-            toastOptions={{ defaultOptions: { position: "bottom", duration: 9000, isClosable: true } }}>
+            toastOptions={{
+                defaultOptions: { position: "bottom", duration: 9000, isClosable: true },
+            }}
+        >
             <RecoilRoot>
                 <ApolloProvider client={client}>
                     <Router>
