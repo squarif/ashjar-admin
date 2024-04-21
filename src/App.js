@@ -388,14 +388,14 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
-                        {/* <Route
+                        <Route
                             path="*"
                             element={
                                 <PrivateRoute redirect="/login">
                                     <DashboardPage />
                                 </PrivateRoute>
                             }
-                        /> */}
+                        />
                     </SentryRoutes>
                 </div>
             </div>
