@@ -29,6 +29,7 @@ import Amenities from "../../../components/Amenities";
 function WorkshopCreatePost() {
     const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
     const [workshopBookings, setWorkshopBookings] = useRecoilState(workshopBookingsPayload);
+    const [workshopData, setWorkshopData] = useState();
 
     const amenities = useRecoilValue(workshopAmenities);
     const categories = useRecoilValue(workshopCategories);
@@ -36,7 +37,7 @@ function WorkshopCreatePost() {
     const toast = useToast();
     const navigate = useNavigate();
 
-    console.log("requestPayload", requestPayload.bookings);
+    console.log("requestPayload", requestPayload);
 
     const [selectedBranch, setSelectedBranch] = useRecoilState(workshopSelectedBranch);
     const [branchData, setBranchData] = useState([]);
@@ -46,6 +47,7 @@ function WorkshopCreatePost() {
     useEffect(() => {
         if (!branchesLoading && !branchesError) {
             setBranchData(data.branches);
+            setWorkshopData(requestPayload);
         }
     }, [branchesLoading, branchesError, data]);
 
@@ -57,44 +59,36 @@ function WorkshopCreatePost() {
 
     const [acceptWorkshopRequest] = useMutation(ACCEPT_WORKSHOP_REQUEST);
     async function handleAcceptRequest() {
-        if (parseInt(requestPayload.seats) >= totalBookings) {
-            try {
-                let payload = {};
+        try {
+            let payload = {};
 
-                payload = {
-                    workshopRequestID: requestPayload._id,
-                };
+            payload = {
+                workshopRequestID: requestPayload._id,
+            };
 
-                console.log("PAYLOAD", payload);
-                const { data } = await acceptWorkshopRequest({
-                    mutation: ACCEPT_WORKSHOP_REQUEST,
-                    variables: {
-                        input: payload,
-                    },
-                    // client: client,
-                });
-                if (data) {
-                    toast({
-                        title: "Workshop Request Accepted!",
-                        status: "success",
-                    });
-
-                    navigate("/workshops/requests");
-                }
-                if (data) {
-                }
-            } catch (error) {
-                console.log(error);
+            console.log("PAYLOAD", payload);
+            const { data } = await acceptWorkshopRequest({
+                mutation: ACCEPT_WORKSHOP_REQUEST,
+                variables: {
+                    input: payload,
+                },
+                // client: client,
+            });
+            if (data) {
                 toast({
-                    title: "Error",
-                    description: error.message,
-                    status: "error",
+                    title: "Workshop Request Accepted!",
+                    status: "success",
                 });
+
+                navigate("/workshops/requests");
             }
-        } else {
+            if (data) {
+            }
+        } catch (error) {
+            console.log(error);
             toast({
                 title: "Error",
-                description: `You need to select ${requestPayload.seats} seats on all days to continue`,
+                description: error.message,
                 status: "error",
             });
         }
@@ -110,7 +104,41 @@ function WorkshopCreatePost() {
             });
             return;
         }
-        if (parseInt(requestPayload.seats) >= totalBookings) {
+
+        const totalSeats = workshopBookings.reduce((prev, booking) => {
+            const nurseryObject = booking?.nurseryBookings;
+            const workspaceObjet = booking?.workspaceBookings;
+            let nurseryCount;
+            let workspaceCount;
+
+            if (Array.isArray(nurseryObject)) {
+                nurseryCount = nurseryObject?.reduce((prev, nursery) => {
+                    return prev + nursery?.seats;
+                }, 0);
+            } else {
+                nurseryCount = nurseryObject?.seats || 0;
+            }
+
+            if (Array.isArray(workspaceObjet)) {
+                workspaceCount = workspaceObjet?.reduce((prev, nursery) => {
+                    return prev + nursery?.seats;
+                }, 0);
+            } else {
+                workspaceCount = workspaceObjet?.seats || 0;
+            }
+
+            return prev + nurseryCount + workspaceCount;
+        }, 0);
+
+        // console.log({
+        //     request: requestPayload.seats,
+        //     requestPayload,
+        //     totalBookings,
+        //     bookings: workshopBookings.map(({ __typename, ...rest }) => rest),
+        //     totalSeats,
+        //     workshopData,
+        // });
+        if (totalSeats == totalBookings) {
             try {
                 let payload = {};
 
@@ -120,15 +148,17 @@ function WorkshopCreatePost() {
                     amenities: amenities.map(({ __typename, ...rest }) => rest),
                     categories: categories,
                     pricePerSeat: parseInt(requestPayload.pricePerSeat),
-                    seats: parseInt(requestPayload.seats),
+                    seats: totalSeats,
                     branch: selectedBranch._id,
                     draft: draft,
+                    phone: workshopData.phone,
+                    email: workshopData.email,
                 };
 
                 if ("__typename" in payload) delete payload["__typename"];
                 if ("username" in payload) delete payload["username"];
-                if ("email" in payload) delete payload["email"];
-                if ("phone" in payload) delete payload["phone"];
+                // if ("email" in payload) delete payload["email"];
+                // if ("phone" in payload) delete payload["phone"];
                 if ("company" in payload) delete payload["company"];
 
                 console.log("PAYLOAD", payload);

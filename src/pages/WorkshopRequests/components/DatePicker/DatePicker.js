@@ -154,7 +154,7 @@ function DatePicker() {
                     query: GET_AVAILABLE_SLOTS,
                     variables: payload,
                 })
-                .then((result) => {
+                .then(result => {
                     if (!result.loading && !result.error) {
                         toast({
                             title: "Available Slots Loaded",
@@ -193,7 +193,7 @@ function DatePicker() {
                             type="number"
                             value={numberOfDays}
                             className="py-2 text-xl max-w-[125px]"
-                            onChange={(event) => setNumberOfDays(event.target.value)}
+                            onChange={event => setNumberOfDays(event.target.value)}
                         />
                     </div>
                 </div>
@@ -204,11 +204,11 @@ function DatePicker() {
                     <Switch
                         id="separate-booking"
                         size="lg"
-                        checked={requestPayload.allowSeparateBooking}
-                        onChange={(event) => {
+                        checked={requestPayload.separateBooking}
+                        onChange={event => {
                             setWorkShopRequestPayload({
                                 ...requestPayload,
-                                allowSeparateBooking: event.target.checked,
+                                separateBooking: event.target.checked,
                             });
                         }}
                     />
@@ -227,7 +227,8 @@ function DatePicker() {
                                     ? "rounded-xl border border-dark text-dark bg-primaryLight items-center flex gap-3 py-3 px-4"
                                     : "rounded-xl border border-borderColor bg-primaryLight text-mediumGray items-center flex gap-3 py-3 px-4"
                             }
-                            onClick={() => setSelectedAvailableSlotsIndex(index)}>
+                            onClick={() => setSelectedAvailableSlotsIndex(index)}
+                        >
                             <CloseIcon
                                 onClick={() => removeBooking(index)}
                                 className=" border-2 rounded-full h-6 w-6 border-mediumGray"
@@ -268,7 +269,8 @@ function DatePicker() {
                             return (
                                 <h1
                                     key={index}
-                                    className="text-sm font-medium text-center h-10 w-10 grid place-content-center text-dark select-none">
+                                    className="text-sm font-medium text-center h-10 w-10 grid place-content-center text-dark select-none"
+                                >
                                     {day}
                                 </h1>
                             );
@@ -281,7 +283,8 @@ function DatePicker() {
                                 return (
                                     <div
                                         key={index}
-                                        className="relative day text-center grid place-content-center text-sm">
+                                        className="relative day text-center grid place-content-center text-sm"
+                                    >
                                         <h1
                                             className={cn(
                                                 currentMonth ? "" : "text-light",
@@ -298,7 +301,8 @@ function DatePicker() {
                                                     selectedDate.toDate().toDateString() ===
                                                         date.toDate().toDateString()
                                                 );
-                                            }}>
+                                            }}
+                                        >
                                             {date.date()}
                                         </h1>
 
@@ -317,7 +321,7 @@ function DatePicker() {
                                                                 style={{ fontSize: "40px" }}
                                                                 className="
 																						input text-mediumGray leading-[50px] mx-4 mt-1"
-                                                                onChange={(event) =>
+                                                                onChange={event =>
                                                                     setStartTime(event.target.value)
                                                                 }
                                                                 type="time"
@@ -337,7 +341,7 @@ function DatePicker() {
                                                                 style={{ fontSize: "40px" }}
                                                                 className="
 																						input text-mediumGray leading-[50px] mx-4 mt-1"
-                                                                onChange={(event) =>
+                                                                onChange={event =>
                                                                     setEndTime(event.target.value)
                                                                 }
                                                                 type="time"
@@ -346,7 +350,8 @@ function DatePicker() {
                                                     </div>
                                                     <button
                                                         onClick={() => handleSelectTime()}
-                                                        className="mt-1 w-full rounded-xl border bg-primaryLight items-center flex gap-3 px-4 py-3">
+                                                        className="mt-1 w-full rounded-xl border bg-primaryLight items-center flex gap-3 px-4 py-3"
+                                                    >
                                                         <span className="w-full text-lg text-dark leading-normal">
                                                             Select time
                                                         </span>
