@@ -238,7 +238,12 @@ function BookingRow(props) {
             <Td>{booking.startTime}</Td>
             <Td>{booking.endTime}</Td>
             <Td className="text-primary text-lg">{booking.seats}</Td>
-            <Td className="text-primary text-lg">SAR {booking.rate}</Td>
+            <Td className="text-primary text-lg">
+                SAR{" "}
+                {booking?.discountedPrice === 0
+                    ? booking?.discountedPrice
+                    : booking?.discountedPrice || booking.rate}
+            </Td>
             <Td className=""> {getDate(booking.createdAt)}</Td>
             {/* <Td className="relative">
                 <button onClick={() => setshowOptions(!showOptions)}>

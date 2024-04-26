@@ -148,7 +148,7 @@ function WorkshopCreatePost() {
                     amenities: amenities.map(({ __typename, ...rest }) => rest),
                     categories: categories,
                     pricePerSeat: parseInt(requestPayload.pricePerSeat),
-                    seats: totalSeats,
+                    seats: parseInt(requestPayload.seats),
                     branch: selectedBranch._id,
                     draft: draft,
                     phone: workshopData.phone,

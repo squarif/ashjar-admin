@@ -81,8 +81,10 @@ function WorkshopCreatePost() {
                     description: requestPayload.description,
                     name: requestPayload.name,
                     // approvalStatus: "approved",
-                    pricePerSeat: requestPayload.pricePerSeat,
+                    pricePerSeat: parseInt(requestPayload.pricePerSeat),
                     seats: parseInt(requestPayload.seats),
+                    phone: requestPayload.phone,
+                    email: requestPayload.email,
                     // branch: selectedBranch._id,
                 };
 
@@ -181,6 +183,7 @@ function WorkshopCreatePost() {
                                 variant="unstyled"
                                 value={requestPayload.seats}
                                 className="py-4 max-w-[125px]"
+                                disabled={true}
                                 onChange={event =>
                                     setWorkShopRequestPayload({
                                         ...requestPayload,
