@@ -39,6 +39,7 @@ function WorkspaceNew() {
     const baseRates = useRecoilValue(workspaceBaseRatesState);
     const customRates = useRecoilValue(workspaceCustomRatesState);
     const amenities = useRecoilValue(workspaceAmenitiesState);
+    const [totalSeatsInput, setTotalSeatsInput] = useState(editWorkspaceRequestPayload.totalSeats);
 
     let params = useParams();
     const navigate = useNavigate();
@@ -48,6 +49,12 @@ function WorkspaceNew() {
             navigate(`/workspaces/${params.id}`);
         }
     }, [editWorkspaceRequestPayload]);
+
+    // Other state variables and hooks...
+
+    useEffect(() => {
+        setTotalSeatsInput(editWorkspaceRequestPayload.totalSeats);
+    }, [editWorkspaceRequestPayload.totalSeats]);
 
     console.log(editWorkspaceRequestPayload.branch);
     const [selectedBranch, setSelectedBranch] = useState(editWorkspaceRequestPayload.branch);
@@ -85,7 +92,7 @@ function WorkspaceNew() {
             return false;
         }
 
-        if (!editWorkspaceRequestPayload.totalSeats) {
+        if (editWorkspaceRequestPayload.totalSeats < 0) {
             toast({
                 title: "Please enter seats",
                 status: "error",
@@ -177,6 +184,7 @@ function WorkspaceNew() {
             amenities: amenities.map(({ __typename, ...rest }) => rest),
             pictures: pictures,
             branch: editWorkspaceRequestPayload.branch._id,
+            totalSeats: totalSeatsInput,
         };
 
         if ("__typename" in payload) delete payload["__typename"];
@@ -221,12 +229,7 @@ function WorkspaceNew() {
                         value={editWorkspaceRequestPayload.nameArabic}
                         placeholder="ادخل اسم القاعة"
                         className="py-6 text-dark text-[24px] leading-none flex-1 text-right"
-                        onChange={event =>
-                            setEditWorkspacePayload({
-                                ...editWorkspaceRequestPayload,
-                                nameArabic: event.target.value,
-                            })
-                        }
+                        onChange={event => setTotalSeatsInput(parseInt(event.target.value))}
                         variant="unstyled"
                         dir="rtl" // Right-to-left text direction
                     />
@@ -240,14 +243,14 @@ function WorkspaceNew() {
                                 variant="unstyled"
                                 type="number"
                                 style={{ fontSize: 20 }}
-                                value={editWorkspaceRequestPayload.totalSeats}
+                                value={totalSeatsInput}
                                 className="py-[9px] max-w-[143px]"
-                                onChange={event =>
+                                onChange={event => {
                                     setEditWorkspacePayload({
                                         ...editWorkspaceRequestPayload,
                                         totalSeats: parseInt(event.target.value),
-                                    })
-                                }
+                                    });
+                                }}
                             />
                         </div>
                     </div>

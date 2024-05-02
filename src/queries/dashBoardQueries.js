@@ -61,6 +61,11 @@ export const GET_ADVANCE_SEARCH_BOOKINGS = gql`
                     name
                     phoneNumber
                     numberOfBookings
+                    role
+                }
+                branch {
+                    _id
+                    name
                 }
                 isCancelled
                 createdAt

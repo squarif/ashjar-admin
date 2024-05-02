@@ -234,6 +234,7 @@ function BookingRow(props) {
             <Td>{booking.bookingNumber || booking._id}</Td>
             <Td>{booking.userId && booking.userId.name}</Td>
             <Td>{booking.bookingType}</Td>
+            <Td>{booking.branch.name}</Td>
             <Td>{getDate(booking.bookingDate)}</Td>
             <Td>{booking.startTime}</Td>
             <Td>{booking.endTime}</Td>
@@ -429,6 +430,10 @@ function AllBookingsPage() {
                                         <Th>
                                             <span className="text-light"> Booking Type</span>
                                         </Th>
+                                        <Th>
+                                            <span className="text-light"> Branch Name</span>
+                                        </Th>
+
                                         <Th>
                                             <span className="text-light"> Booking Date</span>
                                         </Th>

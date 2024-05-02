@@ -234,6 +234,7 @@ function BookingRow(props) {
         <Tr>
             <Td>{booking.bookingNumber || booking._id}</Td>
             <Td>{booking.bookingType}</Td>
+            <Td>{booking.branch.name}</Td>
             <Td>{getDate(booking.bookingDate)}</Td>
             <Td>{booking.startTime}</Td>
             <Td>{booking.endTime}</Td>
@@ -301,6 +302,7 @@ function UserBookingsPage() {
             },
         },
     });
+
     useEffect(() => {
         if (!userBookingsLoading && !userBookingsError) {
             // Set the branches data
@@ -309,6 +311,7 @@ function UserBookingsPage() {
         }
     }, [userBookingsLoading, userBookingsError, userBookingsResponse]);
 
+    console.log({ userBookingsData });
     function filteredList(items) {
         return items.filter(
             item =>
@@ -368,44 +371,54 @@ function UserBookingsPage() {
 
             {userBookingsData ? (
                 <div className="flex flex-col gap-8 h-[90%]">
-                    <div className="flex gap-6">
-                        <div className="Search rounded-xl border overflow-hidden px-4 shadow-md ">
-                            <Input
-                                variant="unstyled"
-                                value={searchQuery}
-                                placeholder="Search"
-                                className=" py-3 px-6 w-[430px] "
-                                onChange={event => setSearchQuery(event.target.value)}
-                            />
+                    <div className="flex flex-row justify-between">
+                        <div className="flex gap-6">
+                            <div className="Search rounded-xl border overflow-hidden px-4 shadow-md ">
+                                <Input
+                                    variant="unstyled"
+                                    value={searchQuery}
+                                    placeholder="Search"
+                                    className=" py-3 px-6 w-[430px] "
+                                    onChange={event => setSearchQuery(event.target.value)}
+                                />
+                            </div>
+
+                            <button
+                                onClick={() => setShowFilters(true)}
+                                className="p-3 hover:bg-primaryLight rounded-lg"
+                            >
+                                <FilterIcon className="h-7 w-7 text-light" />
+                            </button>
+
+                            <div className="Filters flex gap-6 items-center">
+                                {Object.keys(filtersList).map((filter, index) => {
+                                    return (
+                                        <div className="flex gap-2.5 h-fit w-fit" key={index}>
+                                            {index > 0 && (
+                                                <div className="border border-borderColor w-[1px] !h-11"></div>
+                                            )}
+                                            <button
+                                                onClick={() => handleRemoveFilter(filter)}
+                                                className="p-3 bg-primaryLight flex justify-center items-center gap-2 rounded-lg text-lg leading-none border border-borderColor"
+                                            >
+                                                <CloseIcon className="h-5 w-5 border-2 rounded-full border-mediumGray mr-1" />
+                                                <span className="text-dark ">{filter}</span>
+                                                <span className="text-mediumGray ">
+                                                    {filtersList[filter]}
+                                                </span>
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
-
-                        <button
-                            onClick={() => setShowFilters(true)}
-                            className="p-3 hover:bg-primaryLight rounded-lg"
-                        >
-                            <FilterIcon className="h-7 w-7 text-light" />
-                        </button>
-
-                        <div className="Filters flex gap-6 items-center">
-                            {Object.keys(filtersList).map((filter, index) => {
-                                return (
-                                    <div className="flex gap-2.5 h-fit w-fit" key={index}>
-                                        {index > 0 && (
-                                            <div className="border border-borderColor w-[1px] !h-11"></div>
-                                        )}
-                                        <button
-                                            onClick={() => handleRemoveFilter(filter)}
-                                            className="p-3 bg-primaryLight flex justify-center items-center gap-2 rounded-lg text-lg leading-none border border-borderColor"
-                                        >
-                                            <CloseIcon className="h-5 w-5 border-2 rounded-full border-mediumGray mr-1" />
-                                            <span className="text-dark ">{filter}</span>
-                                            <span className="text-mediumGray ">
-                                                {filtersList[filter]}
-                                            </span>
-                                        </button>
-                                    </div>
-                                );
-                            })}
+                        <div>
+                            <span className="text-dark text-base font-bold font-Adam pr-4">
+                                User Role:
+                            </span>
+                            <span className=" text-primaryDark text-base font-medium font-Adam hover:underline ">
+                                {userBookingsData?.[0]?.userId?.role?.toUpperCase()}
+                            </span>
                         </div>
                     </div>
 
@@ -419,6 +432,9 @@ function UserBookingsPage() {
                                         </Th>
                                         <Th>
                                             <span className="text-light"> Booking Type</span>
+                                        </Th>
+                                        <Th>
+                                            <span className="text-light"> Branch Name</span>
                                         </Th>
 
                                         <Th>
