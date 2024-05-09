@@ -109,7 +109,7 @@ function WorkspaceNew() {
 
         if (
             amenities.some(amenity => {
-                return !amenity.name.length;
+                return !amenity.name || !amenity.type || !amenity.picture;
             })
         ) {
             toast({

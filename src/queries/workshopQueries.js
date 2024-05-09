@@ -7,6 +7,7 @@ export const GET_WORKSHOP_REQUESTS = gql`
             name
             pricePerSeat
             seats
+            pictures
             bookings {
                 date
                 startTime
@@ -19,6 +20,15 @@ export const GET_WORKSHOP_REQUESTS = gql`
                     workspace
                     seats
                 }
+            }
+            bookingByCustomers {
+                date
+                userId {
+                    _id
+                    name
+                }
+                noOfSeats
+                _id
             }
             description
             amenities {
@@ -50,8 +60,13 @@ export const GET_WORKSHOP_REQUEST = gql`
             name
             pricePerSeat
             seats
+            pictures
             bookingByCustomers {
                 _id
+                userId {
+                    _id
+                    name
+                }
             }
             bookings {
                 date

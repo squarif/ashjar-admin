@@ -11,7 +11,11 @@ import { GET_WORKSHOP_REQUESTS, REJECT_WORKSHOP_REQUEST } from "../../../queries
 import { useMutation, useQuery } from "@apollo/client";
 import Loader from "../../../components/Loader";
 import { useRecoilState } from "recoil";
-import { workshopAmenities, workshopCategories, workshopRequestPayload } from "../../../stores/workshopStore";
+import {
+    workshopAmenities,
+    workshopCategories,
+    workshopRequestPayload,
+} from "../../../stores/workshopStore";
 import { Pagination } from "antd";
 
 function statusBadge(status, draft) {
@@ -108,7 +112,9 @@ function RenderSelectedRequest({ selectedRequest, setSelectedRequest }) {
                         <div className="requestBody flex flex-col gap-8">
                             <div className="header flex gap-6 items-baseline">
                                 <span className="text-dark text-2xl">{request.name}</span>
-                                <div className="">{statusBadge(request.approvalStatus, request.draft)}</div>
+                                <div className="">
+                                    {statusBadge(request.approvalStatus, request.draft)}
+                                </div>
                             </div>
                             <span className="description text-left text-base text-mediumGray">
                                 {request.description}
@@ -142,14 +148,16 @@ function RenderSelectedRequest({ selectedRequest, setSelectedRequest }) {
                         <div className="requestActions flex w-full justify-center gap-6 pt-8">
                             <button
                                 onClick={() => setShowCancelPrompt(true)}
-                                className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-errorLight shadow-md">
+                                className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-errorLight shadow-md"
+                            >
                                 <span className="text-sm font-medium text-mediumGray">Reject</span>
                                 <CloseIcon className="h-4 w-4 text-error" />
                             </button>
                             <Link
                                 to="/workshops/requests/create-post"
                                 state={request}
-                                className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-primaryLight shadow-md">
+                                className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-light bg-primaryLight shadow-md"
+                            >
                                 <span className="text-sm font-medium text-mediumGray">
                                     Approve and Create Post
                                 </span>
@@ -199,21 +207,27 @@ function RenderSelectedRequest({ selectedRequest, setSelectedRequest }) {
                                             variant="unstyled"
                                             value={rejectionReason}
                                             size="lg"
-                                            onChange={(event) => setRejectionReason(event.target.value)}
+                                            onChange={event =>
+                                                setRejectionReason(event.target.value)
+                                            }
                                         />
                                     </div>
                                     <div className="requestActions flex w-full justify-end gap-6">
                                         <button
                                             onClick={() => setShowCancelPrompt(false)}
-                                            className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-errorLight">
+                                            className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-errorLight"
+                                        >
                                             <span className="text-sm font-medium text-mediumGray">
                                                 Cancel
                                             </span>
                                         </button>
                                         <button
                                             onClick={() => handleCancelRequest()}
-                                            className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-primary">
-                                            <span className="text-sm font-medium text-white">Reject</span>
+                                            className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-primary"
+                                        >
+                                            <span className="text-sm font-medium text-white">
+                                                Reject
+                                            </span>
                                         </button>
                                     </div>
                                 </div>
@@ -239,7 +253,12 @@ function WorkshopRequests() {
     const [bookings, setWorkshopBookings] = useRecoilState(workshopCategories);
     const [categories, setWorkshopCategories] = useRecoilState(workshopCategories);
 
-    const { loading: requestsLoading, error: requestsError, data, refetch } = useQuery(GET_WORKSHOP_REQUESTS);
+    const {
+        loading: requestsLoading,
+        error: requestsError,
+        data,
+        refetch,
+    } = useQuery(GET_WORKSHOP_REQUESTS);
 
     useEffect(() => {
         refetch(); // Refetch data when the component mounts
@@ -249,7 +268,9 @@ function WorkshopRequests() {
         if (!requestsLoading && !requestsError) {
             console.log("workshopRequests", data);
 
-            let list = data.workshopRequests.filter((item) => item.approvalStatus.includes("pending"));
+            let list = data.workshopRequests.filter(item =>
+                item.approvalStatus.includes("pending")
+            );
 
             setItemsLength(list.length);
             setRequestList(list);
@@ -257,7 +278,7 @@ function WorkshopRequests() {
     }, [requestsLoading, requestsError, data]);
 
     function selectRequest(id) {
-        let index = requestList.findIndex((obj) => obj._id === id);
+        let index = requestList.findIndex(obj => obj._id === id);
 
         if (selectedRequest === index) {
             setSelectedRequest();
@@ -278,7 +299,7 @@ function WorkshopRequests() {
         const startIndex = (pageNumber - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
 
-        let items = requestList.filter((request) => request.name.toLowerCase().includes(searchQuery));
+        let items = requestList.filter(request => request.name.toLowerCase().includes(searchQuery));
 
         items = items.slice(startIndex, endIndex);
 
@@ -291,14 +312,17 @@ function WorkshopRequests() {
                         index === selectedRequest
                             ? "flex p-6 w-full justify-between items-center rounded-xl border-[0.5px] border-primary shadow-sm shadow-primaryLight gap-4"
                             : "flex p-6 w-full justify-between items-center rounded-xl border border-transparent gap-4"
-                    }>
+                    }
+                >
                     <div className="flex flex-col justify-start gap-4 w-full">
                         <div className="flex gap-6 items-center justify-between">
-                            <div className="text-base text-dark leading-5 text-left">{request.name}</div>
+                            <div className="text-base text-dark leading-5 text-left">
+                                {request.name}
+                            </div>
                             {statusBadge(request.approvalStatus, request.draft)}
                         </div>
                         <div className="text-left text-xs text-light">
-                            Request for pottery class from user {request.username}
+                            Workshop Request by {request.username}
                         </div>
                     </div>
 
@@ -326,7 +350,7 @@ function WorkshopRequests() {
                                 value={searchQuery}
                                 placeholder="Search"
                                 className=" py-3 px-6  w-full"
-                                onChange={(event) => setSearchQuery(event.target.value)}
+                                onChange={event => setSearchQuery(event.target.value)}
                             />
 
                             <div className="Filter"></div>
@@ -347,7 +371,7 @@ function WorkshopRequests() {
                         defaultCurrent={pageNumber}
                         total={itemsLength}
                         pageSize={5}
-                        onChange={(x) => setPageNumber(x)}
+                        onChange={x => setPageNumber(x)}
                     />
                 </div>
 

@@ -66,6 +66,22 @@ export const GET_ADVANCE_SEARCH_BOOKINGS = gql`
                 branch {
                     _id
                     name
+                    address
+                    meetingRooms {
+                        _id
+                        name
+                        description
+                    }
+                    workspaces {
+                        _id
+                        name
+                        description
+                    }
+                    workshops {
+                        _id
+                        name
+                        description
+                    }
                 }
                 isCancelled
                 createdAt

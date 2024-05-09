@@ -8,6 +8,11 @@ const workshopRequestPayload = atom({
     },
 });
 
+export const workshopPicturesState = atom({
+    key: "workshopPicturesState",
+    default: [],
+});
+
 const workshopBookingsPayload = atom({
     key: "workshopBookingsPayload",
     default: [],

@@ -143,7 +143,7 @@ function WorkshopDetails() {
         <div className="grid  grid-cols-10 p-8 divide-x-2 gap-8">
             <div className="col-span-7 flex flex-col gap-8">
                 <div className="pictures grid grid-cols-5 grid-rows-2 gap-6">
-                    {workshopRequest.pictures &&
+                    {workshopRequest?.pictures &&
                         workshopRequest.pictures?.map((picture, index) =>
                             index === 0 ? (
                                 <div className="relative overflow-hidden rounded-2xl border col-span-3 row-span-2">
@@ -164,19 +164,23 @@ function WorkshopDetails() {
 
                 <div className="header flex justify-between items-center">
                     <div className="flex gap-5 items-baseline">
-                        <span className=" text-[32px] leading-none text-dark">{workshopRequest.name}</span>
-                        <div> {statusBadge(workshopRequest.approvalStatus)}</div>
+                        <span className=" text-[32px] leading-none text-dark">
+                            {workshopRequest?.name}
+                        </span>
+                        <div> {statusBadge(workshopRequest?.approvalStatus)}</div>
                         <Link
-                            to={`/workshops/${workshopRequest._id}/edit`}
-                            className="edit-button text-primary h-7 w-7">
+                            to={`/workshops/${workshopRequest?._id}/edit`}
+                            className="edit-button text-primary h-7 w-7"
+                        >
                             <EditIcon className="text-primary" />
                         </Link>
                     </div>
 
-                    {workshopRequest.bookingByCustomers.length === 0 && (
+                    {workshopRequest?.bookingByCustomers.length === 0 && (
                         <button
                             onClick={() => setShowCancelPrompt(true)}
-                            className="rounded-xl font-sm font-medium text-error border border-error bg-errorLight px-3 py-2">
+                            className="rounded-xl font-sm font-medium text-error border border-error bg-errorLight px-3 py-2"
+                        >
                             Cancel Workshop
                         </button>
                     )}
@@ -199,7 +203,9 @@ function WorkshopDetails() {
 
                         <div className="flex gap-4 items-center">
                             <UserIcon className="h-5 w-5" />
-                            <span className="text-base leading-6 text-dark">{workshopRequest.gender}</span>
+                            <span className="text-base leading-6 text-dark">
+                                {workshopRequest.gender}
+                            </span>
                         </div>
 
                         <div className="flex gap-4 items-center">
@@ -210,14 +216,16 @@ function WorkshopDetails() {
                         </div>
                     </div>
 
-                    <div className="text-left text-mediumGray text-lg">{workshopRequest.description}</div>
+                    <div className="text-left text-mediumGray text-lg">
+                        {workshopRequest.description}
+                    </div>
 
                     <div className="h-[1px] w-full border-t border-borderColor"></div>
 
                     <div className="text-left text-2xl">Amenities</div>
 
                     <div className="flex gap-12 items-center">
-                        {amenities.map((amenity) => (
+                        {amenities.map(amenity => (
                             <div className="flex items-center gap-2">
                                 <img
                                     className="object-cover"
@@ -272,12 +280,14 @@ function WorkshopDetails() {
                         <span className="">User</span>
                         <span className="">Seats</span>
                     </div>
-                    {workshopRequest.bookingByCustomers.map((user) => (
+                    {workshopRequest.bookingByCustomers.map(user => (
                         <div className="flex px-6 py-11 border-b justify-between pr-10">
                             <span className="text-mediumGray text-base leading-normal">
-                                {user.userId.name}
+                                {user?.userId?.name}
                             </span>
-                            <span className="text-mediumGray text-base leading-normal">{user.noOfSeats}</span>
+                            <span className="text-mediumGray text-base leading-normal">
+                                {user.noOfSeats}
+                            </span>
                         </div>
                     ))}
                 </div>
@@ -305,19 +315,25 @@ function WorkshopDetails() {
                                         variant="unstyled"
                                         value={rejectionReason}
                                         size="lg"
-                                        onChange={(event) => setRejectionReason(event.target.value)}
+                                        onChange={event => setRejectionReason(event.target.value)}
                                     />
                                 </div>
                                 <div className="requestActions flex w-full justify-end gap-6">
                                     <button
                                         onClick={() => setShowCancelPrompt(false)}
-                                        className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-errorLight">
-                                        <span className="text-sm font-medium text-mediumGray">Cancel</span>
+                                        className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-errorLight"
+                                    >
+                                        <span className="text-sm font-medium text-mediumGray">
+                                            Cancel
+                                        </span>
                                     </button>
                                     <button
                                         onClick={() => handleCancelRequest()}
-                                        className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-primary">
-                                        <span className="text-sm font-medium text-white">Reject</span>
+                                        className="py-2 flex gap-2.5 items-center px-3 rounded-lg border-mediumGray bg-primary"
+                                    >
+                                        <span className="text-sm font-medium text-white">
+                                            Reject
+                                        </span>
                                     </button>
                                 </div>
                             </div>

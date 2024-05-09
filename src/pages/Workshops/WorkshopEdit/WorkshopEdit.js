@@ -11,6 +11,7 @@ import {
     workshopAmenities,
     workshopBookingsPayload,
     workshopCategories,
+    workshopPicturesState,
     workshopRequestPayload,
     workshopSelectedBranch,
 } from "../../../stores/workshopStore";
@@ -25,10 +26,13 @@ import { GET_BRANCHES } from "../../../queries/branchesQueries";
 import Categories from "../../WorkshopRequests/components/Categories";
 import DatePicker from "../../WorkshopRequests/components/DatePicker/DatePicker";
 import Amenities from "../../../components/Amenities";
+import PicturesGrid from "../../../components/PicturesGrid";
+import Loader from "../../../components/Loader";
 
 function WorkshopCreatePost() {
     const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
     const [workshopBookings, setWorkshopBookings] = useRecoilState(workshopBookingsPayload);
+    const pictures = useRecoilValue(workshopPicturesState);
 
     const amenities = useRecoilValue(workshopAmenities);
     const categories = useRecoilValue(workshopCategories);
@@ -55,7 +59,8 @@ function WorkshopCreatePost() {
         }
     }, [requestPayload]);
 
-    const [updateWorkshopRequest] = useMutation(UPDATE_WORKSHOP_REQUEST);
+    const [updateWorkshopRequest, { updateData, loading, error }] =
+        useMutation(UPDATE_WORKSHOP_REQUEST);
     async function handleUpdateRequest() {
         if (parseInt(requestPayload.seats) >= totalBookings) {
             try {
@@ -66,11 +71,11 @@ function WorkshopCreatePost() {
                     ageGroupPayload = temp;
                 }
 
-                console.log({
-                    categories,
-                    requestPayload,
-                    bookings: workshopBookings.map(({ __typename, ...rest }) => rest),
-                });
+                // console.log({
+                //     categories,
+                //     requestPayload,
+                //     bookings: workshopBookings.map(({ __typename, ...rest }) => rest),
+                // });
                 payload = {
                     _id: requestPayload._id,
                     // ...requestPayload,
@@ -85,6 +90,7 @@ function WorkshopCreatePost() {
                     seats: parseInt(requestPayload.seats),
                     phone: requestPayload.phone,
                     email: requestPayload.email,
+                    pictures: pictures,
                     // branch: selectedBranch._id,
                 };
 
@@ -282,6 +288,9 @@ function WorkshopCreatePost() {
             <div className="categories border rounded-2xl border-light px-8 py-12 ">
                 <Categories />
             </div>
+
+            <PicturesGrid picturesState={workshopPicturesState} />
+
             <div className="buttons flex gap-6 w-full justify-end">
                 <button
                     className="py-2 px-3 bg-errorLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
@@ -291,12 +300,18 @@ function WorkshopCreatePost() {
                     <PlusIcon className="text-error rotate-45" />
                 </button>
                 {requestPayload.approvalStatus === "approved" ? (
-                    <button
-                        className="py-2 px-3 bg-primaryLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
-                        onClick={() => handleUpdateRequest()}
-                    >
-                        <span className="text-mediumGray text-xl">Update Post</span>
-                    </button>
+                    loading ? (
+                        <div className="h-11 w-[227px] bg-primary rounded-xl">
+                            <Loader color="#FFF" />
+                        </div>
+                    ) : (
+                        <button
+                            className="py-2 px-3 bg-primaryLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
+                            onClick={() => handleUpdateRequest()}
+                        >
+                            <span className="text-mediumGray text-xl">Update Post</span>
+                        </button>
+                    )
                 ) : (
                     <div className="buttons flex gap-6 w-full justify-end">
                         <button

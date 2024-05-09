@@ -239,7 +239,7 @@ function CustomOpenHoursList(props) {
         const updatedCustomOpenHours = JSON.parse(JSON.stringify(customOpenHours));
         updatedCustomOpenHours.splice(index, 1);
 
-        setCustomOpenHours(customOpenHours);
+        setCustomOpenHours(updatedCustomOpenHours);
     }
 
     function handleCustomDateChange(customDateIndex, field, value) {

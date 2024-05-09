@@ -31,6 +31,10 @@ export const GET_BRANCH = gql`
                 seats
                 name
             }
+            workshops {
+                _id
+                name
+            }
         }
     }
 `;
@@ -67,6 +71,10 @@ export const GET_BRANCHES = gql`
                 nameArabic
                 seats
                 pictures
+            }
+            workshops {
+                _id
+                name
             }
         }
     }

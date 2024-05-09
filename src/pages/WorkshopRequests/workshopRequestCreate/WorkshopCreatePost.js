@@ -12,6 +12,7 @@ import {
     workshopAmenities,
     workshopBookingsPayload,
     workshopCategories,
+    workshopPicturesState,
     workshopRequestPayload,
     workshopSelectedBranch,
 } from "../../../stores/workshopStore";
@@ -25,11 +26,14 @@ import { ReactComponent as ChevronRight } from "../../../assets/ChevronRight.svg
 import { useEffect, useState } from "react";
 import { GET_BRANCHES } from "../../../queries/branchesQueries";
 import Amenities from "../../../components/Amenities";
+import Loader from "../../../components/Loader";
+import PicturesGrid from "../../../components/PicturesGrid";
 
 function WorkshopCreatePost() {
     const [requestPayload, setWorkShopRequestPayload] = useRecoilState(workshopRequestPayload);
     const [workshopBookings, setWorkshopBookings] = useRecoilState(workshopBookingsPayload);
     const [workshopData, setWorkshopData] = useState();
+    const pictures = useRecoilValue(workshopPicturesState);
 
     const amenities = useRecoilValue(workshopAmenities);
     const categories = useRecoilValue(workshopCategories);
@@ -57,7 +61,8 @@ function WorkshopCreatePost() {
         }
     }, [requestPayload]);
 
-    const [acceptWorkshopRequest] = useMutation(ACCEPT_WORKSHOP_REQUEST);
+    const [acceptWorkshopRequest, { createData, loading, error }] =
+        useMutation(ACCEPT_WORKSHOP_REQUEST);
     async function handleAcceptRequest() {
         try {
             let payload = {};
@@ -96,6 +101,18 @@ function WorkshopCreatePost() {
 
     const [updateWorkshopRequest] = useMutation(UPDATE_WORKSHOP_REQUEST);
     async function handleUpdateRequest(draft) {
+        if (
+            amenities.some(amenity => {
+                return !amenity.name || !amenity.type || !amenity.picture;
+            })
+        ) {
+            toast({
+                title: "Amenity name cannot be empty",
+                status: "error",
+            });
+            return false;
+        }
+
         if (!draft && totalBookings === 0) {
             toast({
                 title: "Error",
@@ -153,6 +170,7 @@ function WorkshopCreatePost() {
                     draft: draft,
                     phone: workshopData.phone,
                     email: workshopData.email,
+                    pictures: pictures,
                 };
 
                 if ("__typename" in payload) delete payload["__typename"];
@@ -337,6 +355,7 @@ function WorkshopCreatePost() {
             <div className="categories border rounded-2xl border-light px-8 py-12 ">
                 <Categories />
             </div>
+            <PicturesGrid picturesState={workshopPicturesState} />
             <div className="buttons flex gap-6 w-full justify-end">
                 <button
                     className="py-2 px-3 bg-errorLight flex justify-center items-center gap-2 flex-row rounded-xl border border-light"
@@ -351,13 +370,19 @@ function WorkshopCreatePost() {
                 >
                     <span className="text-mediumGray text-xl">Save as Draft </span>
                 </button>
-                <button
-                    className="py-2 px-3 bg-primary flex justify-center items-center gap-2 flex-row rounded-xl"
-                    onClick={() => handleUpdateRequest(false)}
-                >
-                    <span className="text-white text-xl leading-none">Create Post </span>
-                    <PlusIcon className="text-white" />
-                </button>
+                {loading ? (
+                    <div className="h-11 w-[227px] bg-primary rounded-xl">
+                        <Loader color="#FFF" />
+                    </div>
+                ) : (
+                    <button
+                        className="py-2 px-3 bg-primary flex justify-center items-center gap-2 flex-row rounded-xl"
+                        onClick={() => handleUpdateRequest(false)}
+                    >
+                        <span className="text-white text-xl leading-none">Create Post </span>
+                        <PlusIcon className="text-white" />
+                    </button>
+                )}
             </div>
         </div>
     );

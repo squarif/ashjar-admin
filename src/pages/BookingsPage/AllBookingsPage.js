@@ -18,6 +18,9 @@ import { useRecoilState } from "recoil";
 import { userBookingsFilters } from "../../stores/dashboardStores";
 import client from "../../apollo";
 import { getDate, getTime12Hour } from "../../util/helpers";
+import { GET_BRANCH, GET_BRANCHES } from "../../queries/branchesQueries";
+import { branchesData } from "../../stores/branches";
+import moment from "moment";
 
 function FiltersModal({ setFiltersModal, bookingsData, handleApplyFilters }) {
     const [selectedFilter, setSelectedFilter] = useState("");
@@ -174,10 +177,18 @@ function FiltersModal({ setFiltersModal, bookingsData, handleApplyFilters }) {
 function BookingRow(props) {
     let booking = props.booking;
 
-    // console.log("PROPS", props);
-
     const [showOptions, setshowOptions] = useState(false);
     const toast = useToast();
+
+    const requiredBranch = props.branchData?.branches?.find(
+        b => b._id === props.booking.branch._id
+    );
+
+    const productId = props?.booking?.bookingId;
+    const requiredProduct =
+        requiredBranch?.meetingRooms?.find(m => m._id === productId) ||
+        requiredBranch?.workspaces?.find(m => m._id === productId) ||
+        requiredBranch?.workshops?.find(m => m._id === productId);
 
     // const [editUser] = useMutation(EDIT_USER);
     // async function handleChangeUserStatus() {
@@ -229,12 +240,23 @@ function BookingRow(props) {
         }
     }
 
+    const today = moment(); // Get the start of today
+
+    // Assuming getDate() returns the date in a compatible format
+    const bookingDate = moment(getDate(booking.bookingDate));
+    const bookingEndTime = moment(booking.endTime, "h:mm a");
+
+    // Compare today's date with the booking's createdAt date
+    const isBookingPassed = today.isAfter(bookingDate);
+    const isBookingEndTimePassed = today.isAfter(bookingEndTime);
+
     return (
         <Tr>
             <Td>{booking.bookingNumber || booking._id}</Td>
             <Td>{booking.userId && booking.userId.name}</Td>
             <Td>{booking.bookingType}</Td>
             <Td>{booking.branch.name}</Td>
+            <Td>{requiredProduct?.name}</Td>
             <Td>{getDate(booking.bookingDate)}</Td>
             <Td>{booking.startTime}</Td>
             <Td>{booking.endTime}</Td>
@@ -244,6 +266,13 @@ function BookingRow(props) {
                 {booking?.discountedPrice === 0
                     ? booking?.discountedPrice
                     : booking?.discountedPrice || booking.rate}
+            </Td>
+            <Td className="text-primary text-lg">
+                {booking.isCancelled
+                    ? "Cancelled"
+                    : isBookingPassed && isBookingEndTimePassed
+                    ? "Completed"
+                    : "Reserved"}
             </Td>
             <Td className=""> {getDate(booking.createdAt)}</Td>
             {/* <Td className="relative">
@@ -308,6 +337,18 @@ function AllBookingsPage() {
             },
         },
     });
+    let { loading, error, data: branchData, refetch } = useQuery(GET_BRANCHES);
+    const [branches, setBranches] = useRecoilState(branchesData);
+
+    useEffect(() => {
+        if (branchData) setBranches(branchData.branches);
+    }, [branchData]);
+
+    useEffect(() => {
+        refetch(); // Refetch data when the component mounts
+    }, [refetch]);
+    // console.log({ userBookingsData, branches, branchData });
+
     useEffect(() => {
         if (!userBookingsLoading && !userBookingsError) {
             // Set the branches data
@@ -433,6 +474,9 @@ function AllBookingsPage() {
                                         <Th>
                                             <span className="text-light"> Branch Name</span>
                                         </Th>
+                                        <Th>
+                                            <span className="text-light"> Product Name</span>
+                                        </Th>
 
                                         <Th>
                                             <span className="text-light"> Booking Date</span>
@@ -451,6 +495,9 @@ function AllBookingsPage() {
                                             <span className="text-light"> Amount</span>
                                         </Th>
                                         <Th>
+                                            <span className="text-light"> Status</span>
+                                        </Th>
+                                        <Th>
                                             <span className="text-light"> Created At</span>
                                         </Th>
                                     </Tr>
@@ -462,7 +509,11 @@ function AllBookingsPage() {
                                         </div>
                                     ) : (
                                         paginatedList(userBookingsData).map((booking, index) => (
-                                            <BookingRow booking={booking} key={index} />
+                                            <BookingRow
+                                                booking={booking}
+                                                key={index}
+                                                branchData={branchData}
+                                            />
                                         ))
                                     )}
                                 </Tbody>
