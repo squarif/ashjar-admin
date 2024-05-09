@@ -263,7 +263,13 @@ function BookingRow(props) {
             <Td>{booking.startTime}</Td>
             <Td>{booking.endTime}</Td>
             <Td className="text-primary text-lg">{booking.seats}</Td>
-            <Td className="text-primary text-lg">SAR {booking.rate}</Td>
+            <Td className="text-primary text-lg">
+                {" "}
+                SAR{" "}
+                {booking?.discountedPrice === 0
+                    ? booking?.discountedPrice
+                    : booking?.discountedPrice || booking.rate}
+            </Td>
             <Td className="text-primary text-lg">
                 {booking.isCancelled
                     ? "Cancelled"
