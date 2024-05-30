@@ -85,7 +85,7 @@ function LandingPage(props) {
                 </button>
             </div>
 
-            {pictures.length ? (
+            {pictures?.length ? (
                 <PicturesGrid picturesState={landingPagePictures} />
             ) : (
                 "No pictures uploaded yet"

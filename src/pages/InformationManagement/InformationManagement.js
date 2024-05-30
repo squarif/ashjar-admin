@@ -11,7 +11,10 @@ import AboutPage from "./components/AboutPage";
 import { useQuery } from "@apollo/client";
 import { GET_INFO } from "../../queries/informationManagement";
 import { useRecoilState } from "recoil";
-import { editInformationManagementRequest, landingPagePictures } from "../../stores/informationManagement";
+import {
+    editInformationManagementRequest,
+    landingPagePictures,
+} from "../../stores/informationManagement";
 import Loader from "../../components/Loader";
 
 function InformationManagement() {
@@ -23,9 +26,9 @@ function InformationManagement() {
     const { loading: infoLoading, error: infoError, data } = useQuery(GET_INFO);
     useEffect(() => {
         if (!infoLoading && !infoError) {
-            setInfoData(data.informationManagementAll[0]);
-            setEditInfoRequest(data.informationManagementAll[0]);
-            setPictures(data.informationManagementAll[0].landingPage.pictures);
+            setInfoData(data?.informationManagementAll[0]);
+            setEditInfoRequest(data?.informationManagementAll[0]);
+            setPictures(data?.informationManagementAll[0]?.landingPage?.pictures);
         }
     }, [infoLoading, infoError, data]);
 
@@ -60,7 +63,8 @@ function InformationManagement() {
                 index === selectedItem
                     ? "flex p-6 w-full justify-between items-center rounded-xl border-[0.5px] border-primary shadow-sm shadow-primaryLight"
                     : "flex p-6 w-full justify-between items-center rounded-xl border border-transparent"
-            }>
+            }
+        >
             <div className="flex flex-col text-xl justify-start gap-4">{item.title}</div>
 
             <ChevronRight className={index === selectedItem ? "text-primary" : "text-light"} />
@@ -79,13 +83,13 @@ function InformationManagement() {
             return <div>No Item Selected</div>;
         } else {
             if (selectedItem === 0) {
-                return <TermsAndConditions data={infoData.termsAndConditions} />;
+                return <TermsAndConditions data={infoData?.termsAndConditions} />;
             } else if (selectedItem === 1) {
-                return <CancellationPolicy data={infoData.cancellationPolicy} />;
+                return <CancellationPolicy data={infoData?.cancellationPolicy} />;
             } else if (selectedItem === 2) {
-                return <AboutPage data={infoData.aboutAshjarSpace} />;
+                return <AboutPage data={infoData?.aboutAshjarSpace} />;
             } else if (selectedItem === 3) {
-                return <LandingPage data={infoData.landingPage} />;
+                return <LandingPage data={infoData?.landingPage} />;
             }
         }
     }

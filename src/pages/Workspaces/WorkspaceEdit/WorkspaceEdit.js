@@ -229,7 +229,12 @@ function WorkspaceNew() {
                         value={editWorkspaceRequestPayload.nameArabic}
                         placeholder="ادخل اسم القاعة"
                         className="py-6 text-dark text-[24px] leading-none flex-1 text-right"
-                        onChange={event => setTotalSeatsInput(parseInt(event.target.value))}
+                        onChange={event =>
+                            setEditWorkspacePayload({
+                                ...editWorkspaceRequestPayload,
+                                nameArabic: event.target.value,
+                            })
+                        }
                         variant="unstyled"
                         dir="rtl" // Right-to-left text direction
                     />

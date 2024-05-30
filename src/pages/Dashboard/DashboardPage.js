@@ -63,19 +63,12 @@ function RevenuePieCharts({ dates, selectedBranch }) {
                 // Set the branches data
 
                 let data = selectedBranch ? result.data.branchRevenue : result.data.branchesRevenue;
-
                 setWorkspaceRevenueData(data.workSpaceRevenue);
                 setRoomRevenueData(data.meetingRoomRevenue);
                 setWorkshopRevenueData(data.workshopRevenue);
 
                 setTotalRevenueData(
-                    result.data.workSpaceRevenue +
-                        result.data.meetingRoomRevenue +
-                        result.data.workshopRevenue
-                        ? result.data.workSpaceRevenue +
-                              result.data.meetingRoomRevenue +
-                              result.workshopRevenue
-                        : 1
+                    data.workSpaceRevenue + data.meetingRoomRevenue + data.workshopRevenue
                 );
             });
     }
@@ -183,17 +176,17 @@ function RevenuePieCharts({ dates, selectedBranch }) {
             <div className=" border rounded-xl border-borderColor shadow-md py-6 px-4 flex justify-between">
                 <div className="flex flex-col gap-3">
                     <span className="text-mediumGray text-sm font-semibold text-mediumBold">
-                        Workspace Revenue
+                        Total Revenue
                     </span>
-                    <span className=" text-2xl text-primary">SAR {roomRevenueData}</span>
+                    <span className=" text-2xl text-primary">SAR {totalRevenueData}</span>
                     {/* <span className=" text-xs text-light">We had 150 Chairs Bookings</span> */}
                 </div>
-                <ResponsiveContainer width="50%" height="100%">
+                {/* <ResponsiveContainer width="50%" height="100%">
                     <PieChart>
                         <Pie
                             data={[
                                 { name: "Total Branch Revenue", value: totalRevenueData },
-                                { name: "Percentage of Returning Users", value: roomRevenueData },
+                                { name: "Percentage of Returning Users", value: totalRevenueData },
                             ]}
                             cx="50%"
                             cy="50%"
@@ -205,13 +198,13 @@ function RevenuePieCharts({ dates, selectedBranch }) {
                         >
                             {[
                                 { name: "Total Branch Revenue", value: totalRevenueData },
-                                { name: "Percentage of Returning Users", value: roomRevenueData },
+                                { name: "Percentage of Returning Users", value: totalRevenueData },
                             ].map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>
                     </PieChart>
-                </ResponsiveContainer>
+                </ResponsiveContainer> */}
             </div>
         </div>
     );
@@ -465,7 +458,7 @@ function DashboardPage() {
                     </Menu>
 
                     <DatePicker.RangePicker
-                        format="DD-MM-YYYY"
+                        format="YYYY-MM-DD"
                         onChange={onChange}
                         onOk={onOk}
                         cellRender={cellRender}

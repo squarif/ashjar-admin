@@ -262,15 +262,24 @@ function BookingRow(props) {
             <Td>{getDate(booking.bookingDate)}</Td>
             <Td>{booking.startTime}</Td>
             <Td>{booking.endTime}</Td>
-            <Td className="text-primary text-lg">{booking.seats}</Td>
-            <Td className="text-primary text-lg">
+            <Td className=" text-lg">{booking.seats}</Td>
+            <Td className=" text-lg">
                 {" "}
                 SAR{" "}
                 {booking?.discountedPrice === 0
                     ? booking?.discountedPrice
                     : booking?.discountedPrice || booking.rate}
             </Td>
-            <Td className="text-primary text-lg">
+            <Td
+                className={
+                    "text-lg" +
+                    (booking.isCancelled
+                        ? " text-red-400"
+                        : isBookingPassed && isBookingEndTimePassed
+                        ? " text-primaryDark"
+                        : " text-orange-400")
+                }
+            >
                 {booking.isCancelled
                     ? "Cancelled"
                     : isBookingPassed && isBookingEndTimePassed
@@ -461,7 +470,7 @@ function UserBookingsPage() {
                         </div>
                         <div>
                             <span className="text-dark text-base font-bold font-Adam pr-4">
-                                User Type:
+                                User:
                             </span>
                             <span className=" text-primaryDark text-base font-medium font-Adam hover:underline ">
                                 {`${userBookingsData?.[0]?.userId?.name} (

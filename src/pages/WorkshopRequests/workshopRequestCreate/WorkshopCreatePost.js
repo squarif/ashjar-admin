@@ -178,7 +178,7 @@ function WorkshopCreatePost() {
                 // if ("email" in payload) delete payload["email"];
                 // if ("phone" in payload) delete payload["phone"];
                 if ("company" in payload) delete payload["company"];
-
+                if ("bookingByCustomers" in payload) delete payload["bookingByCustomers"];
                 console.log("PAYLOAD", payload);
                 const { data } = await updateWorkshopRequest({
                     mutation: UPDATE_WORKSHOP_REQUEST,
