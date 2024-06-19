@@ -127,24 +127,24 @@ function Users() {
     const [searchQuery, setSearchQuery] = useState("");
     const [userData, setUserData] = useState([]);
     const { loading: usersLoading, error: usersError, data } = useQuery(GET_USERS);
-    const [itemsLength, setItemsLength] = useState(0);
+    const [itemsLength, setItemsLength] = useState(0); // No need to update this line
     const [pageNumber, setPageNumber] = useState(1);
 
     useEffect(() => {
         if (!usersLoading && !usersError) {
-            // Set the branches data
-            //  console.log("users data", data);
             setUserData(data.users);
-        } else {
-            //  console.log("ERRRRR", usersError, usersLoading, data);
         }
     }, [usersLoading, usersError, data]);
+
+    useEffect(() => {
+        setItemsLength(filteredList(userData).length);
+    }, [searchQuery, userData]);
 
     function filteredList(items) {
         return items.filter(
             (item) =>
-                item.name.toLowerCase().includes(searchQuery) ||
-                item._id.toLowerCase().includes(searchQuery) ||
+                item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item._id.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 item.phoneNumber.includes(searchQuery)
         );
     }
@@ -152,8 +152,7 @@ function Users() {
     function paginatedList(items) {
         const startIndex = (pageNumber - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-
-        return filteredList(items.slice(startIndex, endIndex));
+        return filteredList(items).slice(startIndex, endIndex);
     }
 
     if (usersLoading)
@@ -179,7 +178,6 @@ function Users() {
                                 className=" py-3 px-6 w-[430px] "
                                 onChange={(event) => setSearchQuery(event.target.value)}
                             />
-
                             <div className="Filter"></div>
                         </div>
 
@@ -219,7 +217,7 @@ function Users() {
                             <Pagination
                                 className="p-4"
                                 defaultCurrent={pageNumber}
-                                total={userData.length}
+                                total={itemsLength} // Update to use itemsLength
                                 pageSize={itemsPerPage}
                                 onChange={(x) => setPageNumber(x)}
                             />
@@ -236,3 +234,4 @@ function Users() {
 }
 
 export default Users;
+
