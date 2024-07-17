@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input } from "@chakra-ui/react";
+import { Input, Spinner, useToast } from "@chakra-ui/react";
 
 import { ReactComponent as ChevronRight } from "../../assets/ChevronRight.svg";
 import { ReactComponent as ClockIcon } from "../../assets/ClockIcon.svg";
@@ -16,24 +16,56 @@ import TermsAndConditions from "./components/TermsAndConditions";
 import LandingPage from "./components/LandingPage";
 import CancellationPolicy from "./components/CancellationPolicy";
 import AboutPage from "./components/AboutPage";
+import { SEND_NOTIFICATION } from "../../queries/notificationsQueries";
+import { useMutation } from "@apollo/client";
 
 // import { useQuery } from "@apollo/client";
 // import { GET_BRANCHES } from "./queries";
 
 function AnnouncementPage() {
-    // let { loading, error, data } = useQuery(GET_BRANCHES);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedItem, setSelectedItem] = useState(0);
     const [edit, setEdit] = useState(false);
 
-    const [value, setValue] = useState(
-        "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione .."
-    );
+    const [value, setValue] = useState("");
+    const [sendPushNotification, { data, loading, error}] = useMutation(SEND_NOTIFICATION)
 
     let handleInputChange = (e) => {
         let inputValue = e.target.value;
         setValue(inputValue);
     };
+
+    const toast = useToast()
+
+    async function sendNotification(){
+        try{
+
+            await sendPushNotification({
+                mutation: SEND_NOTIFICATION,
+                variables:{
+                    input:{
+                        message: value
+                    }
+                }
+            }).then(data =>{
+                console.log({data})
+                toast({
+                    title: "Notification Sent",
+                    status: "success"
+                })
+            })
+
+
+
+        }catch(error){
+            console.log({error})
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error"
+            })
+        }
+    }
 
     // console.log("value", value);
 
@@ -67,10 +99,14 @@ function AnnouncementPage() {
                                     <span className="text-sm text-mediumGray font-medium">Cancel</span>
                                     <CloseIcon className="text-error h-5 w-5" />
                                 </button>
-                                <button className="flex flex-row gap-2 py-2 px-3 items-center rounded-lgborder border-borderColor bg-primaryLight">
-                                    <span className="text-sm text-mediumGray font-medium">
-                                        Confirm Changes
-                                    </span>
+                                <button onClick={ sendNotification } className="flex flex-row gap-2 py-2 px-3 items-center rounded-lgborder border-borderColor bg-primaryLight">
+                                    {loading ? (
+                                        <Spinner color="green" className="" />
+                                    ) : (
+                                        <span className="text-sm text-mediumGray font-medium">
+                                            Confirm Changes
+                                        </span>
+                                    )}
                                     <TickIcon className="text-primary h-5 w-5" />
                                 </button>
                             </div>
