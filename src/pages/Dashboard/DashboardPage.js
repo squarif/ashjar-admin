@@ -29,6 +29,7 @@ import { useRecoilState } from "recoil";
 import { userBookingsFilters } from "../../stores/dashboardStores";
 import client from "../../apollo";
 import { GET_BRANCHES } from "../../queries/branchesQueries";
+import { GET_USERS } from "../../queries/userQueries";
 
 const COLORS = ["#E4E8EF", "#B0C478"];
 
@@ -37,6 +38,29 @@ function RevenuePieCharts({ dates, selectedBranch }) {
     const [roomRevenueData, setRoomRevenueData] = useState(500);
     const [workshopRevenueData, setWorkshopRevenueData] = useState(500);
     const [totalRevenueData, setTotalRevenueData] = useState(1000);
+    const { loading: usersLoading, error: usersError, data } = useQuery(GET_USERS);
+    const [userData, setUserData] = useState([]);
+    const [retentionRate, setRetentionRate] = useState([]);
+
+    useEffect(() => {
+        if (!usersLoading && !usersError) {
+            setUserData(data.users);
+            findRetentionRate();
+        }
+    }, [usersLoading, usersError, data]);
+
+    const findRetentionRate = () => {
+        const userLength = data?.users?.length;
+        const requiredUsers = data?.users?.filter((user) => {
+            return user.meetingRoomBookings.length > 1 || 
+                   user.workspaceBookings.length > 1 || 
+                   user.workshopBookings.length > 1 || 
+                   (user.meetingRoomBookings.length + user.workspaceBookings.length + user.workshopBookings.length) > 1;
+        })?.length;
+        const retention = parseInt((requiredUsers / userLength) * 100)
+        setRetentionRate(retention)
+    }
+
 
     useEffect(() => {
         fetchBranchesData();
@@ -176,17 +200,17 @@ function RevenuePieCharts({ dates, selectedBranch }) {
             <div className=" border rounded-xl border-borderColor shadow-md py-6 px-4 flex justify-between">
                 <div className="flex flex-col gap-3">
                     <span className="text-mediumGray text-sm font-semibold text-mediumBold">
-                        Total Revenue
+                        Retention Rate
                     </span>
-                    <span className=" text-2xl text-primary">SAR {totalRevenueData}</span>
+                    <span className=" text-2xl text-primary"> {retentionRate} %</span>
                     {/* <span className=" text-xs text-light">We had 150 Chairs Bookings</span> */}
                 </div>
-                {/* <ResponsiveContainer width="50%" height="100%">
+                <ResponsiveContainer width="50%" height="100%">
                     <PieChart>
                         <Pie
                             data={[
-                                { name: "Total Branch Revenue", value: totalRevenueData },
-                                { name: "Percentage of Returning Users", value: totalRevenueData },
+                                { name: "Total Branch Revenue", value: 100 },
+                                { name: "Percentage of Returning Users", value: retentionRate },
                             ]}
                             cx="50%"
                             cy="50%"
@@ -204,7 +228,16 @@ function RevenuePieCharts({ dates, selectedBranch }) {
                             ))}
                         </Pie>
                     </PieChart>
-                </ResponsiveContainer> */}
+                </ResponsiveContainer>
+            </div>
+            <div className=" border rounded-xl border-borderColor shadow-md py-6 px-4 flex justify-between">
+                <div className="flex flex-col gap-3">
+                    <span className="text-mediumGray text-sm font-semibold text-mediumBold">
+                        Total Revenue
+                    </span>
+                    <span className=" text-2xl text-primary">SAR {totalRevenueData}</span>
+                    {/* <span className=" text-xs text-light">We had 150 Chairs Bookings</span> */}
+                </div>
             </div>
         </div>
     );
