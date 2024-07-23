@@ -47,16 +47,55 @@ function RevenuePieCharts({ dates, selectedBranch }) {
             setUserData(data.users);
             findRetentionRate();
         }
-    }, [usersLoading, usersError, data]);
+    }, [usersLoading, usersError, data, dates]);
+
+    const dateToTimestampDates = (dateStr) => {
+        const [day, month, year] = dateStr.split('-').map(Number);
+        const date = new Date(year, month - 1, day); // Month is 0-indexed in Date constructor
+        return date.getTime();
+    };
+
+    const dateToTimestamp = (dateStr) => {
+        // const [day, month, year] = dateStr.split('-').map(Number);
+        const date = new Date(dateStr); // Month is 0-indexed in Date constructor
+        return date.getTime();
+    };
+
+    const startDate = dateToTimestampDates(dates?.startDate) < -1 ? dateToTimestamp(dates?.startDate): dateToTimestampDates(dates?.startDate)
+    const endDate = dateToTimestampDates(dates?.endDate) < -1 ? dateToTimestamp(dates?.endDate): dateToTimestampDates(dates?.endDate)
+    console.log({startDate, endDate})
+
+    const checkDate = (date)=> {
+        return dateToTimestamp(date) >= startDate && dateToTimestamp(date) <= endDate
+    }
 
     const findRetentionRate = () => {
-        const userLength = data?.users?.length;
-        const requiredUsers = data?.users?.filter((user) => {
+        
+        const filteredUserBookings = data?.users?.map((user)=>{
+            return {
+                meetingRoomBookings: user.meetingRoomBookings.filter(booking => checkDate(booking.date)),
+                workspaceBookings: user.workspaceBookings.filter(booking => checkDate(booking.date)),
+                workshopBookings: user.workshopBookings.filter(booking => checkDate(booking.date))
+            }
+        })
+
+        // console.log({dates, startDate, endDate, filteredUserBookings})
+
+        const userLength = filteredUserBookings?.filter((user) => {
+            return user.meetingRoomBookings.length === 1 || 
+                   user.workspaceBookings.length === 1 || 
+                   user.workshopBookings.length === 1 || 
+                   (user.meetingRoomBookings.length + user.workspaceBookings.length + user.workshopBookings.length) === 1;
+        })?.length;
+        const requiredUsers = filteredUserBookings?.filter((user) => {
             return user.meetingRoomBookings.length > 1 || 
                    user.workspaceBookings.length > 1 || 
                    user.workshopBookings.length > 1 || 
                    (user.meetingRoomBookings.length + user.workspaceBookings.length + user.workshopBookings.length) > 1;
         })?.length;
+
+        // console.log()
+        // console.log({userLength, requiredUsers, data, dates})
         const retention = parseInt((requiredUsers / userLength) * 100)
         setRetentionRate(retention)
     }

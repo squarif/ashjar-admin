@@ -15,21 +15,27 @@ const GET_USERS = gql`
             numberOfBookings
             workshopBookings {
                 _id
+                date
             }
             workspaceBookings {
                 _id
+                date
             }
             meetingRoomBookings {
                 _id
+                date
             }
             cancelledMeetingRoomBookings {
                 _id
+                date
             }
             cancelledWorkshopBookings {
                 _id
+                date
             }
             cancelledWorkspaceBookings {
                 _id
+                date
             }
         }
     }
