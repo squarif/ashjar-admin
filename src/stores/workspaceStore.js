@@ -233,6 +233,65 @@ export const workspaceCustomRatesState = atom({
     ],
 });
 
+export const workspaceCloseDaysState = atom({
+    key: "workspaceCloseDaysState",
+    default: [
+        // {
+        //     startDate: "2023-07-22",
+        //     endDate: "2023-07-28",
+        //     ratesInSlot: [
+        //         {
+        //             startTime: "11:00",
+        //             endTime: "04:00",
+        //             rate: 230,
+        //         },
+        //         {
+        //             startTime: "11:00",
+        //             endTime: "04:00",
+        //             rate: 230,
+        //         },
+        //         {
+        //             startTime: "11:00",
+        //             endTime: "04:00",
+        //             rate: 230,
+        //         },
+        //         {
+        //             startTime: "11:00",
+        //             endTime: "04:00",
+        //             rate: 230,
+        //         },
+        //     ],
+        // },
+        // {
+        //     startDate: "2023-07-22",
+        //     endDate: "2023-08-01",
+        //     ratesInSlot: [
+        //         {
+        //             startTime: "11:00",
+        //             endTime: "07:00",
+        //             rate: 230,
+        //         },
+        //         {
+        //             startTime: "11:00",
+        //             endTime: "07:00",
+        //             rate: 230,
+        //         },
+        //         {
+        //             startTime: "11:00",
+        //             endTime: "07:00",
+        //             rate: 230,
+        //         },
+        //         {
+        //             startTime: "11:00",
+        //             endTime: "07:00",
+        //             rate: 230,
+        //         },
+        //     ],
+        // },
+    ],
+});
+
+
 export const workspaceAmenitiesState = atom({
     key: "workspaceAmenitiesState",
     default: [],

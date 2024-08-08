@@ -19,6 +19,11 @@ export const editMeetingRoomRequest = atom({
     default: {},
 });
 
+export const meetingRoomCloseDaysState = atom({
+    key: "meetingRoomCloseDaysState",
+    default: [],
+});
+
 export const meetingRoomOpenDaysState = atom({
     key: "openDays",
     default: [

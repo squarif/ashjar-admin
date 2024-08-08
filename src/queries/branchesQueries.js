@@ -11,6 +11,7 @@ export const GET_BRANCH = gql`
             nameArabic
             meetingRooms {
                 _id
+                priority
                 name
                 nameArabic
                 totalSeats
@@ -20,6 +21,7 @@ export const GET_BRANCH = gql`
             }
             workspaces {
                 _id
+                priority
                 name
                 nameArabic
                 totalSeats
@@ -44,6 +46,7 @@ export const GET_BRANCHES = gql`
         branches {
             meetingRooms {
                 _id
+                priority
                 name
                 nameArabic
                 totalSeats
@@ -56,6 +59,7 @@ export const GET_BRANCHES = gql`
             workspaces {
                 _id
                 name
+                priority
                 nameArabic
                 totalSeats
                 pictures

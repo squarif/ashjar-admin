@@ -54,6 +54,7 @@ const GET_WORKSPACE = gql`
         WorkSpace(_id: $id) {
             _id
             name
+            priority
             nameArabic
             description
             descriptionArabic
@@ -69,6 +70,12 @@ const GET_WORKSPACE = gql`
                 endTime
             }
             customOpenHours {
+                startDate
+                endDate
+                startTime
+                endTime
+            }
+            closeDays {
                 startDate
                 endDate
                 startTime
@@ -122,6 +129,7 @@ const EDIT_WORKSPACE = gql`
         updateWorkSpace(input: $input) {
             _id
             name
+            priority
             nameArabic
             description
             descriptionArabic
@@ -137,6 +145,12 @@ const EDIT_WORKSPACE = gql`
                 endTime
             }
             customOpenHours {
+                startDate
+                endDate
+                startTime
+                endTime
+            }
+            closeDays {
                 startDate
                 endDate
                 startTime

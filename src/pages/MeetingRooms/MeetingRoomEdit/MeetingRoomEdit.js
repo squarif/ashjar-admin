@@ -15,6 +15,7 @@ import {
     editMeetingRoomRequest,
     meetingRoomPicturesState,
     meetingRoomCustomOpenHoursState,
+    meetingRoomCloseDaysState,
 } from "../../../stores/meetingRoomStore";
 
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
@@ -34,6 +35,7 @@ function MeetingRoomEdit() {
         useRecoilState(editMeetingRoomRequest);
     const openDays = useRecoilValue(meetingRoomOpenDaysState);
     const pictures = useRecoilValue(meetingRoomPicturesState);
+    const closeDays = useRecoilValue(meetingRoomCloseDaysState)
     const rates = useRecoilValue(meetingRoomRatesState);
     const amenities = useRecoilValue(meetingRoomAmenitiesState);
     const customOpenHours = useRecoilValue(meetingRoomCustomOpenHoursState);
@@ -136,6 +138,7 @@ function MeetingRoomEdit() {
             ...editMeetingRoomRequestPayload,
             customRates: rates.map(({ __typename, ...rest }) => rest),
             openDays: openDays.map(({ __typename, ...rest }) => rest),
+            closeDays: closeDays.map(({ __typename, ...rest }) => rest),
             customOpenHours: customOpenHours.map(({ __typename, ...rest }) => rest),
             amenities: amenities.map(({ __typename, ...rest }) => rest),
             pictures: pictures,
@@ -230,6 +233,25 @@ function MeetingRoomEdit() {
                             />
                         </div>
                     </div>
+                    <div className="flex flex-col gap-1 w-fit">
+                        <span className="text-sm text-mediumGray">Priority</span>
+                        <div className="border rounded-xl border-light px-4">
+                            <Input
+                                id="cost"
+                                variant="unstyled"
+                                type="number"
+                                value={editMeetingRoomRequestPayload.priority}
+                                style={{ fontSize: 20 }}
+                                className="py-2.5 max-w-[143px]"
+                                onChange={event =>
+                                    setEditMeetingRoomPayload({
+                                        ...editMeetingRoomRequestPayload,
+                                        priority: parseInt(event.target.value),
+                                    })
+                                }
+                            />
+                        </div>
+                    </div>
                     <div className="location flex flex-col gap-1">
                         <span className="text-sm text-mediumGray">Location</span>
 
@@ -304,6 +326,7 @@ function MeetingRoomEdit() {
                 <OpenDays
                     customOpenHoursState={meetingRoomCustomOpenHoursState}
                     openDaysState={meetingRoomOpenDaysState}
+                    closeDaysState={meetingRoomCloseDaysState}
                 />
             </div>
 

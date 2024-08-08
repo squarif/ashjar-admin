@@ -9,6 +9,7 @@ import {
     editWorkspaceRequest,
     workspaceAmenitiesState,
     workspaceBaseRatesState,
+    workspaceCloseDaysState,
     workspaceCustomOpenHoursState,
     workspaceCustomRatesState,
     workspaceOpenDaysState,
@@ -43,6 +44,7 @@ function WorkspaceDetail() {
     let [baseRates, setBaseRates] = useRecoilState(workspaceBaseRatesState);
     let [customRates, setCustomRates] = useRecoilState(workspaceCustomRatesState);
     let [openDays, setOpenDays] = useRecoilState(workspaceOpenDaysState);
+    let [closeDays, setCloseDays] = useRecoilState(workspaceCloseDaysState)
     let [customOpenHours, setCustomOpenHours] = useRecoilState(workspaceCustomOpenHoursState);
     let [pictures, setPictures] = useRecoilState(workspacePicturesState);
     let [editworkspace, setEditWorkspacePayload] = useRecoilState(editWorkspaceRequest);
@@ -108,6 +110,7 @@ function WorkspaceDetail() {
             setOpenDays(workspaceData.openDays);
             setPictures(workspaceData.pictures);
             setCustomOpenHours(workspaceData.customOpenHours);
+            setCloseDays(workspaceData.closeDays);
             setEditWorkspacePayload(workspaceData);
         }
     }, [workspaceLoading, workspaceError, data]);

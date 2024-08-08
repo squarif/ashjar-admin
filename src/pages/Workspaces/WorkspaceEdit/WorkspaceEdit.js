@@ -18,6 +18,7 @@ import {
     workspaceBaseRatesState,
     workspaceCustomRatesState,
     workspaceCustomOpenHoursState,
+    workspaceCloseDaysState,
 } from "../../../stores/workspaceStore";
 
 import { EDIT_WORKSPACE } from "../../../queries/workspaceQueries";
@@ -38,6 +39,7 @@ function WorkspaceNew() {
 
     const baseRates = useRecoilValue(workspaceBaseRatesState);
     const customRates = useRecoilValue(workspaceCustomRatesState);
+    const closeDays = useRecoilValue(workspaceCloseDaysState);
     const amenities = useRecoilValue(workspaceAmenitiesState);
     const [totalSeatsInput, setTotalSeatsInput] = useState(editWorkspaceRequestPayload.totalSeats);
 
@@ -178,6 +180,7 @@ function WorkspaceNew() {
         let payload = {
             ...editWorkspaceRequestPayload,
             baseRates: baseRates.map(({ __typename, ...rest }) => rest),
+            closeDays: closeDays.map(({ __typename, ...rest }) => rest),
             customRates: customRatesPayload.map(({ __typename, ...rest }) => rest),
             openDays: openDays.map(({ __typename, ...rest }) => rest),
             customOpenHours: customOpenHours.map(({ __typename, ...rest }) => rest),
@@ -260,6 +263,25 @@ function WorkspaceNew() {
                         </div>
                     </div>
                     <div className="cost flex flex-col w-fit gap-1">
+                        <span className="text-sm text-mediumGray">Priority</span>
+                        <div className="border rounded-xl border-light px-4">
+                            <Input
+                                id="cost"
+                                variant="unstyled"
+                                type="number"
+                                style={{ fontSize: 20 }}
+                                value={editWorkspaceRequestPayload.priority}
+                                className="py-[9px] max-w-[143px]"
+                                onChange={event => {
+                                    setEditWorkspacePayload({
+                                        ...editWorkspaceRequestPayload,
+                                        priority: parseInt(event.target.value),
+                                    });
+                                }}
+                            />
+                        </div>
+                    </div>
+                    <div className="cost flex flex-col w-fit gap-1">
                         <span className="text-sm text-mediumGray">Location</span>
 
                         <div className="rounded-xl border border-light  w-fit  flex justify-start">
@@ -331,6 +353,7 @@ function WorkspaceNew() {
                 <OpenDays
                     openDaysState={workspaceOpenDaysState}
                     customOpenHoursState={workspaceCustomOpenHoursState}
+                    closeDaysState={workspaceCloseDaysState}
                 />
             </div>
 

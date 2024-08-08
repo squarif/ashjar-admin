@@ -8,6 +8,7 @@ import { useRecoilState } from "recoil";
 import {
     editMeetingRoomRequest,
     meetingRoomAmenitiesState,
+    meetingRoomCloseDaysState,
     meetingRoomCustomOpenHoursState,
     meetingRoomOpenDaysState,
     meetingRoomPicturesState,
@@ -37,6 +38,7 @@ function MeetingRoomDetails() {
     let [amenities, setAmenitiesData] = useRecoilState(meetingRoomAmenitiesState);
     let [rates, setRatesData] = useRecoilState(meetingRoomRatesState);
     let [openDays, setOpenDays] = useRecoilState(meetingRoomOpenDaysState);
+    let [closeDays, setCloseDays] = useRecoilState(meetingRoomCloseDaysState);
     let [pictures, setPictures] = useRecoilState(meetingRoomPicturesState);
     let [editMeetingRoom, setEditMeetingRoomPayload] = useRecoilState(editMeetingRoomRequest);
     let [customOpenHours, setCustomOpenHours] = useRecoilState(meetingRoomCustomOpenHoursState);
@@ -68,6 +70,7 @@ function MeetingRoomDetails() {
             setCustomOpenHours(meetingRoomData?.customOpenHours);
             setPictures(meetingRoomData?.pictures);
             setEditMeetingRoomPayload(meetingRoomData);
+            setCloseDays(meetingRoomData?.closeDays)
 
             // let loc = JSON.parse(meetingRoomData?.branch.location);
             // console.log(loc, typeof loc);

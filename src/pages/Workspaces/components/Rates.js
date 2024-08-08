@@ -5,13 +5,14 @@ import { ReactComponent as PlusIcon } from "../../../assets/PlusIcon.svg";
 import { useRecoilState, useRecoilValue } from "recoil";
 // import { workshopRequestPayload } from "../../../stores/workshopStore";
 
-import { workspaceBaseRatesState, workspaceCustomRatesState } from "../../../stores/workspaceStore";
+import { workspaceBaseRatesState, workspaceCloseDaysState, workspaceCustomRatesState } from "../../../stores/workspaceStore";
 
 import { getDate } from "../../../util/helpers";
 
 function WorkspaceRates() {
     const [baseRates, setBaseRates] = useRecoilState(workspaceBaseRatesState);
     const [customRates, setCustomRates] = useRecoilState(workspaceCustomRatesState);
+    const [closeDays, setCloseDays] = useRecoilState(workspaceCloseDaysState);
 
     const inputStyle = {
         /* Hide the time input's clock icon */
@@ -103,6 +104,7 @@ function WorkspaceRates() {
         setCustomRates(updatedRates);
     }
     const handleCustomTimeChange = (slotIndex, customRateIndex, field, value) => {
+        console.log({slotIndex, customRateIndex, field, value})
         const updatedCustomRates = JSON.parse(JSON.stringify(customRates));
         updatedCustomRates[customRateIndex].ratesInSlot[slotIndex][field] = value;
         setCustomRates(updatedCustomRates);
@@ -111,6 +113,54 @@ function WorkspaceRates() {
         const updatedCustomRates = JSON.parse(JSON.stringify(customRates));
         updatedCustomRates[customRateIndex].ratesInSlot[slotIndex].rate = parseInt(value);
         setCustomRates(updatedCustomRates);
+    }
+
+    function handleNewCloseDay() {
+        let date = new Date();
+        let newCloseDay = {
+            startDate: date.getTime(),
+            endDate: date.getTime(),
+            closeSlots: [
+                {
+                    startTime: "",
+                    endTime: "",
+                },
+            ],
+        };
+
+        let updatedCloseDays = [...closeDays, newCloseDay];
+        setCloseDays(updatedCloseDays);
+    }
+
+    function handleNewCloseDay() {
+        let date = new Date();
+        let newCloseDay = {
+            startDate: date.getTime(),
+            endDate: date.getTime(),
+            startTime: "",
+            endTime: "",
+        };
+
+        let updatedCloseDays = [...closeDays, newCloseDay];
+        setCloseDays(updatedCloseDays);
+    }
+
+    function handleDeleteCloseDay(index) {
+        const updatedCloseDays = JSON.parse(JSON.stringify(closeDays));
+        updatedCloseDays.splice(index, 1);
+        setCloseDays(updatedCloseDays);
+    }
+
+    function handleCloseDateChange(closeDayIndex, field, value) {
+        const updatedCloseDays = JSON.parse(JSON.stringify(closeDays));
+        updatedCloseDays[closeDayIndex][field] = value;
+        setCloseDays(updatedCloseDays);
+    }
+
+    const handleCloseTimeChange = (closeDayIndex, field, value) => {
+        const updatedCloseDays = JSON.parse(JSON.stringify(closeDays));
+        updatedCloseDays[closeDayIndex][field] = value;
+        setCloseDays(updatedCloseDays);
     }
 
     return (
@@ -195,6 +245,8 @@ function WorkspaceRates() {
                         <PlusIcon className="h-4 w-4 text-dark fill-dark " />
                     </button>
                 </div>
+
+                <span className="block base-rate px-6 py-4 text-lg text-dark">Custom Rate</span>
 
                 {customRates.map((customRate, customRateIndex) => (
                     <div className="divide-y-[1px] divide-borderColor" key={customRateIndex}>
@@ -314,6 +366,91 @@ function WorkspaceRates() {
                         </div>
                     </div>
                 ))}
+
+        {/* <div>
+            <span className="block base-rate px-6 py-4 text-lg text-dark">Close Days</span>
+            
+            {closeDays.map((closeDay, closeDayIndex) => (
+                <div className="divide-y-[1px] divide-borderColor" key={closeDayIndex}>
+                    <div className="custom-rate px-6 py-4 flex items-center justify-between">
+                        <div className="flex gap-2 items-baseline justify-between w-fit">
+                            <div className="border rounded border-mediumGray px-2">
+                                <Input
+                                    variant="unstyled"
+                                    type="date"
+                                    id="start"
+                                    name="date-start"
+                                    value={getDate(closeDay.startDate)}
+                                    className="max-w-[200px] text-lg text-dark"
+                                    onChange={(event) => handleCloseDateChange(closeDayIndex, "startDate", event.target.value)}
+                                />
+                            </div>
+
+                            <span className="text-lg text-dark">-</span>
+
+                            <div className="border rounded border-mediumGray px-2">
+                                <Input
+                                    variant="unstyled"
+                                    type="date"
+                                    id="end"
+                                    name="date-end"
+                                    value={getDate(closeDay.endDate)}
+                                    className="max-w-[200px] text-lg text-dark"
+                                    onChange={(event) => handleCloseDateChange(closeDayIndex, "endDate", event.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <button onClick={() => handleDeleteCloseDay(closeDayIndex)} className="hover:bg-errorLight h-fit p-2 rounded-lg">
+                            <PlusIcon className="rotate-45 text-error" />
+                        </button>
+                    </div>
+
+                    <div className="divide-y-[1px] divide-[#E3E3E3] px-6 py-4">
+                        <div className="custom-slotRate py-4 flex items-baseline justify-between">
+                            <div className="timeSelector flex items-center w-fit">
+                                <div className="start-time flex py-2 px-4 items-center justify-center gap-3 w-full">
+                                    <div className="border rounded border-mediumGray grid place-content-center">
+                                        <Input
+                                            id="starthour"
+                                            variant="unstyled"
+                                            value={closeDay.startTime}
+                                            className="text-xs input text-mediumGray leading-[18px] h-5 mx-1 my-0.5"
+                                            onChange={(event) => handleCloseTimeChange(closeDayIndex, "startTime", event.target.value)}
+                                            type="time"
+                                        />
+                                    </div>
+                                </div>
+
+                                <span className="text-base text-center font-normal">-</span>
+
+                                <div className="end-time flex py-2 px-4 items-center justify-center gap-3 w-full">
+                                    <div className="border rounded border-mediumGray grid place-content-center">
+                                        <Input
+                                            id="endhour"
+                                            variant="unstyled"
+                                            value={closeDay.endTime}
+                                            className="text-xs input text-mediumGray leading-[18px] h-5 mx-1 my-0.5"
+                                            onChange={(event) => handleCloseTimeChange(closeDayIndex, "endTime", event.target.value)}
+                                            type="time"
+                                            style={inputStyle}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ))}
+
+            <button
+                className="rounded-lg border border-borderColor ml-6 mb-6 px-6 py-4 bg-primaryLight flex items-center gap-2 mt-10"
+                onClick={() => handleNewCloseDay()}
+            >
+                <span className="text-lg leading-normal">Add Close Day</span>
+                <PlusIcon className="h-4 w-4 text-dark fill-dark" />
+            </button>
+        </div> */}
             </div>
         </div>
     );

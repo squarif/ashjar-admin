@@ -17,6 +17,12 @@ const CREATE_MEETING_ROOM = gql`
                 startTime
                 endTime
             }
+            closeDays {
+                startDate
+                endDate
+                startTime
+                endTime
+            }
             customOpenHours {
                 startDate
                 endDate
@@ -79,6 +85,7 @@ const GET_MEETING_ROOM = gql`
         MeetingRoom(_id: $id) {
             _id
             name
+            priority
             nameArabic
             description
             descriptionArabic
@@ -93,6 +100,12 @@ const GET_MEETING_ROOM = gql`
                 endTime
             }
             customOpenHours {
+                startDate
+                endDate
+                startTime
+                endTime
+            }
+            closeDays {
                 startDate
                 endDate
                 startTime
@@ -135,6 +148,7 @@ const EDIT_MEETING_ROOM = gql`
             nameArabic
             description
             descriptionArabic
+            priority
             branch {
                 _id
                 name
@@ -142,6 +156,12 @@ const EDIT_MEETING_ROOM = gql`
             }
             openDays {
                 day
+                startTime
+                endTime
+            }
+            closeDays {
+                startDate
+                endDate
                 startTime
                 endTime
             }
